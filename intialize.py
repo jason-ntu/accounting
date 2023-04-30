@@ -1,4 +1,4 @@
 def initialze():
     db = getDB()
     db.insert(...)
-    pass
+    passgit l
