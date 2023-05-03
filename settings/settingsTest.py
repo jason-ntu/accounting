@@ -1,4 +1,4 @@
-import unittest
+from unittest import TestCase
 from unittest.mock import patch
 import io
 from settings.settings import SettingsPage, SettingsOption
@@ -8,7 +8,7 @@ from settings.category import Category
 from settings.balance import Balance
 from settings.location import Location
 
-class TestSetting(unittest.TestCase):
+class TestSettings(TestCase):
 
     def setUp(self) -> None:
         self.settingsPage = SettingsPage()

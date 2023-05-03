@@ -1,11 +1,17 @@
-import unittest
-from unittest.mock import patch
+from unittest import TestCase
 import io
+from unittest.mock import patch
 from settings.budget import BudgetPage, BudgetOption
+import pandas as pd
 
-class TestSetting(unittest.TestCase):
-    
+balance = {
+    "amount": [1234],
+}
+
+class TestBudget(TestCase):
+        
     def setUp(self) -> None:
+        self.df = pd.DataFrame(balance)
         self.budgetPage = BudgetPage()
 
     @patch('sys.stdout', new_callable=io.StringIO)
@@ -31,6 +37,12 @@ class TestSetting(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, self.budgetPage.errorMsg):
             self.budgetPage.execute(0)
     
+    def test_read(self):
+        pass
+    
+    def test_update(self):
+        pass
+
     @patch.object(BudgetPage, 'execute')
     @patch.object(BudgetPage, 'choose', side_effect=[BudgetOption.READ, BudgetOption.UPDATE, BudgetOption.BACK])
     @patch.object(BudgetPage, 'show')

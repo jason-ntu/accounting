@@ -4,6 +4,7 @@ class BudgetOption(IntEnum):
     READ = auto()
     UPDATE = auto()
     BACK = auto()
+
 class BudgetPage:
 
     errorMsg = "請輸入 1 到 3 之間的數字:"
