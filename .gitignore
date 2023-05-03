@@ -2,3 +2,4 @@
 htmlcov
 coverage_html_report
 __pycache__
+*/__pycache__

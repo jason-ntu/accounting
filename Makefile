@@ -1,5 +1,7 @@
-FILE_NAME := ./settings/settingsTest.py
-CACHE := ./__pycache__ .coverage htmlcov coverage_html_report
+# FILE_NAME := ./settings/budgetTest.py
+# FILE_NAME := ./settings/settingsTest.py
+FILE_NAME := ./settings/*.py
+CACHE := .coverage htmlcov coverage_html_report
 
 .PHONY: all clean
 

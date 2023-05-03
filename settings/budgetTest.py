@@ -1,33 +1,41 @@
-import budget
 import unittest
 from unittest.mock import patch
-from structure import Action
 import io
+from settings.budget import BudgetPage, BudgetOption
 
 class TestSetting(unittest.TestCase):
     
+    def setUp(self) -> None:
+        self.budgetPage = BudgetPage()
+
     @patch('sys.stdout', new_callable=io.StringIO)
-    def test_showBudgetPage(self, _stdout):
-        budget.showBudgetPage()
+    def test_show(self, _stdout):
+        self.budgetPage.show()
         output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(output_lines[0], "%d: 查看總預算" % Action.READ)
-        self.assertEqual(output_lines[1], "%d: 修改總預算" % Action.UPDATE)
+        self.assertEqual(output_lines[0], "%d: 查看總預算" % BudgetOption.READ)
+        self.assertEqual(output_lines[1], "%d: 修改總預算" % BudgetOption.UPDATE)
+        self.assertEqual(output_lines[2], "%d: 回到上一頁" % BudgetOption.BACK)
     
-    @patch.object(budget, 'readBudget')
-    @patch('builtins.input', side_effect=['3', 'yes','1'])
-    @patch.object(budget, 'showBudgetPage')
-    def test_enterBudgetPage_input_invalids_and_read(self, _showBudgetPage, _input, _readBudget):        
-        budget.enterBudgetPage()
-        self.assertEqual(_showBudgetPage.call_count, 1)
-        self.assertEqual(_input.call_count, 3)        
-        self.assertEqual(_readBudget.call_count, 1)
+    @patch('builtins.input', side_effect=['0', '4', 'T', 'yes', 'false','3'])
+    def test_choose(self, _input):
+        self.assertEqual(self.budgetPage.choose(), 3)
+        self.assertEqual(_input.call_count, 6)
     
-    @patch.object(budget, 'updateBudget')
-    @patch('builtins.input', side_effect=['2'])
-    @patch.object(budget, 'showSettingsPage')
-    def test_enterSettingsPage_input_fixedIE(self, _showSettingsPage, _input, _updateBudget):
-        budget.enterBudgetPage()
-        self.assertEqual(_showSettingsPage.call_count, 1)
-        self.assertEqual(_input.call_count, 1)        
-        self.assertEqual(_updateBudget.call_count, 1)
+    @patch.object(BudgetPage, 'update')
+    @patch.object(BudgetPage, 'read')
+    def test_execute(self, _read, _update):
+        self.budgetPage.execute(BudgetOption.READ)
+        self.assertEqual(_read.call_count, 1)
+        self.budgetPage.execute(BudgetOption.UPDATE)
+        self.assertEqual(_update.call_count, 1)
+        with self.assertRaisesRegex(ValueError, self.budgetPage.errorMsg):
+            self.budgetPage.execute(0)
     
+    @patch.object(BudgetPage, 'execute')
+    @patch.object(BudgetPage, 'choose', side_effect=[BudgetOption.READ, BudgetOption.UPDATE, BudgetOption.BACK])
+    @patch.object(BudgetPage, 'show')
+    def test_start(self, _show, _choose, _execute):
+        self.budgetPage.start()
+        self.assertEqual(_show.call_count, 3)
+        self.assertEqual(_choose.call_count, 3)
+        self.assertEqual(_execute.call_count, 2)
