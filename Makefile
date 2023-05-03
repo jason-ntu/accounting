@@ -1,7 +1,9 @@
-FILE_NAME := settingsTest.py
+FILE_NAME := ./settings/settingsTest.py
 CACHE := ./__pycache__ .coverage htmlcov coverage_html_report
 
-.PHONY: clean
+.PHONY: all clean
+
+all: test coverage
 
 test:
 	@coverage run -m unittest $(FILE_NAME)

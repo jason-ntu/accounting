@@ -1,9 +1,9 @@
 from structure import SettingsOption
-from budget import Budget
-from fixedIE import FixedIE
-from category import Category
-from balance import Balance
-from location import Location
+from .budget import Budget
+from .fixedIE import FixedIE
+from .category import Category
+from .balance import Balance
+from .location import Location
 
 class SettingsPage:
     def show(self):
