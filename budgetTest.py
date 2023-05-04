@@ -1,11 +1,9 @@
-from unittest import TestCase
 import io
 from unittest.mock import patch
 from budget import BudgetPage, BudgetOption
-import utils
+from mock_db import MockDB
 
-
-class TestBudget(TestCase):
+class TestUtils(MockDB):
         
     def setUp(self) -> None:
         self.budgetPage = BudgetPage()
@@ -35,17 +33,21 @@ class TestBudget(TestCase):
     
     def test_read(self):
         with self.mock_db_config:
-            self.assertEqual(utils.db_read("""SELECT INTO `test_table` (`id`, `text`, `int`) VALUES
-                            ('3', 'test_text_3', 3)"""), True)
-            self.assertEqual(utils.db_write("""INSERT INTO `test_table` (`id`, `text`, `int`) VALUES
-                            ('1', 'test_text_3', 3)"""), False)
-            self.assertEqual(utils.db_write("""DELETE FROM `test_table` WHERE id='1' """), True)
-            self.assertEqual(utils.db_write("""DELETE FROM `test_table` WHERE id='4' """), True)
-
-        pass
+            self.assertEqual(self.budgetPage.read(), 10000)
     
-    def test_update(self):
-        pass
+    @patch('builtins.input', side_effect=['XYZ', 12345])
+    @patch.object(BudgetPage, 'hint')
+    def test_update(self, _hint, _input):
+        with self.mock_db_config:
+            self.assertEqual(self.budgetPage.update(), True)
+            self.assertEqual(self.budgetPage.read(), 12345)
+        self.assertEqual(_hint.call_count, 1)
+        self.assertEqual(_input.call_count, 2)
+    
+    @patch('sys.stdout', new_callable=io.StringIO)
+    def test_hint(self, _stdout):
+        self.budgetPage.hint()
+        self.assertEqual(_stdout.getvalue(), "請輸入新的總預算:\n")
 
     @patch.object(BudgetPage, 'execute')
     @patch.object(BudgetPage, 'choose', side_effect=[BudgetOption.READ, BudgetOption.UPDATE, BudgetOption.BACK])

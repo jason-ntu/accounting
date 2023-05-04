@@ -13,6 +13,7 @@ MYSQL_PASSWORD = env['MYSQL_PASSWORD']
 MYSQL_DB = env['MYSQL_DB']
 MYSQL_HOST = env['MYSQL_HOST']
 MYSQL_PORT = env['MYSQL_PORT']
+INITIAL_BUDGET = env['INITIAL_BUDGET']
 
 class MockDB(TestCase):
 
@@ -42,13 +43,13 @@ class MockDB(TestCase):
             print("Failed creating database: {}".format(err))
             exit(1)
         cnx.database = MYSQL_DB
-
         
         createTestTable = """CREATE TABLE `test_table` (
                   `id` varchar(30) NOT NULL PRIMARY KEY ,
                   `text` text NOT NULL,
                   `int` int NOT NULL
                 )"""
+        
         createBudgetTable = """CREATE TABLE `budget_table` (
                   `id` varchar(30) NOT NULL PRIMARY KEY ,
                   `int` int NOT NULL
@@ -61,25 +62,22 @@ class MockDB(TestCase):
                 cnx.commit()
             except mysql.connector.Error as err:
                 if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                    print(createsTables + " failed. The table already exists.")
+                    print("The table already exists.")
                 else:
                     print(err.msg)
-            else:
-                print(createsTables + " done.")
 
         insertTestTable = """INSERT INTO `test_table` (`id`, `text`, `int`) VALUES
                             ('1', 'test_text', 1),
                             ('2', 'test_text_2',2)"""
         insertBudgetTable = """INSERT INTO `budget_table` (`id`, `int`) VALUES
-                            ('1', 1000)"""
+                            ('1', %s)""" % INITIAL_BUDGET
         insertsTables = [insertTestTable, insertBudgetTable]
         for insertsTable in insertsTables:
             try:
                 cursor.execute(insertsTable)
                 cnx.commit()
-                print(insertsTable + " succeeded.")
             except mysql.connector.Error as err:
-                print(insertsTable + " failed \n" + err)
+                print(err)
         cursor.close()
         cnx.close()
 
