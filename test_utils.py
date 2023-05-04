@@ -2,12 +2,6 @@ from mock_db import MockDB
 from mock import patch
 import utils
 
-MYSQL_USER = "root"
-MYSQL_PASSWORD = ""
-MYSQL_DB = "testdb"
-MYSQL_HOST = "localhost"
-MYSQL_PORT = "3306"
-
 class TestUtils(MockDB):
 
     def test_db_write(self):

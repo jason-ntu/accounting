@@ -1,11 +1,15 @@
 import mysql.connector
 from mysql.connector import errorcode
+from dotenv import dotenv_values
+import MySQLdb
+
+env = dotenv_values(".env")
 
 config = {
-    'host': MYSQL_HOST,
-    'user': MYSQL_USER,
-    'password': MYSQL_PASSWORD,
-    'database': MYSQL_DB
+    'host': env['MYSQL_HOST'],
+    'user': env['MYSQL_USER'],
+    'password': env['MYSQL_PASSWORD'],
+    'database': env['MYSQL_DB']
 }
 
 def db_read(query, params=None):
@@ -54,7 +58,7 @@ def db_write(query, params=None):
             cnx.close()
             return True
 
-        except MySQLdb._exceptions.IntegrityError:
+        except MySQLdb.IntegrityError:
             cursor.close()
             cnx.close()
             return False

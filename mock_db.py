@@ -3,14 +3,16 @@ import mysql.connector
 from mysql.connector import errorcode
 from mock import patch
 import utils
+from dotenv import dotenv_values
+import time
 
+env = dotenv_values(".env")
 
-# MYSQL_USER = "root"
-# MYSQL_PASSWORD = ""
-# MYSQL_DB = "testdb"
-# MYSQL_HOST = "localhost"
-# MYSQL_PORT = "3306"
-
+MYSQL_USER = env['MYSQL_USER']
+MYSQL_PASSWORD = env['MYSQL_PASSWORD']
+MYSQL_DB = env['MYSQL_DB']
+MYSQL_HOST = env['MYSQL_HOST']
+MYSQL_PORT = env['MYSQL_PORT']
 
 class MockDB(TestCase):
 
@@ -55,7 +57,7 @@ class MockDB(TestCase):
             else:
                 print(err.msg)
         else:
-            print("OK")
+            print("test_table created.")
 
         insert_data_query = """INSERT INTO `test_table` (`id`, `text`, `int`) VALUES
                             ('1', 'test_text', 1),
@@ -63,6 +65,7 @@ class MockDB(TestCase):
         try:
             cursor.execute(insert_data_query)
             cnx.commit()
+            print("Data insertion to test_table successed.\n")
         except mysql.connector.Error as err:
             print("Data insertion to test_table failed \n" + err)
         cursor.close()
