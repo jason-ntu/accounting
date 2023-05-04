@@ -17,9 +17,9 @@ class MockDB(TestCase):
     @classmethod
     def setUpClass(cls):
         cnx = mysql.connector.connect(
-            host=MYSQL_HOST,
-            user=MYSQL_USER,
-            password=MYSQL_PASSWORD,
+            host = MYSQL_HOST,
+            user = MYSQL_USER,
+            password = MYSQL_PASSWORD,
             port = MYSQL_PORT
         )
         cursor = cnx.cursor(dictionary=True)

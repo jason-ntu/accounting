@@ -1,17 +1,12 @@
 from unittest import TestCase
 import io
 from unittest.mock import patch
-from settings.budget import BudgetPage, BudgetOption
-import pandas as pd
+from budget import BudgetPage, BudgetOption
 
-balance = {
-    "amount": [1234],
-}
 
 class TestBudget(TestCase):
         
     def setUp(self) -> None:
-        self.df = pd.DataFrame(balance)
         self.budgetPage = BudgetPage()
 
     @patch('sys.stdout', new_callable=io.StringIO)

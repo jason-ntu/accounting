@@ -1,14 +1,18 @@
-FILES_NAME := settings/*.py
+# TEST_FILE_NAME := settingsTest.py budgetTest.py
+TEST_FILE_NAME := database/utilsTest.py
+RUN_FILE_NAME := settings.py
 CACHE := .coverage htmlcov coverage_html_report
 
 .PHONY: all clean
 
-all: test coverage
+run:
+	@python3 $(RUN_FILE_NAME)
 
 test:
-	@coverage run -m unittest $(FILES_NAME)
+	@python3 -m unittest $(TEST_FILE_NAME)
 
-coverage: .coverage
+coverage: 
+	@coverage run -m unittest $(TEST_FILE_NAME)
 	@coverage report -m
 	@coverage html
 

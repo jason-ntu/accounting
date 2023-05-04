@@ -1,12 +1,12 @@
 from unittest import TestCase
 from unittest.mock import patch
 import io
-from settings.settings import SettingsPage, SettingsOption
-from settings.budget import BudgetPage
-from settings.fixedIE import FixedIE
-from settings.category import Category
-from settings.balance import Balance
-from settings.location import Location
+from settings import SettingsPage, SettingsOption
+from budget import BudgetPage
+from fixedIE import FixedIE
+from category import Category
+from balance import Balance
+from location import Location
 
 class TestSettings(TestCase):
 

@@ -1,9 +1,9 @@
 from enum import IntEnum, auto
-from settings.budget import BudgetPage
-from settings.fixedIE import FixedIE
-from settings.category import Category
-from settings.balance import Balance
-from settings.location import Location
+from budget import BudgetPage
+from fixedIE import FixedIE
+from category import Category
+from balance import Balance
+from location import Location
 
 class SettingsOption(IntEnum):
     BUDGET = auto()
