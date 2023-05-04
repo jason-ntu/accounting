@@ -2,6 +2,7 @@ from unittest import TestCase
 import io
 from unittest.mock import patch
 from budget import BudgetPage, BudgetOption
+import utils
 
 
 class TestBudget(TestCase):
@@ -33,6 +34,14 @@ class TestBudget(TestCase):
             self.budgetPage.execute(0)
     
     def test_read(self):
+        with self.mock_db_config:
+            self.assertEqual(utils.db_read("""SELECT INTO `test_table` (`id`, `text`, `int`) VALUES
+                            ('3', 'test_text_3', 3)"""), True)
+            self.assertEqual(utils.db_write("""INSERT INTO `test_table` (`id`, `text`, `int`) VALUES
+                            ('1', 'test_text_3', 3)"""), False)
+            self.assertEqual(utils.db_write("""DELETE FROM `test_table` WHERE id='1' """), True)
+            self.assertEqual(utils.db_write("""DELETE FROM `test_table` WHERE id='4' """), True)
+
         pass
     
     def test_update(self):

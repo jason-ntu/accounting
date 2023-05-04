@@ -43,31 +43,43 @@ class MockDB(TestCase):
             exit(1)
         cnx.database = MYSQL_DB
 
-        query = """CREATE TABLE `test_table` (
+        
+        createTestTable = """CREATE TABLE `test_table` (
                   `id` varchar(30) NOT NULL PRIMARY KEY ,
                   `text` text NOT NULL,
                   `int` int NOT NULL
                 )"""
-        try:
-            cursor.execute(query)
-            cnx.commit()
-        except mysql.connector.Error as err:
-            if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                print("test_table already exists.")
+        createBudgetTable = """CREATE TABLE `budget_table` (
+                  `id` varchar(30) NOT NULL PRIMARY KEY ,
+                  `int` int NOT NULL
+                )"""
+        
+        createsTables = [createTestTable, createBudgetTable]
+        for createsTable in createsTables:
+            try:
+                cursor.execute(createsTable)
+                cnx.commit()
+            except mysql.connector.Error as err:
+                if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
+                    print(createsTables + " failed. The table already exists.")
+                else:
+                    print(err.msg)
             else:
-                print(err.msg)
-        else:
-            print("test_table created.")
+                print(createsTables + " done.")
 
-        insert_data_query = """INSERT INTO `test_table` (`id`, `text`, `int`) VALUES
+        insertTestTable = """INSERT INTO `test_table` (`id`, `text`, `int`) VALUES
                             ('1', 'test_text', 1),
                             ('2', 'test_text_2',2)"""
-        try:
-            cursor.execute(insert_data_query)
-            cnx.commit()
-            print("Data insertion to test_table successed.\n")
-        except mysql.connector.Error as err:
-            print("Data insertion to test_table failed \n" + err)
+        insertBudgetTable = """INSERT INTO `budget_table` (`id`, `int`) VALUES
+                            ('1', 1000)"""
+        insertsTables = [insertTestTable, insertBudgetTable]
+        for insertsTable in insertsTables:
+            try:
+                cursor.execute(insertsTable)
+                cnx.commit()
+                print(insertsTable + " succeeded.")
+            except mysql.connector.Error as err:
+                print(insertsTable + " failed \n" + err)
         cursor.close()
         cnx.close()
 
