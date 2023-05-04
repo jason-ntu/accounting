@@ -10,7 +10,7 @@ def showMenu():
         showRecordsPage()
     elif option == '查看報表':
         showReportsPage()
-    elif option ==  '輸出':
+    elif option == '輸出':
         showExportPage()
     elif option == '設定':
         showSettingPage()

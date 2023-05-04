@@ -1,4 +1,3 @@
-
 class Record:
     direction: bool # 0: 'income' / 1: 'outcome'
     date: str # '2020-01-01'
