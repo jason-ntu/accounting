@@ -34,8 +34,6 @@ class TestBudgetPage(MockDB):
         self.assertEqual(_read.call_count, 1)
         self.budgetPage.execute(BudgetOption.UPDATE)
         self.assertEqual(_update.call_count, 1)
-        with self.assertRaisesRegex(ValueError, "請輸入 1 到 2 之間的數字:"):
-            self.budgetPage.execute(0)
     
     def test_read(self):
         with self.mock_db_config:

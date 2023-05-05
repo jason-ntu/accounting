@@ -22,13 +22,11 @@ class BudgetPage:
                 print("請輸入 1 到 3 之間的數字:")
         return option
 
-    def execute(self,option):
+    def execute(self, option):
         if option is BudgetOption.READ:
             self.read()
         elif option is BudgetOption.UPDATE:
             self.update()
-        else:
-            raise ValueError("請輸入 1 到 2 之間的數字:")
 
     def read(self):
         budget = utils.db_read("""SELECT `amount` FROM `budget_table` WHERE id='1'""")

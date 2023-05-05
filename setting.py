@@ -15,8 +15,6 @@ class SettingOption(IntEnum):
 
 class SettingPage:
     
-    errorMsg = "請輸入 1 到 6 之間的整數:"
-
     def show(self):
         print("%d: 查看/修改總預算" % SettingOption.BUDGET)
         print("%d: 新增每月固定收支" % SettingOption.FIXEDIE)
@@ -31,7 +29,7 @@ class SettingPage:
                 option = SettingOption(int(input()))
                 break
             except ValueError:
-                print(self.errorMsg)
+                print("請輸入 1 到 6 之間的整數:")
         return option
 
     def enter(self, option):
@@ -45,8 +43,6 @@ class SettingPage:
             nextPage = PaymentPage()
         elif option is SettingOption.LOCATION:
             nextPage = Location()
-        else:
-            raise ValueError(self.errorMsg)
         nextPage.start()
 
     def start(self):

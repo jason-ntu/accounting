@@ -47,8 +47,6 @@ class PaymentPage:
             self.update()
         elif option is PaymentOption.DELETE:
             self.delete()
-        else:
-            raise ValueError("請輸入 1 到 4 之間的整數:")
         
     def create(self, name):
         self.hint_create_name()

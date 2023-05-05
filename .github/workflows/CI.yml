@@ -1,28 +1,64 @@
 name: CI
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches:
+      - master
+
 jobs:
-  Explore-GitHub-Actions:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        python-version: ["3.10"]
+  # Label of the unit test
+  unit-test:
+    # Containers must run in Linux based operating systems
+    runs-on: ubuntu-20.04
+    # Docker Hub image that `unit-test` executes in
+    container: python:3.10
+
+    # Service containers to run with `unit-test`
+    services:
+      # Label used to access the service container
+      mysql:
+        # Docker Hub image
+        image: mysql:5.7.32
+        env:
+          MYSQL_ROOT_PASSWORD: mysql
+          MYSQL_DATABASE: testdb
+          MYSQL_USER: root
+        ports:
+          - 3306:3306
+        # Set health checks to wait until mysql has started
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
+      # Downloads a copy of the code in your repository before running CI tests
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
       - name: Install dependencies
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install coverage
+          apt-get update
+          apt-get upgrade
+          pip3 install --upgrade pip
+          pip3 install coverage
           if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
+
+      - name: "Update env file"
+        run: |
+          dotenv set MYSQL_HOST mysql
+          cat .env
+
       - name: Test with unittest
         run: |
           make test
+
       - name: Test Coverage
         run: |
           make coverage

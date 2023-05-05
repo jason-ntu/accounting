@@ -47,8 +47,6 @@ class TestPaymentPage(MockDB):
         self.assertEqual(_update.call_count, 1)
         self.paymentPage.execute(PaymentOption.DELETE)
         self.assertEqual(_delete.call_count, 1)
-        with self.assertRaisesRegex(ValueError, "請輸入 1 到 4 之間的整數:"):
-            self.paymentPage.execute(0)
     
     @patch('sys.stdout', new_callable=io.StringIO)
     def test_hint_create_name(self, _stdout):

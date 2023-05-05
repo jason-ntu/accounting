@@ -59,9 +59,6 @@ class TestSetting(TestCase):
         self.assertEqual(_balance_start.call_count, 1)
         self.settingPage.enter(SettingOption.LOCATION)
         self.assertEqual(_location_start.call_count, 1)
-        with self.assertRaisesRegex(ValueError, "請輸入 1 到 6 之間的整數:"):
-            self.settingPage.enter(0)
-        
 
     @patch.object(SettingPage, 'enter')
     @patch.object(SettingPage, 'choose', side_effect=[SettingOption.BUDGET, SettingOption.BACK])
