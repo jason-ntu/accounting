@@ -67,7 +67,7 @@ patch==1.16
 pathspec==0.11.0
 platformdirs==3.0.0
 proto-plus==1.22.2
-protobuf==3.20.3
+protobuf>=3.20.3
 pyasn1==0.5.0
 pyasn1-modules==0.3.0
 pycodestyle==2.10.0

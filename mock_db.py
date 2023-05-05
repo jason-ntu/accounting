@@ -33,7 +33,8 @@ class MockDB(TestCase):
             cursor.close()
             print("DB dropped")
         except mysql.connector.Error as err:
-            print("{}{}".format(MYSQL_DB, err))
+            if err.errno != 1008:
+                print(err)
 
         cursor = cnx.cursor(dictionary=True)
         try:
@@ -44,18 +45,24 @@ class MockDB(TestCase):
             exit(1)
         cnx.database = MYSQL_DB
         
-        createTestTable = """CREATE TABLE `test_table` (
-                  `id` varchar(30) NOT NULL PRIMARY KEY ,
+        createsTables = [
+            """CREATE TABLE `test_table` (
+                  `id` varchar(10) NOT NULL PRIMARY KEY ,
                   `text` text NOT NULL,
                   `int` int NOT NULL
+                )""",
+            """CREATE TABLE `budget_table` (
+                  `id` varchar(10) NOT NULL PRIMARY KEY ,
+                  `amount` FLOAT NOT NULL
+                )""",
+            """CREATE TABLE `payment_table` (
+                  `id` varchar(10) NOT NULL PRIMARY KEY ,
+                  `name` varchar(40) NOT NULL,
+                  `balance` FLOAT NOT NULL,
+                  `category` ENUM('CASH', 'DEBIT_CARD', 'CREDIT_CARD', 'ELECTRONIC', 'OTHER') NOT NULL
                 )"""
-        
-        createBudgetTable = """CREATE TABLE `budget_table` (
-                  `id` varchar(30) NOT NULL PRIMARY KEY ,
-                  `int` int NOT NULL
-                )"""
-        
-        createsTables = [createTestTable, createBudgetTable]
+        ]
+         
         for createsTable in createsTables:
             try:
                 cursor.execute(createsTable)
@@ -66,12 +73,17 @@ class MockDB(TestCase):
                 else:
                     print(err.msg)
 
-        insertTestTable = """INSERT INTO `test_table` (`id`, `text`, `int`) VALUES
+        insertsTables = [
+            """INSERT INTO `test_table` (`id`, `text`, `int`) VALUES
                             ('1', 'test_text', 1),
-                            ('2', 'test_text_2',2)"""
-        insertBudgetTable = """INSERT INTO `budget_table` (`id`, `int`) VALUES
-                            ('1', %s)""" % INITIAL_BUDGET
-        insertsTables = [insertTestTable, insertBudgetTable]
+                            ('2', 'test_text_2',2)""",
+            """INSERT INTO `budget_table` (`id`, `amount`) VALUES
+                            ('1', '%f')""" % float(INITIAL_BUDGET),
+            """INSERT INTO `budget_table` (`id`, `amount`) VALUES
+                            ('1', '%f')""" % float(INITIAL_BUDGET)
+
+        ]
+        
         for insertsTable in insertsTables:
             try:
                 cursor.execute(insertsTable)

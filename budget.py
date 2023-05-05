@@ -8,8 +8,6 @@ class BudgetOption(IntEnum):
 
 class BudgetPage:
 
-    errorMsg = "請輸入 1 到 3 之間的數字:"
-
     def show(self):
         print("%d: 查看總預算" % BudgetOption.READ)
         print("%d: 修改總預算" % BudgetOption.UPDATE)
@@ -21,7 +19,7 @@ class BudgetPage:
                 option = BudgetOption(int(input()))
                 break
             except ValueError:
-                print(self.errorMsg)
+                print("請輸入 1 到 3 之間的數字:")
         return option
 
     def execute(self,option):
@@ -30,21 +28,22 @@ class BudgetPage:
         elif option is BudgetOption.UPDATE:
             self.update()
         else:
-            raise ValueError(self.errorMsg)
+            raise ValueError("請輸入 1 到 2 之間的數字:")
 
     def read(self):
-        budget = utils.db_read("""SELECT `int` FROM `budget_table` WHERE id='1'""")
-        return budget[0]['int']
+        budget = utils.db_read("""SELECT `amount` FROM `budget_table` WHERE id='1'""")
+        return budget[0]['amount']
 
     def update(self):
-        self.hint()
+        self.hint_update()
         while True:
             try:
-                return utils.db_write("""UPDATE `budget_table` SET `int`='%d' WHERE id='1'""" % int(input()))
+                newAmount = float(input())
+                return utils.db_write("""UPDATE `budget_table` SET `amount`='%f' WHERE id='1'""" % newAmount)
             except ValueError:
-                print("請輸入整數")
+                print("請輸入數字:")
 
-    def hint(self):
+    def hint_update(self):
         print("請輸入新的總預算:")
 
     def start(self):
