@@ -4,7 +4,6 @@ from mysql.connector import errorcode
 from mock import patch
 import utils
 from dotenv import dotenv_values
-import time
 
 env = dotenv_values(".env")
 
@@ -68,10 +67,8 @@ class MockDB(TestCase):
                 cursor.execute(createsTable)
                 cnx.commit()
             except mysql.connector.Error as err:
-                if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                    print("The table already exists.")
-                else:
-                    print(err.msg)
+                print(err)
+                cnx.rollback()
 
         insertsTables = [
             """INSERT INTO `test_table` (`id`, `text`, `int`) VALUES
@@ -81,7 +78,6 @@ class MockDB(TestCase):
                             ('1', '%f')""" % float(INITIAL_BUDGET),
             """INSERT INTO `budget_table` (`id`, `amount`) VALUES
                             ('1', '%f')""" % float(INITIAL_BUDGET)
-
         ]
         
         for insertsTable in insertsTables:
@@ -90,6 +86,7 @@ class MockDB(TestCase):
                 cnx.commit()
             except mysql.connector.Error as err:
                 print(err)
+                cnx.rollback()
         cursor.close()
         cnx.close()
 
@@ -117,4 +114,5 @@ class MockDB(TestCase):
             cursor.close()
         except mysql.connector.Error as err:
             print("Database {} does not exists. Dropping db failed".format(MYSQL_DB))
+            cnx.rollback()
         cnx.close()

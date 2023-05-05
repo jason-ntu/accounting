@@ -15,7 +15,7 @@ coverage:
 	@coverage report -m
 	@coverage html
 
-freeze:
+requirements:
 	@pip3 freeze > requirements.txt
 
 clean:
