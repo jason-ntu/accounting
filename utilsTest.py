@@ -1,5 +1,4 @@
 from mock_db import MockDB
-from mock import patch
 import utils
 
 class TestUtils(MockDB):

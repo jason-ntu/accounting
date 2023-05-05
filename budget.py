@@ -1,4 +1,5 @@
 from enum import IntEnum, auto
+import utils
 
 class BudgetOption(IntEnum):
     READ = auto()
@@ -6,8 +7,6 @@ class BudgetOption(IntEnum):
     BACK = auto()
 
 class BudgetPage:
-
-    errorMsg = "請輸入 1 到 3 之間的數字:"
 
     def show(self):
         print("%d: 查看總預算" % BudgetOption.READ)
@@ -20,22 +19,30 @@ class BudgetPage:
                 option = BudgetOption(int(input()))
                 break
             except ValueError:
-                print(self.errorMsg)
+                print("請輸入 1 到 3 之間的數字:")
         return option
 
-    def execute(self,option):
+    def execute(self, option):
         if option is BudgetOption.READ:
             self.read()
         elif option is BudgetOption.UPDATE:
             self.update()
-        else:
-            raise ValueError(self.errorMsg)
 
-    def read(self):  # pragma: no cover
-        pass
+    def read(self):
+        budget = utils.db_read("""SELECT `amount` FROM `budget_table` WHERE id='1'""")
+        return budget[0]['amount']
 
-    def update(self):  # pragma: no cover
-        pass
+    def update(self):
+        self.hint_update()
+        while True:
+            try:
+                newAmount = float(input())
+                return utils.db_write("""UPDATE `budget_table` SET `amount`='%f' WHERE id='1'""" % newAmount)
+            except ValueError:
+                print("請輸入數字:")
+
+    def hint_update(self):
+        print("請輸入新的總預算:")
 
     def start(self):
         while True:

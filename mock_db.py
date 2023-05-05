@@ -4,7 +4,6 @@ from mysql.connector import errorcode
 from mock import patch
 import utils
 from dotenv import dotenv_values
-import time
 
 env = dotenv_values(".env")
 
@@ -13,6 +12,7 @@ MYSQL_PASSWORD = env['MYSQL_PASSWORD']
 MYSQL_DB = env['MYSQL_DB']
 MYSQL_HOST = env['MYSQL_HOST']
 MYSQL_PORT = env['MYSQL_PORT']
+INITIAL_BUDGET = env['INITIAL_BUDGET']
 
 class MockDB(TestCase):
 
@@ -32,7 +32,8 @@ class MockDB(TestCase):
             cursor.close()
             print("DB dropped")
         except mysql.connector.Error as err:
-            print("{}{}".format(MYSQL_DB, err))
+            if err.errno != 1008:
+                print(err)
 
         cursor = cnx.cursor(dictionary=True)
         try:
@@ -42,32 +43,50 @@ class MockDB(TestCase):
             print("Failed creating database: {}".format(err))
             exit(1)
         cnx.database = MYSQL_DB
-
-        query = """CREATE TABLE `test_table` (
-                  `id` varchar(30) NOT NULL PRIMARY KEY ,
+        
+        createsTables = [
+            """CREATE TABLE `test_table` (
+                  `id` varchar(10) NOT NULL PRIMARY KEY ,
                   `text` text NOT NULL,
                   `int` int NOT NULL
+                )""",
+            """CREATE TABLE `budget_table` (
+                  `id` varchar(10) NOT NULL PRIMARY KEY ,
+                  `amount` FLOAT NOT NULL
+                )""",
+            """CREATE TABLE `payment_table` (
+                  `id` varchar(10) NOT NULL PRIMARY KEY ,
+                  `name` varchar(40) NOT NULL,
+                  `balance` FLOAT NOT NULL,
+                  `category` ENUM('CASH', 'DEBIT_CARD', 'CREDIT_CARD', 'ELECTRONIC', 'OTHER') NOT NULL
                 )"""
-        try:
-            cursor.execute(query)
-            cnx.commit()
-        except mysql.connector.Error as err:
-            if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                print("test_table already exists.")
-            else:
-                print(err.msg)
-        else:
-            print("test_table created.")
+        ]
+         
+        for createsTable in createsTables:
+            try:
+                cursor.execute(createsTable)
+                cnx.commit()
+            except mysql.connector.Error as err:
+                print(err)
+                cnx.rollback()
 
-        insert_data_query = """INSERT INTO `test_table` (`id`, `text`, `int`) VALUES
+        insertsTables = [
+            """INSERT INTO `test_table` (`id`, `text`, `int`) VALUES
                             ('1', 'test_text', 1),
-                            ('2', 'test_text_2',2)"""
-        try:
-            cursor.execute(insert_data_query)
-            cnx.commit()
-            print("Data insertion to test_table successed.\n")
-        except mysql.connector.Error as err:
-            print("Data insertion to test_table failed \n" + err)
+                            ('2', 'test_text_2',2)""",
+            """INSERT INTO `budget_table` (`id`, `amount`) VALUES
+                            ('1', '%f')""" % float(INITIAL_BUDGET),
+            """INSERT INTO `budget_table` (`id`, `amount`) VALUES
+                            ('1', '%f')""" % float(INITIAL_BUDGET)
+        ]
+        
+        for insertsTable in insertsTables:
+            try:
+                cursor.execute(insertsTable)
+                cnx.commit()
+            except mysql.connector.Error as err:
+                print(err)
+                cnx.rollback()
         cursor.close()
         cnx.close()
 
@@ -95,4 +114,5 @@ class MockDB(TestCase):
             cursor.close()
         except mysql.connector.Error as err:
             print("Database {} does not exists. Dropping db failed".format(MYSQL_DB))
+            cnx.rollback()
         cnx.close()
