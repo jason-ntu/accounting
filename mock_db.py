@@ -3,7 +3,9 @@ import mysql.connector
 import sqlalchemy as db
 from mock import patch
 import utils
+import const
 from dotenv import dotenv_values
+
 
 env = dotenv_values(".env")
 
@@ -14,18 +16,6 @@ MYSQL_USER = env["MYSQL_USER"]
 MYSQL_PASSWORD = env["MYSQL_PASSWORD"]
 MYSQL_TEST_DB = env["MYSQL_TEST_DB"]
 MYSQL_PORT = env["MYSQL_PORT"]
-
-INITIAL_BUDGET = env["INITIAL_BUDGET"]
-
-# class MockDB(TestCase):
-
-#     @classmethod
-#     def setUpClass(cls):
-#         url = "%s+%s://%s:%s@%s:%s/%s" % (MYSQL_DIALECT, MYSQL_DRIVER, MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, MYSQL_TEST_DB)
-#         engine = db.create_engine(url)
-#         connection = engine.connect()
-#         metadata = db.MetaData()
-
 
 class MockDB(TestCase):
     @classmethod
@@ -86,10 +76,10 @@ class MockDB(TestCase):
                             ('2', 'test_text_2',2)""",
             """INSERT INTO `budget_table` (`id`, `amount`) VALUES
                             ('1', '%f')"""
-            % float(INITIAL_BUDGET),
+            % const.INITIAL_BUDGET,
             """INSERT INTO `budget_table` (`id`, `amount`) VALUES
                             ('1', '%f')"""
-            % float(INITIAL_BUDGET),
+            % const.INITIAL_BUDGET,
         ]
 
         for insertsTable in insertsTables:

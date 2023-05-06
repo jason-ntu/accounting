@@ -1,26 +1,20 @@
 import mysql.connector
 from mysql.connector import errorcode
-from dotenv import dotenv_values
+import const
+import sqlalchemy as db
 
-env = dotenv_values(".env")
-
-ANSI_BLACK = "\033[30m"
-ANSI_RED = "\033[31m"
-ANSI_GREEN = "\033[32m"
-ANSI_YELLOW = "\033[33m"
-ANSI_BLUE = "\033[34m"
-ANSI_MAGENTA = "\033[35m"
-ANSI_CYAN = "\033[36m"
-ANSI_WHITE = "\033[37m"
-ANSI_RESET = "\033[0m"
+# url = "%s+%s://%s:%s@%s:%s/%s" % (MYSQL_DIALECT, MYSQL_DRIVER,MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, MYSQL_DEV_DB)
+# engine = db.create_engine(url)
+# connection = engine.connect()
+# metadata = db.MetaData()
+# census = db.Table('census', metadata, autoload=True, autoload_with=engine)
 
 config = {
-    "host": env["MYSQL_HOST"],
-    "user": env["MYSQL_USER"],
-    "password": env["MYSQL_PASSWORD"],
-    "port": env["MYSQL_PORT"],
+    "user": const.MYSQL_USER,
+    "host": const.MYSQL_HOST,
+    "password": const.MYSQL_PASSWORD,
+    "port": const.MYSQL_PORT,
 }
-
 
 class Database:
     @classmethod
@@ -34,7 +28,8 @@ class Database:
                 cls.connection = mysql.connector.connect(**config, database=db_name)
             # Create a cursor object that returns query results as dictionaries
             cls.cursor = cls.connection.cursor(dictionary=True)
-            print("%s...Connection created.%s" % (ANSI_BLACK, ANSI_RESET))
+            print("%s...Connection created.%s" %
+                  (const.ANSI_BLACK, const.ANSI_RESET))
             return True
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -52,7 +47,8 @@ class Database:
             cls.cursor.close()
             # Disconnect from the MySQL server
             cls.connection.close()
-            print("%s...Connection closed.%s" % (ANSI_BLACK, ANSI_RESET))
+            print("%s...Connection closed.%s" %
+                  (const.ANSI_BLACK, const.ANSI_RESET))
 
     @classmethod
     def create_db(cls, db_name):
@@ -105,7 +101,7 @@ class Database:
 
 
 if __name__ == "__main__":
-    db_name = env["MYSQL_DEV_DB"]
+    db_name = const.MYSQL_DEV_DB
 
     create_table = """CREATE TABLE `test_table` (
                   `id` varchar(10) NOT NULL PRIMARY KEY ,
