@@ -1,15 +1,13 @@
 import mysql.connector
 from mysql.connector import errorcode
-from dotenv import dotenv_values
 import MySQLdb
-
-env = dotenv_values(".env")
+import const
 
 config = {
-    "host": env["MYSQL_HOST"],
-    "user": env["MYSQL_USER"],
-    "password": env["MYSQL_PASSWORD"],
-    "database": env["MYSQL_TEST_DB"],
+    "host": const.MYSQL_HOST,
+    "user": const.MYSQL_USER,
+    "password": const.MYSQL_PASSWORD,
+    "database": const.MYSQL_TEST_DB,
 }
 
 
