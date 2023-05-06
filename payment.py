@@ -2,7 +2,6 @@ from enum import IntEnum, auto
 import sqlalchemy as sql
 from accessor import Accessor
 
-
 class PaymentOption(IntEnum):
     CREATE = auto()
     READ = auto()
