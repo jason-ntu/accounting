@@ -3,7 +3,6 @@ import sqlalchemy as sql
 from accessor import Accessor, ExecutionStatus as es
 import const
 
-
 class PaymentOption(IntEnum):
     CREATE = auto()
     READ = auto()
