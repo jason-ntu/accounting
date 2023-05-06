@@ -13,5 +13,6 @@ class Location:
     def delete():
         pass
 
-    def start():
+    @classmethod
+    def start(cls):
         pass

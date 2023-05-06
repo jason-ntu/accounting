@@ -1,19 +1,22 @@
 from enum import IntEnum, auto
 import utils
 
+
 class BudgetOption(IntEnum):
     READ = auto()
     UPDATE = auto()
     BACK = auto()
 
-class BudgetPage:
 
-    def show(self):
+class BudgetPage:
+    @staticmethod
+    def show():
         print("%d: 查看總預算" % BudgetOption.READ)
         print("%d: 修改總預算" % BudgetOption.UPDATE)
         print("%d: 回到上一頁" % BudgetOption.BACK)
 
-    def choose(self):
+    @staticmethod
+    def choose():
         while True:
             try:
                 option = BudgetOption(int(input()))
@@ -22,36 +25,44 @@ class BudgetPage:
                 print("請輸入 1 到 3 之間的數字:")
         return option
 
-    def execute(self, option):
+    @classmethod
+    def execute(cls, option):
         if option is BudgetOption.READ:
-            self.read()
-        elif option is BudgetOption.UPDATE:
-            self.update()
+            cls.read()
+        else:
+            cls.update()
 
-    def read(self):
+    @staticmethod
+    def read():
         budget = utils.db_read("""SELECT `amount` FROM `budget_table` WHERE id='1'""")
-        return budget[0]['amount']
+        return budget[0]["amount"]
 
-    def update(self):
-        self.hint_update()
+    @classmethod
+    def update(cls):
+        cls.hint_update()
         while True:
             try:
                 newAmount = float(input())
-                return utils.db_write("""UPDATE `budget_table` SET `amount`='%f' WHERE id='1'""" % newAmount)
+                return utils.db_write(
+                    """UPDATE `budget_table` SET `amount`='%f' WHERE id='1'"""
+                    % newAmount
+                )
             except ValueError:
                 print("請輸入數字:")
 
-    def hint_update(self):
+    @staticmethod
+    def hint_update():
         print("請輸入新的總預算:")
 
-    def start(self):
+    @classmethod
+    def start(cls):
         while True:
-            self.show()
-            option = self.choose()
+            cls.show()
+            option = cls.choose()
             if option is BudgetOption.BACK:
                 return
-            self.execute(option)
+            cls.execute(option)
 
-if __name__ == '__main__':  # pragma: no cover
-    budgetPage = BudgetPage()
-    budgetPage.start()
+
+if __name__ == "__main__":  # pragma: no cover
+    BudgetPage.start()

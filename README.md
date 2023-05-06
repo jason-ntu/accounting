@@ -4,7 +4,7 @@
 
 Install dependencies:
 ```
-pip/pip3 install -r requirements.txt
+make install
 ```
 
 Start the program:

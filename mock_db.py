@@ -1,18 +1,30 @@
 from unittest import TestCase
 import mysql.connector
-from mysql.connector import errorcode
+import sqlalchemy as db
 from mock import patch
 import utils
 from dotenv import dotenv_values
 
 env = dotenv_values(".env")
 
+MYSQL_DIALECT = env['MYSQL_DIALECT']
+MYSQL_DRIVER = env['MYSQL_DRIVER']
+MYSQL_HOST = env['MYSQL_HOST']
 MYSQL_USER = env['MYSQL_USER']
 MYSQL_PASSWORD = env['MYSQL_PASSWORD']
 MYSQL_DB = env['MYSQL_DB']
-MYSQL_HOST = env['MYSQL_HOST']
 MYSQL_PORT = env['MYSQL_PORT']
+
 INITIAL_BUDGET = env['INITIAL_BUDGET']
+
+# class MockDB(TestCase):
+
+#     @classmethod
+#     def setUpClass(cls):
+#         url = "%s+%s://%s:%s@%s:%s/%s" % (MYSQL_DIALECT, MYSQL_DRIVER, MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, MYSQL_DB)
+#         engine = db.create_engine(url)
+#         connection = engine.connect()
+#         metadata = db.MetaData()
 
 class MockDB(TestCase):
 

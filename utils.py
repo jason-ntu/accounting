@@ -6,11 +6,12 @@ import MySQLdb
 env = dotenv_values(".env")
 
 config = {
-    'host': env['MYSQL_HOST'],
-    'user': env['MYSQL_USER'],
-    'password': env['MYSQL_PASSWORD'],
-    'database': env['MYSQL_DB']
+    "host": env["MYSQL_HOST"],
+    "user": env["MYSQL_USER"],
+    "password": env["MYSQL_PASSWORD"],
+    "database": env["MYSQL_DB"],
 }
+
 
 def db_read(query, params=None):
     try:
@@ -46,7 +47,8 @@ def db_read(query, params=None):
             cursor.close()
             cnx.close()
             print("Connection closed")
-       
+
+
 def db_write(query, params=None):
     try:
         cnx = mysql.connector.connect(**config)
