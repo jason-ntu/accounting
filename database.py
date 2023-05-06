@@ -58,6 +58,12 @@ def initialize(config):
                 sql.Column('category', sql.Enum(FixedIECategory), nullable=False)
     )
 
+    budget = sql.Table('Budget', metadata,
+                       sql.Column(
+                           'id', sql.Integer(), nullable=False, primary_key=True),
+                       sql.Column(
+                           'amount', sql.Float(), nullable=False)
+                       )
     metadata.create_all(engine)
 
     conn.execute(budget.insert().values(id=1, amount=0))

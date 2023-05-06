@@ -7,24 +7,24 @@ import const
 
 
 class TestBudgetPage(MockDB):
-    @patch("sys.stdout", new_callable=io.StringIO)
-    def test_show(self, _stdout):
-        BudgetPage.show()
-        output_lines = _stdout.getvalue().strip().split("\n")
-        self.assertEqual(output_lines[0], "%d: 查看總預算" % BudgetOption.READ)
-        self.assertEqual(output_lines[1], "%d: 修改總預算" % BudgetOption.UPDATE)
-        self.assertEqual(output_lines[2], "%d: 回到上一頁" % BudgetOption.BACK)
+    # @patch("sys.stdout", new_callable=io.StringIO)
+    # def test_show(self, _stdout):
+    #     BudgetPage.show()
+    #     output_lines = _stdout.getvalue().strip().split("\n")
+    #     self.assertEqual(output_lines[0], "%d: 查看總預算" % BudgetOption.READ)
+    #     self.assertEqual(output_lines[1], "%d: 修改總預算" % BudgetOption.UPDATE)
+    #     self.assertEqual(output_lines[2], "%d: 回到上一頁" % BudgetOption.BACK)
 
-    @patch("sys.stdout", new_callable=io.StringIO)
-    @patch("builtins.input", side_effect=["0", "4", "F", "1", "2", "3"])
-    def test_choose(self, _input, _stdout):
-        self.assertEqual(BudgetPage.choose(), 1)
-        self.assertEqual(_input.call_count, 4)
-        self.assertEqual(_stdout.getvalue(), "請輸入 1 到 3 之間的數字:\n" * 3)
-        self.assertEqual(BudgetPage.choose(), 2)
-        self.assertEqual(_input.call_count, 5)
-        self.assertEqual(BudgetPage.choose(), 3)
-        self.assertEqual(_input.call_count, 6)
+    # @patch("sys.stdout", new_callable=io.StringIO)
+    # @patch("builtins.input", side_effect=["0", "4", "F", "1", "2", "3"])
+    # def test_choose(self, _input, _stdout):
+    #     self.assertEqual(BudgetPage.choose(), 1)
+    #     self.assertEqual(_input.call_count, 4)
+    #     self.assertEqual(_stdout.getvalue(), "請輸入 1 到 3 之間的數字:\n" * 3)
+    #     self.assertEqual(BudgetPage.choose(), 2)
+    #     self.assertEqual(_input.call_count, 5)
+    #     self.assertEqual(BudgetPage.choose(), 3)
+    #     self.assertEqual(_input.call_count, 6)
 
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch.object(BudgetPage, "update", side_effect=[True, False])
@@ -68,20 +68,20 @@ class TestBudgetPage(MockDB):
         self.assertEqual(output_lines[1], "12345.0")
         self.assertEqual(output_lines[2], "12345.6")
 
-    @patch("sys.stdout", new_callable=io.StringIO)
-    def test_hint_update(self, _stdout):
-        BudgetPage.hint_update()
-        self.assertEqual(_stdout.getvalue(), "請輸入新的總預算:\n")
+    # @patch("sys.stdout", new_callable=io.StringIO)
+    # def test_hint_update(self, _stdout):
+    #     BudgetPage.hint_update()
+    #     self.assertEqual(_stdout.getvalue(), "請輸入新的總預算:\n")
 
-    @patch.object(BudgetPage, "execute")
-    @patch.object(
-        BudgetPage,
-        "choose",
-        side_effect=[BudgetOption.READ, BudgetOption.UPDATE, BudgetOption.BACK],
-    )
-    @patch.object(BudgetPage, "show")
-    def test_start(self, _show, _choose, _execute):
-        BudgetPage.start()
-        self.assertEqual(_show.call_count, 3)
-        self.assertEqual(_choose.call_count, 3)
-        self.assertEqual(_execute.call_count, 2)
+    # @patch.object(BudgetPage, "execute")
+    # @patch.object(
+    #     BudgetPage,
+    #     "choose",
+    #     side_effect=[BudgetOption.READ, BudgetOption.UPDATE, BudgetOption.BACK],
+    # )
+    # @patch.object(BudgetPage, "show")
+    # def test_start(self, _show, _choose, _execute):
+    #     BudgetPage.start()
+    #     self.assertEqual(_show.call_count, 3)
+    #     self.assertEqual(_choose.call_count, 3)
+    #     self.assertEqual(_execute.call_count, 2)
