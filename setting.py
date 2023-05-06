@@ -1,4 +1,5 @@
 from enum import IntEnum, auto
+from accessor import Accessor
 from budget import BudgetPage
 from fixedIE import FixedIE
 from category import Category
@@ -15,7 +16,7 @@ class SettingOption(IntEnum):
     BACK = auto()
 
 
-class SettingPage:
+class SettingPage():
     @staticmethod
     def show():
         print("%d: 查看/修改總預算" % SettingOption.BUDGET)
@@ -36,7 +37,7 @@ class SettingPage:
         return option
 
     @staticmethod
-    def enter(option):
+    def execute(option):
         if option is SettingOption.BUDGET:
             BudgetPage.start()
         elif option is SettingOption.FIXEDIE:
@@ -55,7 +56,7 @@ class SettingPage:
             option = cls.choose()
             if option is SettingOption.BACK:
                 return
-            cls.enter(option)
+            cls.execute(option)
 
 
 if __name__ == "__main__":  # pragma: no cover

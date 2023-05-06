@@ -43,7 +43,7 @@ class TestSetting(TestCase):
     @patch.object(Category, "start")
     @patch.object(FixedIE, "start")
     @patch.object(BudgetPage, "start")
-    def test_enter(
+    def test_execute(
         self,
         _budget_start,
         _fixedIE_start,
@@ -51,18 +51,18 @@ class TestSetting(TestCase):
         _balance_start,
         _location_start,
     ):
-        SettingPage.enter(SettingOption.BUDGET)
+        SettingPage.execute(SettingOption.BUDGET)
         self.assertEqual(_budget_start.call_count, 1)
-        SettingPage.enter(SettingOption.FIXEDIE)
+        SettingPage.execute(SettingOption.FIXEDIE)
         self.assertEqual(_fixedIE_start.call_count, 1)
-        SettingPage.enter(SettingOption.CATEGORY)
+        SettingPage.execute(SettingOption.CATEGORY)
         self.assertEqual(_category_start.call_count, 1)
-        SettingPage.enter(SettingOption.BALANCE)
+        SettingPage.execute(SettingOption.BALANCE)
         self.assertEqual(_balance_start.call_count, 1)
-        SettingPage.enter(SettingOption.LOCATION)
+        SettingPage.execute(SettingOption.LOCATION)
         self.assertEqual(_location_start.call_count, 1)
 
-    @patch.object(SettingPage, "enter")
+    @patch.object(SettingPage, "execute")
     @patch.object(
         SettingPage, "choose", side_effect=[SettingOption.BUDGET, SettingOption.BACK]
     )

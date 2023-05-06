@@ -1,6 +1,6 @@
 from enum import IntEnum, auto
 import sqlalchemy as sql
-import mysqlConfig as cfg
+from accessor import Accessor
 
 
 class BudgetOption(IntEnum):
@@ -9,19 +9,9 @@ class BudgetOption(IntEnum):
     BACK = auto()
 
 
-class BudgetPage:
+class BudgetPage(Accessor):
 
-    @classmethod
-    def setUp_connection_and_table(cls):
-        engine = sql.create_engine(cfg.dev['url'])
-        cls.conn = engine.connect()
-        metadata = sql.MetaData()
-        cls.table = sql.Table('Budget', metadata, mysql_autoload=True, autoload_with=engine)
-
-    @classmethod
-    def tearDown_connection(cls):
-        cls.conn.commit()
-        cls.conn.close()
+    table_name = "Budget"
 
     @staticmethod
     def show():
