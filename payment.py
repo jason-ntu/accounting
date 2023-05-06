@@ -1,6 +1,6 @@
 from enum import IntEnum, auto
-import utils
-
+import sqlalchemy as sql
+import mysqlConfig as cfg
 
 class PaymentOption(IntEnum):
     CREATE = auto()
@@ -25,6 +25,19 @@ class Payment:
 
 
 class PaymentPage:
+
+    @classmethod
+    def setUp_connection_and_table(cls):
+        engine = sql.create_engine(cfg.dev['url'])
+        cls.conn = engine.connect()
+        metadata = sql.MetaData()
+        cls.table = sql.Table('Budget', metadata, mysql_autoload=True, autoload_with=engine)
+    
+    @classmethod
+    def tearDown_connection(cls):
+        cls.conn.commit()
+        cls.conn.close()
+
     @staticmethod
     def show():
         print("%d: 新增支付方式" % PaymentOption.READ)
@@ -72,10 +85,11 @@ class PaymentPage:
                 break
             except ValueError:
                 print("請輸入 1 到 5 之間的數字:")
-        return utils.create(
-            """INSERT INTO `payment_table` (`name`, `balance`, `category`) VALUES ('%s', '%f', '%s')"""
-            % (name, balance, category.name)
-        )
+        cls.setUp_connection_and_table()
+        query = cls.table.insert().values(name=name, balance=balance,category=category)
+        rowsAffected = cls.conn.execute(query).rowcount
+        cls.tearDown_connection()
+        return rowsAffected == 1
 
     @staticmethod
     def hint_create_name():

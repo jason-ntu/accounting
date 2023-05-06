@@ -1,5 +1,4 @@
-# TEST_FILE_NAME := utilsTest.py settingTest.py budgetTest.py paymentTest.py
-TEST_FILE_NAME := budgetTest.py
+TEST_FILE_NAME := settingTest.py budgetTest.py paymentTest.py
 RUN_FILE_NAME := setting.py
 CACHE := .coverage htmlcov coverage_html_report
 

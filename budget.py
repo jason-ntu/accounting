@@ -1,6 +1,5 @@
 from enum import IntEnum, auto
 import sqlalchemy as sql
-import utils
 import mysqlConfig as cfg
 
 
@@ -11,6 +10,18 @@ class BudgetOption(IntEnum):
 
 
 class BudgetPage:
+
+    @classmethod
+    def setUp_connection_and_table(cls):
+        engine = sql.create_engine(cfg.dev['url'])
+        cls.conn = engine.connect()
+        metadata = sql.MetaData()
+        cls.table = sql.Table('Budget', metadata, mysql_autoload=True, autoload_with=engine)
+
+    @classmethod
+    def tearDown_connection(cls):
+        cls.conn.commit()
+        cls.conn.close()
 
     @staticmethod
     def show():
@@ -35,17 +46,12 @@ class BudgetPage:
         else:
             cls.update()
 
-    @staticmethod
-    def read():
-        url = cfg.dev['url']
-        engine = sql.create_engine(url)
-        conn = engine.connect()
-        metadata = sql.MetaData()
-        budget = sql.Table(
-            'Budget', metadata, mysql_autoload=True, autoload_with=engine)
-        query = sql.select(budget.c.amount).where(budget.c.id == 1)
-        result = conn.execute(query).first()
-        conn.close()
+    @classmethod
+    def read(cls):
+        cls.setUp_connection_and_table()
+        query = sql.select(cls.table.c.amount)
+        result = cls.conn.execute(query).first()
+        cls.tearDown_connection()
         return result._asdict()['amount']
 
     @classmethod
@@ -54,12 +60,14 @@ class BudgetPage:
         while True:
             try:
                 newAmount = float(input())
-                return utils.create(
-                    """UPDATE `budget_table` SET `amount`='%f' WHERE id='1'"""
-                    % newAmount
-                )
+                break
             except ValueError:
                 print("請輸入數字:")
+        cls.setUp_connection_and_table()
+        query = cls.table.update().values(amount=newAmount).where(cls.table.c.id == 1)
+        rowsAffected = cls.conn.execute(query).rowcount
+        cls.tearDown_connection()
+        return rowsAffected == 1
 
     @staticmethod
     def hint_update():
