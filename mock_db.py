@@ -8,6 +8,15 @@ from income import FixedIECategory
 from sqlalchemy_utils import database_exists, create_database, drop_database
 
 
+# class MockDB(TestCase):
+
+#     @classmethod
+#     def setUpClass(cls):
+#         url = "%s+%s://%s:%s@%s:%s/%s" % (MYSQL_DIALECT, MYSQL_DRIVER, MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, MYSQL_DB)
+#         engine = db.create_engine(url)
+#         connection = engine.connect()
+#         metadata = db.MetaData()
+
 class MockDB(TestCase):
 
     config = cfg.test
