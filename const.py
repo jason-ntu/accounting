@@ -1,4 +1,5 @@
 from dotenv import dotenv_values
+
 env = dotenv_values(".env")
 
 MYSQL_DIALECT = env["MYSQL_DIALECT"]

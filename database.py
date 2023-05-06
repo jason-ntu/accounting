@@ -3,12 +3,6 @@ from mysql.connector import errorcode
 import const
 import sqlalchemy as db
 
-# url = "%s+%s://%s:%s@%s:%s/%s" % (MYSQL_DIALECT, MYSQL_DRIVER,MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, MYSQL_DEV_DB)
-# engine = db.create_engine(url)
-# connection = engine.connect()
-# metadata = db.MetaData()
-# census = db.Table('census', metadata, autoload=True, autoload_with=engine)
-
 config = {
     "user": const.MYSQL_USER,
     "host": const.MYSQL_HOST,
@@ -20,12 +14,8 @@ class Database:
     @classmethod
     def setup(cls, db_name=None):
         try:
-            if db_name == None:
-                # Connect to the MySQL server
-                cls.connection = mysql.connector.connect(**config)
-            else:
-                # Connect to the specified database
-                cls.connection = mysql.connector.connect(**config, database=db_name)
+            # Connect to the MySQL server or some database if specified
+            cls.connection = mysql.connector.connect(**config, database=db_name)
             # Create a cursor object that returns query results as dictionaries
             cls.cursor = cls.connection.cursor(dictionary=True)
             print("%s...Connection created.%s" %
@@ -59,13 +49,15 @@ class Database:
                 "CREATE DATABASE `%s` DEFAULT CHARACTER SET 'utf8';" % (db_name)
             )
             print("%s created." % db_name)
+            result = True
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_DB_CREATE_EXISTS:
-                print("%s already exists. Please provide another name." % (db_name))
+                print("%s already exists. Please manually drop it or provide another name." % (db_name))
             else:
                 print("Failed creating database: {}".format(err))
+            result = False
         cls.teardown()
-        return True
+        return result
 
     @classmethod
     def drop_db(cls, db_name):
@@ -103,17 +95,31 @@ class Database:
 if __name__ == "__main__":
     db_name = const.MYSQL_DEV_DB
 
-    create_table = """CREATE TABLE `test_table` (
+    create_table = """CREATE TABLE `dev_table` (
                   `id` varchar(10) NOT NULL PRIMARY KEY ,
                   `text` text NOT NULL,
                   `int` int NOT NULL
                 )"""
 
-    insert_table = """INSERT INTO `test_table` (`id`, `text`, `int`) VALUES
+    insert_table = """INSERT INTO `dev_table` (`id`, `text`, `int`) VALUES
                             ('1', 'test_text', 1),
                             ('2', 'test_text_2',2)"""
 
-    Database.create_db(db_name)
+    while not Database.create_db(db_name):
+        Database.drop_db(db_name)
     Database.write_db(db_name, create_table)
-    Database.write_db(db_name, insert_table)
-    Database.drop_db(db_name)
+    # Database.write_db(db_name, insert_table)
+
+    # Connect the database
+    url = "%s+%s://%s:%s@%s:%s/%s" % (const.MYSQL_DIALECT, const.MYSQL_DRIVER,
+                                      const.MYSQL_USER, const.MYSQL_PASSWORD, const.MYSQL_HOST, const.MYSQL_PORT, const.MYSQL_DEV_DB)
+    engine = db.create_engine(url)  
+    connection = engine.connect()
+
+    # Access the table
+    metadata = db.MetaData()
+    dev_table = db.Table('dev_table', metadata, mysql_autoload=True, autoload_with=engine)
+
+    print(dev_table.columns.keys())
+
+    # Database.drop_db(db_name)
