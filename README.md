@@ -21,3 +21,8 @@ Show coverage:
 ```
 make coverage
 ```
+
+Initialize a mysql database for dev:
+```
+make database
+```

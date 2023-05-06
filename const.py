@@ -12,6 +12,9 @@ MYSQL_PROD_DB = env["MYSQL_PROD_DB"]
 MYSQL_DEV_DB = env["MYSQL_DEV_DB"]
 MYSQL_TEST_DB = env["MYSQL_TEST_DB"]
 
+DEV_DB_URL = "%s+%s://%s:%s@%s:%s/%s" % (MYSQL_DIALECT, MYSQL_DRIVER,
+                                         MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, MYSQL_DEV_DB)
+
 ANSI_BLACK = "\033[30m"
 ANSI_RED = "\033[31m"
 ANSI_GREEN = "\033[32m"

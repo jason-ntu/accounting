@@ -22,5 +22,8 @@ install:
 requirements:
 	@pip3 freeze > requirements.txt
 
+database:
+	@python3 database.py
+
 clean:
 	@$(RM) -r $(CACHE)
