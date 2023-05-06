@@ -68,7 +68,6 @@ class MockDB(TestCase):
 
         cls.mock_db_config = patch.dict(cfg.dev, cfg.test)
 
-
     @classmethod
     def tearDownClass(cls):
         engine = sql.create_engine(cls.config['url'])
