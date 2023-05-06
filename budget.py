@@ -14,6 +14,18 @@ class BudgetPage(Accessor):
 
     table_name = "Budget"
 
+    @classmethod
+    def setUp_connection_and_table(cls):
+        engine = sql.create_engine(cfg.dev['url'])
+        cls.conn = engine.connect()
+        metadata = sql.MetaData()
+        cls.table = sql.Table('Budget', metadata, mysql_autoload=True, autoload_with=engine)
+
+    @classmethod
+    def tearDown_connection(cls):
+        cls.conn.commit()
+        cls.conn.close()
+
     @staticmethod
     def show():
         print("%d: 查看總預算" % BudgetOption.READ)
