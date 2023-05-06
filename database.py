@@ -3,13 +3,12 @@ import sqlalchemy
 from sqlalchemy_utils import database_exists, create_database, drop_database
 
 
-def create_dev_db():
-    engine = sqlalchemy.create_engine(const.DEV_DB_URL)
-    if not database_exists(engine.url):
-        create_database(engine.url)
+def create_db(url):
+    if not database_exists(url):
+        create_database(url)
 
-def init_dev_deb():
-    engine = sqlalchemy.create_engine(const.DEV_DB_URL)
+def init_db(url):
+    engine = sqlalchemy.create_engine(url)
     conn = engine.connect()
     metadata = sqlalchemy.MetaData()
 
@@ -42,11 +41,11 @@ def init_dev_deb():
 
     conn.commit()
 
-def drop_dev_db():
-    engine = sqlalchemy.create_engine(const.DEV_DB_URL)
-    if database_exists(engine.url):
-        drop_database(engine.url)
+def drop_db(url):
+    if database_exists(url):
+        drop_database(url)
+
 
 if __name__ == "__main__":
-    create_dev_db()
-    init_dev_deb()
+    create_db(const.DEV_DB_URL)
+    init_db(const.DEV_DB_URL)

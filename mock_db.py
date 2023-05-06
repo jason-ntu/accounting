@@ -9,8 +9,6 @@ from dotenv import dotenv_values
 
 env = dotenv_values(".env")
 
-MYSQL_DIALECT = env["MYSQL_DIALECT"]
-MYSQL_DRIVER = env["MYSQL_DRIVER"]
 MYSQL_HOST = env["MYSQL_HOST"]
 MYSQL_USER = env["MYSQL_USER"]
 MYSQL_PASSWORD = env["MYSQL_PASSWORD"]
@@ -18,6 +16,7 @@ MYSQL_TEST_DB = env["MYSQL_TEST_DB"]
 MYSQL_PORT = env["MYSQL_PORT"]
 
 class MockDB(TestCase):
+    
     @classmethod
     def setUpClass(cls):
         cnx = mysql.connector.connect(
