@@ -1,7 +1,8 @@
 import mysql.connector
 from mysql.connector import errorcode
 import const
-import sqlalchemy as db
+import sqlalchemy
+from sqlalchemy_utils import database_exists, create_database, drop_database
 
 config = {
     "user": const.MYSQL_USER,
@@ -11,13 +12,17 @@ config = {
 }
 
 class Database:
+
+    def __init__(self, db_name):
+        self.create_db(db_name)
+
     @classmethod
     def setup(cls, db_name=None):
         try:
             # Connect to the MySQL server or some database if specified
-            cls.connection = mysql.connector.connect(**config, database=db_name)
+            cls.conn = mysql.connector.connect(**config, database=db_name)
             # Create a cursor object that returns query results as dictionaries
-            cls.cursor = cls.connection.cursor(dictionary=True)
+            cls.cursor = cls.conn.cursor(dictionary=True)
             print("%s...Connection created.%s" %
                   (const.ANSI_BLACK, const.ANSI_RESET))
             return True
@@ -32,11 +37,11 @@ class Database:
 
     @classmethod
     def teardown(cls):
-        if cls.connection.is_connected():
+        if cls.conn.is_connected():
             # Close the cursor
             cls.cursor.close()
             # Disconnect from the MySQL server
-            cls.connection.close()
+            cls.conn.close()
             print("%s...Connection closed.%s" %
                   (const.ANSI_BLACK, const.ANSI_RESET))
 
@@ -74,52 +79,38 @@ class Database:
         cls.teardown()
         return True
 
-    @classmethod
-    def write_db(cls, db_name, query, params=None):
-        if not cls.setup(db_name=db_name):
-            return False
-        try:
-            cls.cursor.execute(query, params)
-            cls.connection.commit()
-            print("write succeeded.")
-            result = True
-        except mysql.connector.Error as err:
-            print(err)
-            cls.connection.rollback()
-            result = False
-        finally:
-            cls.teardown()
-            return result
-
 
 if __name__ == "__main__":
-    db_name = const.MYSQL_DEV_DB
 
-    create_table = """CREATE TABLE `dev_table` (
-                  `id` varchar(10) NOT NULL PRIMARY KEY ,
-                  `text` text NOT NULL,
-                  `int` int NOT NULL
-                )"""
+    engine = sqlalchemy.create_engine("%s+%s://%s:%s@%s:%s/%s" % (const.MYSQL_DIALECT, const.MYSQL_DRIVER,
+                                      const.MYSQL_USER, const.MYSQL_PASSWORD, const.MYSQL_HOST, const.MYSQL_PORT, const.MYSQL_DEV_DB))  
+    if not database_exists(engine.url):
+        create_database(engine.url)
 
-    insert_table = """INSERT INTO `dev_table` (`id`, `text`, `int`) VALUES
-                            ('1', 'test_text', 1),
-                            ('2', 'test_text_2',2)"""
+    conn = engine.connect()
+    metadata = sqlalchemy.MetaData()
 
-    while not Database.create_db(db_name):
-        Database.drop_db(db_name)
-    Database.write_db(db_name, create_table)
-    # Database.write_db(db_name, insert_table)
+    sqlalchemy.Table('Student', metadata,
+                       sqlalchemy.Column('Id', sqlalchemy.Integer(), primary_key=True),
+                       sqlalchemy.Column('Name', sqlalchemy.String(255), nullable=False),
+                       sqlalchemy.Column('Major', sqlalchemy.String(255), default="Math"),
+                       sqlalchemy.Column('Pass', sqlalchemy.Boolean(), default=True)
+                       )
 
-    # Connect the database
-    url = "%s+%s://%s:%s@%s:%s/%s" % (const.MYSQL_DIALECT, const.MYSQL_DRIVER,
-                                      const.MYSQL_USER, const.MYSQL_PASSWORD, const.MYSQL_HOST, const.MYSQL_PORT, const.MYSQL_DEV_DB)
-    engine = db.create_engine(url)  
-    connection = engine.connect()
+    metadata.create_all(engine)
 
-    # Access the table
-    metadata = db.MetaData()
-    dev_table = db.Table('dev_table', metadata, mysql_autoload=True, autoload_with=engine)
+    student = sqlalchemy.Table('Student', metadata, mysql_autoload=True,autoload_with=engine)
 
-    print(dev_table.columns.keys())
+    conn.execute(student.insert().values(Id=1, Name='Matthew', Major="English", Pass=True))
 
-    # Database.drop_db(db_name)
+    values_list = [{'Id':'2', 'Name':'Nisha', 'Major':"Science", 'Pass':False},
+                {'Id':'3', 'Name':'Natasha', 'Major':"Math", 'Pass':True},
+                {'Id':'4', 'Name':'Ben', 'Major':"English", 'Pass':False}]
+    conn.execute(student.insert().values(values_list))
+
+    output = conn.execute(student.select()).fetchall()
+    print(output)
+
+    conn.commit()
+
+    drop_database(engine.url)
