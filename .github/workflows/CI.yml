@@ -26,7 +26,7 @@ jobs:
         image: mysql:5.7.32
         env:
           MYSQL_ROOT_PASSWORD: mysql
-          MYSQL_DATABASE: testdb
+          MYSQL_DATABASE: test_accounting_book
           MYSQL_USER: root
         ports:
           - 3306:3306

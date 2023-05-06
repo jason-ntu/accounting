@@ -1,24 +1,3 @@
-from dotenv import dotenv_values
-
-env = dotenv_values(".env")
-
-MYSQL_DIALECT = env["MYSQL_DIALECT"]
-MYSQL_DRIVER = env["MYSQL_DRIVER"]
-MYSQL_HOST = env["MYSQL_HOST"]
-MYSQL_USER = env["MYSQL_USER"]
-MYSQL_PASSWORD = env["MYSQL_PASSWORD"]
-MYSQL_PROD_PORT = env["MYSQL_PROD_PORT"]
-MYSQL_DEV_PORT = env["MYSQL_DEV_PORT"]
-MYSQL_TEST_PORT = env["MYSQL_TEST_PORT"]
-MYSQL_DB = env["MYSQL_DB"]
-
-PROD_DB_URL = "%s+%s://%s:%s@%s:%s/%s" % (MYSQL_DIALECT, MYSQL_DRIVER,
-                                          MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PROD_PORT, MYSQL_DB)
-DEV_DB_URL = "%s+%s://%s:%s@%s:%s/%s" % (MYSQL_DIALECT, MYSQL_DRIVER,
-                                         MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_DEV_PORT, MYSQL_DB)
-TEST_DB_URL = "%s+%s://%s:%s@%s:%s/%s" % (MYSQL_DIALECT, MYSQL_DRIVER,
-                                         MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_TEST_PORT, MYSQL_DB)
-
 ANSI_BLACK = "\033[30m"
 ANSI_RED = "\033[31m"
 ANSI_GREEN = "\033[32m"
@@ -28,5 +7,3 @@ ANSI_MAGENTA = "\033[35m"
 ANSI_CYAN = "\033[36m"
 ANSI_WHITE = "\033[37m"
 ANSI_RESET = "\033[0m"
-
-INITIAL_BUDGET=10000.00

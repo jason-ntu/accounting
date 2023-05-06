@@ -1,119 +1,62 @@
 from unittest import TestCase
-import mysql.connector
-import sqlalchemy as db
+import mysqlConfig as cfg
+import sqlalchemy as sql
 from mock import patch
-import utils
 import const
-from dotenv import dotenv_values
+from payment import PaymentCategory
+from sqlalchemy_utils import database_exists, create_database, drop_database
 
-
-env = dotenv_values(".env")
-
-MYSQL_HOST = env["MYSQL_HOST"]
-MYSQL_USER = env["MYSQL_USER"]
-MYSQL_PASSWORD = env["MYSQL_PASSWORD"]
-MYSQL_TEST_DB = env["MYSQL_TEST_DB"]
-MYSQL_PORT = env["MYSQL_PORT"]
 
 class MockDB(TestCase):
     
+    config = cfg.test
+
     @classmethod
     def setUpClass(cls):
-        cnx = mysql.connector.connect(
-            host=MYSQL_HOST, user=MYSQL_USER, password=MYSQL_PASSWORD, port=MYSQL_PORT
-        )
-        cursor = cnx.cursor(dictionary=True)
+        if database_exists(cls.config['url']):
+            drop_database(cls.config['url'])
+            print("%sOld database %s dropped.%s" %
+                  (const.ANSI_BLACK, cls.config['database'], const.ANSI_RESET))
+        create_database(cls.config['url'])
+        print("%sDatabase %s created.%s" %
+              (const.ANSI_BLACK, cls.config['database'], const.ANSI_RESET))
 
-        # drop database if it already exists
-        try:
-            cursor.execute("DROP DATABASE {}".format(MYSQL_TEST_DB))
-            cursor.close()
-            print("DB dropped")
-        except mysql.connector.Error as err:
-            if err.errno != 1008:
-                print(err)
+        engine = sql.create_engine(cls.config['url'])
+        conn = engine.connect()
+        metadata = sql.MetaData()
+        
+        budget = sql.Table('Budget', metadata,
+                         sql.Column(
+                             'id', sql.Integer(), nullable=False, primary_key=True),
+                         sql.Column(
+                             'amount', sql.Float(), nullable=False)
+                         )
+        
+        payment = sql.Table('Payment', metadata,
+                         sql.Column(
+                             'id', sql.Integer(), nullable=False, primary_key=True),
+                         sql.Column(
+                             'name', sql.String(50), nullable=False),
+                         sql.Column(
+                             'balance', sql.Float(), nullable=False),
+                         sql.Column(
+                             'category', sql.Enum(PaymentCategory), default=PaymentCategory.CASH, nullable=False)
+                         )
+        
+        metadata.create_all(engine)
 
-        cursor = cnx.cursor(dictionary=True)
-        try:
-            cursor.execute(
-                "CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(MYSQL_TEST_DB)
-            )
-        except mysql.connector.Error as err:
-            print("Failed creating database: {}".format(err))
-            exit(1)
-        cnx.database = MYSQL_TEST_DB
+        conn.execute(budget.insert().values(id=1, amount=10000.00))
 
-        createsTables = [
-            """CREATE TABLE `test_table` (
-                  `id` varchar(10) NOT NULL PRIMARY KEY ,
-                  `text` text NOT NULL,
-                  `int` int NOT NULL
-                )""",
-            """CREATE TABLE `budget_table` (
-                  `id` varchar(10) NOT NULL PRIMARY KEY ,
-                  `amount` FLOAT NOT NULL
-                )""",
-            """CREATE TABLE `payment_table` (
-                  `id` varchar(10) NOT NULL PRIMARY KEY ,
-                  `name` varchar(40) NOT NULL,
-                  `balance` FLOAT NOT NULL,
-                  `category` ENUM('CASH', 'DEBIT_CARD', 'CREDIT_CARD', 'ELECTRONIC', 'OTHER') NOT NULL
-                )""",
-        ]
+        conn.commit()
+        conn.close()
 
-        for createsTable in createsTables:
-            try:
-                cursor.execute(createsTable)
-                cnx.commit()
-            except mysql.connector.Error as err:
-                print(err)
-                cnx.rollback()
-
-        insertsTables = [
-            """INSERT INTO `test_table` (`id`, `text`, `int`) VALUES
-                            ('1', 'test_text', 1),
-                            ('2', 'test_text_2',2)""",
-            """INSERT INTO `budget_table` (`id`, `amount`) VALUES
-                            ('1', '%f')"""
-            % const.INITIAL_BUDGET,
-            """INSERT INTO `budget_table` (`id`, `amount`) VALUES
-                            ('1', '%f')"""
-            % const.INITIAL_BUDGET,
-        ]
-
-        for insertsTable in insertsTables:
-            try:
-                cursor.execute(insertsTable)
-                cnx.commit()
-            except mysql.connector.Error as err:
-                print(err)
-                cnx.rollback()
-        cursor.close()
-        cnx.close()
-
-        testconfig = {
-            "host": MYSQL_HOST,
-            "user": MYSQL_USER,
-            "password": MYSQL_PASSWORD,
-            "database": MYSQL_TEST_DB,
-        }
-        cls.mock_db_config = patch.dict(utils.config, testconfig)
+        cls.mock_db_config = patch.dict(cfg.dev, cfg.test)
+        
 
     @classmethod
     def tearDownClass(cls):
-        cnx = mysql.connector.connect(
-            host=MYSQL_HOST, user=MYSQL_USER, password=MYSQL_PASSWORD
-        )
-        cursor = cnx.cursor(dictionary=True)
-
-        # drop test database
-        try:
-            cursor.execute("DROP DATABASE {}".format(MYSQL_TEST_DB))
-            cnx.commit()
-            cursor.close()
-        except mysql.connector.Error as err:
-            print(
-                "Database {} does not exists. Dropping db failed".format(MYSQL_TEST_DB)
-            )
-            cnx.rollback()
-        cnx.close()
+        engine = sql.create_engine(cls.config['url'])
+        metadata = sql.MetaData()
+        metadata.drop_all(engine)
+        drop_database(cls.config['url'])
+        print("%sDatabase %s dropped.%s" %(const.ANSI_BLACK, cls.config['database'], const.ANSI_RESET))

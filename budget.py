@@ -1,5 +1,7 @@
 from enum import IntEnum, auto
+import sqlalchemy as sql
 import utils
+import mysqlConfig as cfg
 
 
 class BudgetOption(IntEnum):
@@ -9,6 +11,7 @@ class BudgetOption(IntEnum):
 
 
 class BudgetPage:
+
     @staticmethod
     def show():
         print("%d: 查看總預算" % BudgetOption.READ)
@@ -34,8 +37,16 @@ class BudgetPage:
 
     @staticmethod
     def read():
-        budget = utils.db_read("""SELECT `amount` FROM `budget_table` WHERE id='1'""")
-        return budget[0]["amount"]
+        url = cfg.dev['url']
+        engine = sql.create_engine(url)
+        conn = engine.connect()
+        metadata = sql.MetaData()
+        budget = sql.Table(
+            'Budget', metadata, mysql_autoload=True, autoload_with=engine)
+        query = sql.select(budget.c.amount).where(budget.c.id == 1)
+        result = conn.execute(query).first()
+        conn.close()
+        return result._asdict()['amount']
 
     @classmethod
     def update(cls):
@@ -43,7 +54,7 @@ class BudgetPage:
         while True:
             try:
                 newAmount = float(input())
-                return utils.db_write(
+                return utils.create(
                     """UPDATE `budget_table` SET `amount`='%f' WHERE id='1'"""
                     % newAmount
                 )

@@ -1,17 +1,17 @@
 import mysql.connector
 from mysql.connector import errorcode
 import MySQLdb
-import const
+import mysqlConfig as cfg
 
 config = {
-    "host": const.MYSQL_HOST,
-    "user": const.MYSQL_USER,
-    "password": const.MYSQL_PASSWORD,
-    "database": const.MYSQL_TEST_DB,
+    "host": "localhost",
+    "user": "root",
+    "password": "mysql",
+    "database": "none",
 }
 
 
-def db_read(query, params=None):
+def read(query, params=None):
     try:
         cnx = mysql.connector.connect(**config)
         cursor = cnx.cursor(dictionary=True)
@@ -47,7 +47,10 @@ def db_read(query, params=None):
             print("Connection closed")
 
 
-def db_write(query, params=None):
+def create(params=None):
+
+
+
     try:
         cnx = mysql.connector.connect(**config)
         cursor = cnx.cursor(dictionary=True)

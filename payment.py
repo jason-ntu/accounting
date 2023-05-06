@@ -72,7 +72,7 @@ class PaymentPage:
                 break
             except ValueError:
                 print("請輸入 1 到 5 之間的數字:")
-        return utils.db_write(
+        return utils.create(
             """INSERT INTO `payment_table` (`name`, `balance`, `category`) VALUES ('%s', '%f', '%s')"""
             % (name, balance, category.name)
         )
