@@ -4,11 +4,11 @@ run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     types: [opened, reopened, synchronize]
     branches:
-      - master
+      - main
 
 jobs:
   # Label of the unit test
