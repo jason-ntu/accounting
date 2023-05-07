@@ -4,11 +4,12 @@ import sqlalchemy as sql
 from mock import patch
 import const
 from payment import PaymentCategory
+from income import FixedIECategory
 from sqlalchemy_utils import database_exists, create_database, drop_database
 
 
 class MockDB(TestCase):
-    
+
     config = cfg.test
 
     @classmethod
@@ -24,14 +25,14 @@ class MockDB(TestCase):
         engine = sql.create_engine(cls.config['url'])
         conn = engine.connect()
         metadata = sql.MetaData()
-        
+
         budget = sql.Table('Budget', metadata,
                          sql.Column(
                              'id', sql.Integer(), nullable=False, primary_key=True),
                          sql.Column(
                              'amount', sql.Float(), nullable=False)
                          )
-        
+
         payment = sql.Table('Payment', metadata,
                          sql.Column(
                              'id', sql.Integer(), nullable=False, primary_key=True),
@@ -42,7 +43,14 @@ class MockDB(TestCase):
                          sql.Column(
                              'category', sql.Enum(PaymentCategory), default=PaymentCategory.CASH, nullable=False)
                          )
-        
+
+        fixedIE = sql.Table('FixedIE', metadata,
+                        sql.Column('id', sql.Integer(), nullable=False, primary_key=True),
+                        sql.Column('name', sql.String(50), nullable=False),
+                        sql.Column('amount', sql.Float(), nullable=False),
+                        sql.Column('category', sql.Enum(FixedIECategory), nullable=False)
+        )
+
         metadata.create_all(engine)
 
         conn.execute(budget.insert().values(id=1, amount=10000.00))
@@ -51,7 +59,7 @@ class MockDB(TestCase):
         conn.close()
 
         cls.mock_db_config = patch.dict(cfg.dev, cfg.test)
-        
+
 
     @classmethod
     def tearDownClass(cls):

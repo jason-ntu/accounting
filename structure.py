@@ -1,5 +1,5 @@
 class Record:
-    direction: bool # 0: 'income' / 1: 'outcome'
+    direction: bool # 0: 'fixedIE' / 1: 'outcome'
     date: str # '2020-01-01'
     category: str # 'food'
     balanceType: str # 'Line pay'
