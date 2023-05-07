@@ -1,5 +1,5 @@
 from enum import IntEnum, auto
-
+from datetime import datetime
 class ViewRecordOption(IntEnum):
     TODAY = auto()
     WEEK = auto()
@@ -14,8 +14,8 @@ class ViewRecordPage:
     def show(self):
         print("%d: 查看本日紀錄" % ViewRecordOption.TODAY)
         print("%d: 查看本週紀錄" % ViewRecordOption.WEEK)
-        print("%d: 查看本月支出" % ViewRecordOption.MONTH)
-        print("%d: 查看指定時間支出" % ViewRecordOption.OTHER)
+        print("%d: 查看本月紀錄" % ViewRecordOption.MONTH)
+        print("%d: 查看指定時間紀錄" % ViewRecordOption.OTHER)
         print("%d: 回到上一頁" % ViewRecordOption.BACK)
 
     def choose(self):
@@ -28,6 +28,7 @@ class ViewRecordPage:
         return option
 
     def execute(self,option):
+        # 呼叫報表function？
         if option is ViewRecordOption.TODAY:
             self.viewToday()
         elif option is ViewRecordOption.WEEK:
@@ -49,7 +50,6 @@ class ViewRecordPage:
         pass
 
     def viewOther(self):  # pragma: no cover
-        # 新增一個頁面讓使用者輸入時間區段？
         pass
 
     def start(self):
