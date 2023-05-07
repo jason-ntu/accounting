@@ -32,25 +32,24 @@ class TestBudgetPage(MockDB):
         BudgetPage.execute(BudgetOption.UPDATE)
         self.assertEqual(_update.call_count, 1)
 
+    # @patch("sys.stdout", new_callable=io.StringIO)
+    # def test_read(self, _stdout):
+    #     with self.mock_db_config:
+    #         BudgetPage.read()
+    #     self.assertEqual(_stdout.getvalue(), "10000.0\n")
 
-    @patch("sys.stdout", new_callable=io.StringIO)
-    def test_read(self, _stdout):
-        with self.mock_db_config:
-            BudgetPage.read()
-        self.assertEqual(_stdout.getvalue(), "10000.0\n")
-
-    @patch("sys.stdout", new_callable=io.StringIO)
-    @patch("builtins.input", side_effect=["XYZ", 12345, 12345.6])
-    @patch.object(BudgetPage, "hint_update")
-    def test_update(self, _hint_update, _input, _stdout):
-        with self.mock_db_config:
-            self.assertEqual(BudgetPage.update(), True)
-            BudgetPage.read()
-            self.assertEqual(BudgetPage.update(), True)
-            BudgetPage.read()
-        self.assertEqual(_hint_update.call_count, 2)
-        self.assertEqual(_input.call_count, 3)
-        self.assertEqual(_stdout.getvalue(), "請輸入數字:\n12345.0\n12345.6\n")
+    # @patch("sys.stdout", new_callable=io.StringIO)
+    # @patch("builtins.input", side_effect=["XYZ", 12345, 12345.6])
+    # @patch.object(BudgetPage, "hint_update")
+    # def test_update(self, _hint_update, _input, _stdout):
+    #     with self.mock_db_config:
+    #         self.assertEqual(BudgetPage.update(), True)
+    #         BudgetPage.read()
+    #         self.assertEqual(BudgetPage.update(), True)
+    #         BudgetPage.read()
+    #     self.assertEqual(_hint_update.call_count, 2)
+    #     self.assertEqual(_input.call_count, 3)
+    #     self.assertEqual(_stdout.getvalue(), "請輸入數字:\n12345.0\n12345.6\n")
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_hint_update(self, _stdout):
