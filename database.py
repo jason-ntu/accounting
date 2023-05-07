@@ -51,8 +51,15 @@ def initialize(config):
                             'time', sql.String(30), default=datetime.today(), nullable=False)
                         )
 
+    fixedIE = sql.Table('FixedIE', metadata,
+                sql.Column('id', sql.Integer(), nullable=False, primary_key=True),
+                sql.Column('name', sql.String(50), nullable=False),
+                sql.Column('amount', sql.Float(), nullable=False),
+                sql.Column('category', sql.Enum(FixedIECategory), nullable=False)
+    )
+
     metadata.create_all(engine)
-    
+
     conn.execute(budget.insert().values(id=1, amount=0))
     conn.commit()
 
