@@ -4,11 +4,11 @@ run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     types: [opened, reopened, synchronize]
     branches:
-      - master
+      - main
 
 jobs:
   # Label of the unit test
@@ -26,7 +26,7 @@ jobs:
         image: mysql:5.7.32
         env:
           MYSQL_ROOT_PASSWORD: mysql
-          MYSQL_DATABASE: testdb
+          MYSQL_DATABASE: test_accounting_book
           MYSQL_USER: root
         ports:
           - 3306:3306

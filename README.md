@@ -4,7 +4,7 @@
 
 Install dependencies:
 ```
-pip/pip3 install -r requirements.txt
+make install
 ```
 
 Start the program:
@@ -20,4 +20,9 @@ make test
 Show coverage:
 ```
 make coverage
+```
+
+Initialize a mysql database for dev:
+```
+make database
 ```

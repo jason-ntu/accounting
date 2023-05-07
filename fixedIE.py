@@ -4,5 +4,6 @@ class FixedIE:
     def create():
         pass
 
-    def start():
+    @classmethod
+    def start(cls):
         pass
