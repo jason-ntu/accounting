@@ -39,14 +39,15 @@ class TestPaymentPage(MockDB):
     @patch.object(PaymentPage, 'read')
     @patch.object(PaymentPage, 'create')
     def test_execute(self, _create, _read, _update, _delete):
-        self.paymentPage.execute(PaymentOption.CREATE)
-        self.assertEqual(_create.call_count, 1)
-        self.paymentPage.execute(PaymentOption.READ)
-        self.assertEqual(_read.call_count, 1)
-        self.paymentPage.execute(PaymentOption.UPDATE)
-        self.assertEqual(_update.call_count, 1)
-        self.paymentPage.execute(PaymentOption.DELETE)
-        self.assertEqual(_delete.call_count, 1)
+        with self.mock_db_config:
+            self.paymentPage.execute(PaymentOption.CREATE)
+            self.assertEqual(_create.call_count, 1)
+            self.paymentPage.execute(PaymentOption.READ)
+            self.assertEqual(_read.call_count, 1)
+            self.paymentPage.execute(PaymentOption.UPDATE)
+            self.assertEqual(_update.call_count, 1)
+            self.paymentPage.execute(PaymentOption.DELETE)
+            self.assertEqual(_delete.call_count, 1)
     
     @patch('sys.stdout', new_callable=io.StringIO)
     def test_hint_create_name(self, _stdout):
