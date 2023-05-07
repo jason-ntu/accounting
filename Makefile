@@ -1,4 +1,4 @@
-TEST_FILE_NAME := utilsTest.py settingTest.py budgetTest.py paymentTest.py
+TEST_FILE_NAME := settingTest.py budgetTest.py paymentTest.py
 RUN_FILE_NAME := setting.py
 CACHE := .coverage htmlcov coverage_html_report
 
@@ -15,8 +15,14 @@ coverage:
 	@coverage report -m
 	@coverage html
 
+install:
+	@pip3 install -r requirements.txt
+
 requirements:
 	@pip3 freeze > requirements.txt
+
+database:
+	@python3 database.py
 
 clean:
 	@$(RM) -r $(CACHE)

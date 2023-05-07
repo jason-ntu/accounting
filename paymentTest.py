@@ -13,10 +13,10 @@ class TestPaymentPage(MockDB):
     def test_show(self, _stdout):
         self.paymentPage.show()
         output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(output_lines[0], "%d: 新增支付方式" % PaymentOption.READ)
+        self.assertEqual(output_lines[0], "%d: 新增支付方式" % PaymentOption.CREATE)
         self.assertEqual(output_lines[1], "%d: 查看支付方式" % PaymentOption.READ)
-        self.assertEqual(output_lines[2], "%d: 修改支付方式" % PaymentOption.READ)
-        self.assertEqual(output_lines[3], "%d: 刪除支付方式" % PaymentOption.UPDATE)
+        self.assertEqual(output_lines[2], "%d: 修改支付方式" % PaymentOption.UPDATE)
+        self.assertEqual(output_lines[3], "%d: 刪除支付方式" % PaymentOption.DELETE)
         self.assertEqual(output_lines[4], "%d: 回到上一頁" % PaymentOption.BACK)
     
     @patch('sys.stdout', new_callable=io.StringIO)
