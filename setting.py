@@ -1,7 +1,7 @@
 from enum import IntEnum, auto
 from accessor import Accessor
 from budget import BudgetPage
-from fixedIE import FixedIE
+from fixedIE import FixedIEPage
 from category import Category
 from payment import PaymentPage
 from location import Location
@@ -41,7 +41,7 @@ class SettingPage():
         if option is SettingOption.BUDGET:
             BudgetPage.start()
         elif option is SettingOption.FIXEDIE:
-            FixedIE.start()
+            FixedIEPage.start()
         elif option is SettingOption.CATEGORY:
             Category.start()
         elif option is SettingOption.BALANCE:
