@@ -24,5 +24,8 @@ requirements:
 database:
 	@python3 database.py
 
+record:
+	@python3 records.py
+
 clean:
 	@$(RM) -r $(CACHE)

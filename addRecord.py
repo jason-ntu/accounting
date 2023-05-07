@@ -7,6 +7,8 @@ class AddRecordOption(IntEnum):
 
 class PaymentOption(IntEnum):
     CREDITCARD = auto()
+    CASH = auto()
+    LINEPAY = auto()
     OTHER = auto()
     BACK = auto()
 
@@ -30,6 +32,8 @@ class AddRecordPage:
 
     def choosePayment(self):
         print("%d: 信用卡支付" % PaymentOption.CREDITCARD)
+        print("%d: 現金支付" % PaymentOption.CASH)
+        print("%d: Line Pay支付" % PaymentOption.LINEPAY)
         print("%d: 其他" % PaymentOption.OTHER)
         print("%d: 回到上一頁" % PaymentOption.BACK)
         while True:
@@ -42,24 +46,19 @@ class AddRecordPage:
 
     def execute(self,option):
         if option is AddRecordOption.FOOD:
-            self.addFood()
+            self.createRecord(0)
         elif option is AddRecordOption.DRINK:
-            self.addDrink()
+            self.createRecord(1)
         else:
             raise ValueError(self.errorMsg)
-
-    def addFood(self):  # pragma: no cover
-        # 確認流程是否正確
-        # 選擇類別->選擇支付方式->輸入金額
-        option = self.choosePayment()
-        if option is AddRecordOption.BACK:
-            return
+    
+    def createRecord(self, categoryID):
         print("請輸入金額")
         amountOfMoney = int(input())
-        pass
-
-    def addDrink(self):  # pragma: no cover
-        pass
+        print("請輸入消費地點")
+        consumptionPlace = int(input())
+        print("請輸入消費時間")
+        spendingTime = int(input())
 
     def start(self):
         while True:
