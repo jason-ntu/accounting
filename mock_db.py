@@ -47,6 +47,14 @@ class MockDB(TestCase):
 
         conn.execute(budget.insert().values(id=1, amount=10000.00))
 
+        default_payments = [
+            {'name': "錢包", 'balance': 10000, 'category': PaymentCategory.CASH.name},
+            {'name': "中華郵政", 'balance': 25000, 'category': PaymentCategory.DEBIT_CARD.name},
+            {'name': "Line Pay", 'balance': 3000, 'category': PaymentCategory.ELECTRONIC.name},
+            {'name': "Line Pay", 'balance': 100, 'category': PaymentCategory.ELECTRONIC.name},
+        ]
+        conn.execute(payment.insert().values(default_payments))
+
         conn.commit()
         conn.close()
 

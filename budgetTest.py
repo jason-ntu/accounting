@@ -26,14 +26,21 @@ class TestBudgetPage(MockDB):
         self.assertEqual(BudgetPage.choose(), 3)
         self.assertEqual(_input.call_count, 6)
 
-    @patch.object(BudgetPage, "update")
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch.object(BudgetPage, "update", side_effect=[True, False])
     @patch.object(BudgetPage, "read")
-    def test_execute(self, _read, _update):
+    def test_execute(self, _read, _update, _stdout):
         with self.mock_db_config:
             BudgetPage.execute(BudgetOption.READ)
             self.assertEqual(_read.call_count, 1)
             BudgetPage.execute(BudgetOption.UPDATE)
-            self.assertEqual(_update.call_count, 1)
+            BudgetPage.execute(BudgetOption.UPDATE)
+            self.assertEqual(_update.call_count, 2)
+        output_lines = _stdout.getvalue().strip().split("\n")
+        self.assertEqual(output_lines[0], "%s操作成功%s" %
+                         (const.ANSI_GREEN, const.ANSI_RESET))
+        self.assertEqual(output_lines[1], "%s操作失敗%s" %
+                         (const.ANSI_RED, const.ANSI_RESET))
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read(self, _stdout):
@@ -53,11 +60,13 @@ class TestBudgetPage(MockDB):
             BudgetPage.read()
             self.assertEqual(BudgetPage.update(), True)
             BudgetPage.read()
-            BudgetPage.tearDown_connection(es.COMMIT)
+            BudgetPage.tearDown_connection(es.NONE)
         self.assertEqual(_hint_update.call_count, 2)
         self.assertEqual(_input.call_count, 3)
-        self.assertEqual(_stdout.getvalue(),
-                         "請輸入數字:\n12345.0\n12345.6\n%s操作成功%s\n" % (const.ANSI_GREEN, const.ANSI_RESET))
+        output_lines = _stdout.getvalue().strip().split("\n")
+        self.assertEqual(output_lines[0], "請輸入數字:")
+        self.assertEqual(output_lines[1], "12345.0")
+        self.assertEqual(output_lines[2], "12345.6")
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_hint_update(self, _stdout):
