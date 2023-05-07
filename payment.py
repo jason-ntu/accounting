@@ -10,12 +10,10 @@ class PaymentOption(IntEnum):
     DELETE = auto()
     BACK = auto()
 
-
 class PaymentUpdateOption(IntEnum):
     NAME = auto()
     BALANCE = auto()
     CATEGORY = auto()
-
 
 class PaymentCategory(IntEnum):
     CASH = auto()
@@ -24,12 +22,10 @@ class PaymentCategory(IntEnum):
     ELECTRONIC = auto()
     OTHER = auto()
 
-
 class Payment:
     name: str
     balance: int
     category: PaymentCategory
-
 
 class PaymentPage(Accessor):
 
@@ -72,7 +68,7 @@ class PaymentPage(Accessor):
             cls.tearDown_connection(es.ROLLBACK)
 
     @classmethod
-    # TODO: Handle the case that the name is not unique
+    # TODO Handle the case that the name is not unique
     def create(cls):
         cls.hint_create_name()
         name = input()
@@ -90,7 +86,6 @@ class PaymentPage(Accessor):
                 break
             except ValueError:
                 print("請輸入 1 到 5 之間的數字:")
-        
         query = cls.table.insert().values(name=name, balance=balance,category=category.name)
         rowsAffected = cls.conn.execute(query).rowcount
         return rowsAffected == 1
@@ -112,17 +107,13 @@ class PaymentPage(Accessor):
     def read(cls):
         query = sql.select(cls.table.c["name", "balance", "category"])
         results = cls.conn.execute(query).fetchall()
-        cls.format_print(results)
-        
-    @staticmethod
-    def format_print(results):
         for row in results:
             dictRow = row._asdict()
             print("\"%s\" 剩餘 %s 元，支付類型為 %s" %(dictRow['name'], dictRow['balance'], dictRow['category']))
-
+        
     @classmethod
-    # TODO: Handle the case that the name doen't exist
-    # TODO: Handle the case that the update is the saem as the original
+    # TODO Handle the case that the name doen't exist
+    # TODO Handle the case that the update is the saem as the original
     def update(cls):
         cls.hint_update_name()
         name = input()
