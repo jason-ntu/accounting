@@ -1,6 +1,6 @@
 from enum import IntEnum, auto
 import sqlalchemy as sql
-from accessor import Accessor
+from accessor import Accessor, ExecutionStatus as es
 
 
 class BudgetOption(IntEnum):
@@ -41,8 +41,8 @@ class BudgetPage(Accessor):
         cls.setUp_connection_and_table()
         query = sql.select(cls.table.c["amount"])
         result = cls.conn.execute(query).first()
-        cls.tearDown_connection()
-        return result._asdict()['amount']
+        cls.tearDown_connection(es.ROLLBACK)
+        print(result._asdict()['amount'])
 
     @classmethod
     def update(cls):
@@ -56,7 +56,7 @@ class BudgetPage(Accessor):
         cls.setUp_connection_and_table()
         query = cls.table.update().values(amount=newAmount).where(cls.table.c.id == 1)
         rowsAffected = cls.conn.execute(query).rowcount
-        cls.tearDown_connection()
+        cls.tearDown_connection(es.COMMIT)
         return rowsAffected == 1
 
     @staticmethod
