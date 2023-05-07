@@ -3,6 +3,7 @@ import mysqlConfig as cfg
 import sqlalchemy as sql
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from payment import PaymentCategory
+from datetime import datetime
 
 
 def initialize(config):
@@ -33,6 +34,21 @@ def initialize(config):
                             'balance', sql.Float(), default=0, nullable=False),
                         sql.Column(
                             'category', sql.Enum(PaymentCategory), default=PaymentCategory.CASH, nullable=False)
+                        )
+    
+    record = sql.Table('Record', metadata,
+                        sql.Column(
+                            'id', sql.Integer(), nullable=False, primary_key=True),
+                        sql.Column(
+                            'category', sql.String(30), nullable=False),
+                        sql.Column(
+                            'payment', sql.String(30), nullable=False),
+                        sql.Column(
+                            'amount', sql.Integer(), nullable=False),
+                        sql.Column(
+                            'place', sql.String(30), nullable=False),
+                        sql.Column(
+                            'time', sql.String(30), default=datetime.today(), nullable=False)
                         )
 
     metadata.create_all(engine)

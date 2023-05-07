@@ -69,7 +69,7 @@ class PaymentPage(Accessor):
             except ValueError:
                 print("請輸入數字:")
         cls.hint_create_category()
-        while True:
+        while True: 
             try:
                 category = PaymentCategory(int(input()))
                 break
