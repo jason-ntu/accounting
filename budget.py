@@ -39,7 +39,7 @@ class BudgetPage(Accessor):
     @classmethod
     def read(cls):
         cls.setUp_connection_and_table()
-        query = sql.select(cls.table.c.amount)
+        query = sql.select(cls.table.c["amount"])
         result = cls.conn.execute(query).first()
         cls.tearDown_connection()
         return result._asdict()['amount']

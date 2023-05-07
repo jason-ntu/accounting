@@ -30,10 +30,10 @@ class PaymentPage(Accessor):
 
     @staticmethod
     def show():
-        print("%d: 新增支付方式" % PaymentOption.READ)
+        print("%d: 新增支付方式" % PaymentOption.CREATE)
         print("%d: 查看支付方式" % PaymentOption.READ)
-        print("%d: 修改支付方式" % PaymentOption.READ)
-        print("%d: 刪除支付方式" % PaymentOption.UPDATE)
+        print("%d: 修改支付方式" % PaymentOption.UPDATE)
+        print("%d: 刪除支付方式" % PaymentOption.DELETE)
         print("%d: 回到上一頁" % PaymentOption.BACK)
 
     @staticmethod
@@ -58,7 +58,7 @@ class PaymentPage(Accessor):
             cls.delete()
 
     @classmethod
-    def create(cls, name):
+    def create(cls):
         cls.hint_create_name()
         name = input()
         cls.hint_create_balance()
@@ -76,7 +76,7 @@ class PaymentPage(Accessor):
             except ValueError:
                 print("請輸入 1 到 5 之間的數字:")
         cls.setUp_connection_and_table()
-        query = cls.table.insert().values(name=name, balance=balance,category=category)
+        query = cls.table.insert().values(name=name, balance=balance,category=category.name)
         rowsAffected = cls.conn.execute(query).rowcount
         cls.tearDown_connection()
         return rowsAffected == 1
@@ -94,11 +94,43 @@ class PaymentPage(Accessor):
     def hint_create_category():
         print("類型(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他):")
 
-    def read(self, name):
-        pass
+    @classmethod
+    def read(cls):
+        cls.setUp_connection_and_table()
+        query = sql.select(cls.table.c["name", "balance", "category"])
+        results = cls.conn.execute(query).fetchall()
+        cls.tearDown_connection()
+        cls.format_print(results)
+        
+    @staticmethod
+    def format_print(results):
+        for row in results:
+            dictRow = row._asdict()
+            print("\"%s\" 剩餘 %s 元，支付類別為 %s" %(dictRow['name'], dictRow['balance'], dictRow['category']))
 
     def update(self, name, newName):
         pass
+
+    @staticmethod
+    def hint_update_original_name():
+        print("請輸入要修改的支付方式的名稱:")
+    
+    @staticmethod
+    def hint_update_option():
+        print("請選擇要修改的項目(1 名稱, 2 餘額, 3 類別):")
+    
+    @staticmethod
+    def hint_update_name():
+        print("請選擇要修改的項目(1 名稱, 2 餘額, 3 類別):")
+
+    @staticmethod
+    def hint_update_balance():
+        print("請選擇要修改的項目(1 名稱, 2 餘額, 3 類別):")
+
+    @staticmethod
+    def hint_update_category():
+        print("請選擇要修改的項目(1 名稱, 2 餘額, 3 類別):")
+    
 
     def delete(self, name):
         pass

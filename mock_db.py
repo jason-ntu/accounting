@@ -15,7 +15,7 @@ class MockDB(TestCase):
     def setUpClass(cls):
         if database_exists(cls.config['url']):
             drop_database(cls.config['url'])
-            print("%sOld database %s dropped.%s" %
+            print("%sOriginal database %s dropped.%s" %
                   (const.ANSI_BLACK, cls.config['database'], const.ANSI_RESET))
         create_database(cls.config['url'])
         print("%sDatabase %s created.%s" %
