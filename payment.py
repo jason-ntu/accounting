@@ -10,6 +10,12 @@ class PaymentOption(IntEnum):
     BACK = auto()
 
 
+class PaymentUpdateOption(IntEnum):
+    NAME = auto()
+    BALANCE = auto()
+    CATEGORY = auto()
+
+
 class PaymentCategory(IntEnum):
     CASH = auto()
     DEBIT_CARD = auto()
@@ -106,32 +112,71 @@ class PaymentPage(Accessor):
     def format_print(results):
         for row in results:
             dictRow = row._asdict()
-            print("\"%s\" 剩餘 %s 元，支付類別為 %s" %(dictRow['name'], dictRow['balance'], dictRow['category']))
+            print("\"%s\" 剩餘 %s 元，支付類型為 %s" %(dictRow['name'], dictRow['balance'], dictRow['category']))
 
-    def update(self, name, newName):
-        pass
+    @classmethod
+    def update(cls):
+        cls.setUp_connection_and_table()
+        cls.hint_update_name()
+        name = input()
+        cls.hint_update_option()
+        while True:
+            try:
+                option = PaymentUpdateOption(int(input()))
+                break
+            except ValueError:
+                print("請輸入 1 到 3 之間的數字:")
+        if option is PaymentUpdateOption.NAME:
+            cls.hint_update_new_name()
+            newName = input()
+            query = cls.table.update().values(name=newName).where(cls.table.c.name == name)
+        elif option is PaymentUpdateOption.BALANCE:
+            cls.hint_update_new_balance()
+            while True:
+                try:
+                    newBalance = float(input())
+                    break
+                except ValueError:
+                    print("請輸入數字:")
+            query = cls.table.update().values(balance=newBalance).where(cls.table.c.name == name)
+        else:
+            cls.hint_update_new_category()
+            while True:
+                try:
+                    newCategory = PaymentCategory(int(input()))
+                    break
+                except ValueError:
+                    print("請輸入 1 到 5 之間的數字:")
+            query = cls.table.update().values(category=newCategory.name).where(cls.table.c.name == name)
+        rowsAffected = cls.conn.execute(query).rowcount
+        cls.tearDown_connection()
+        if rowsAffected == 1:
+            print("修改成功！")
+            return True
+        else:  
+            print("修改過程有誤。")
+            return False
 
     @staticmethod
-    def hint_update_original_name():
-        print("請輸入要修改的支付方式的名稱:")
+    def hint_update_name():
+        print("請選擇要修改的支付方式(輸入名稱):")
     
     @staticmethod
     def hint_update_option():
-        print("請選擇要修改的項目(1 名稱, 2 餘額, 3 類別):")
+        print("請選擇要修改的項目(1 名稱, 2 餘額, 3 類型):")
     
     @staticmethod
-    def hint_update_name():
-        print("請選擇要修改的項目(1 名稱, 2 餘額, 3 類別):")
+    def hint_update_new_name():
+        print("請輸入新的名稱:")
 
     @staticmethod
-    def hint_update_balance():
-        print("請選擇要修改的項目(1 名稱, 2 餘額, 3 類別):")
+    def hint_update_new_balance():
+        print("請輸入新的餘額:")
 
     @staticmethod
-    def hint_update_category():
-        print("請選擇要修改的項目(1 名稱, 2 餘額, 3 類別):")
+    def hint_update_new_category():
+        print("請輸入新的類型(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他):")
     
-
     def delete(self, name):
         pass
 
