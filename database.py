@@ -7,13 +7,20 @@ from datetime import datetime
 
 
 def initialize(config):
+    print("Initialize database...")
+
     if not database_exists(config['url']):
+        print("Database %s created." %
+              (config['database']))
         create_database(config['url'])
-        print("%sDatabase %s created.%s" %
-              (const.ANSI_BLACK, config['database'], const.ANSI_RESET))
+        #print("%sDatabase %s created.%s" %
+        #      (const.ANSI_BLACK, config['database'], const.ANSI_RESET))
     else:
-        print("%sDatabase %s already exist.%s" %
-              (const.ANSI_BLACK, config['database'], const.ANSI_RESET))
+        print("Database %s already exist." %
+              (config['database']))
+        #print("%sDatabase %s already exist.%s" %
+        #      (const.ANSI_BLACK, config['database'], const.ANSI_RESET))
+
     engine = sql.create_engine(config['url'])
     conn = engine.connect()
     metadata = sql.MetaData()
@@ -75,6 +82,18 @@ def initialize(config):
                         sql.Column(
                             'category', sql.Enum(PaymentCategory), default=PaymentCategory.CASH, nullable=False)
                         )
+
+    income = sql.Table('Income', metadata,
+                sql.Column(
+                    'id', sql.Integer(), nullable=False, primary_key=True),
+                sql.Column(
+                    'name', sql.String(50), nullable=False),
+                sql.Column(
+                    'amount', sql.Float(), nullable=False),
+                sql.Column(
+                    'category', sql.Enum(IncomeCategory), default=IncomeCategory.SALARY, nullable=False)
+                )
+
 
     metadata.create_all(engine)
 
