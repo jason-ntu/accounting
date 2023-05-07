@@ -31,17 +31,22 @@ class BudgetPage(Accessor):
 
     @classmethod
     def execute(cls, option):
+        cls.setUp_connection_and_table()
         if option is BudgetOption.READ:
             cls.read()
+            cls.tearDown_connection(es.NONE)
+            return
         else:
-            cls.update()
+            successful = cls.update()
+        if successful:
+            cls.tearDown_connection(es.COMMIT)
+        else:
+            cls.tearDown_connection(es.ROLLBACK)
 
     @classmethod
     def read(cls):
-        cls.setUp_connection_and_table()
         query = sql.select(cls.table.c["amount"])
         result = cls.conn.execute(query).first()
-        cls.tearDown_connection(es.ROLLBACK)
         print(result._asdict()['amount'])
 
     @classmethod
@@ -53,10 +58,8 @@ class BudgetPage(Accessor):
                 break
             except ValueError:
                 print("請輸入數字:")
-        cls.setUp_connection_and_table()
         query = cls.table.update().values(amount=newAmount).where(cls.table.c.id == 1)
         rowsAffected = cls.conn.execute(query).rowcount
-        cls.tearDown_connection(es.COMMIT)
         return rowsAffected == 1
 
     @staticmethod
