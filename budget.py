@@ -4,7 +4,7 @@ from accessor import Accessor
 
 
 class BudgetOption(IntEnum):
-    READ = auto()
+    READ = auto() 
     UPDATE = auto()
     BACK = auto()
 
