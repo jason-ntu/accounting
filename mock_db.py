@@ -4,7 +4,7 @@ import sqlalchemy as sql
 from mock import patch
 import const
 from payment import PaymentCategory
-from income import FixedIECategory
+from fixedIE import FixedIECategory
 from sqlalchemy_utils import database_exists, create_database, drop_database
 
 class MockDB(TestCase):
