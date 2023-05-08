@@ -1,7 +1,7 @@
 from enum import IntEnum, auto
 from addRecord import AddRecordPage
 from viewRecord import ViewRecordPage
-from changeRecord import ChangeRecordPage
+from changeRecord import UpdateRecordPage
 from deleteRecord import DeleteRecordPage
 
 
