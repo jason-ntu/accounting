@@ -11,16 +11,12 @@ def initialize(config):
     print("Initialize database...")
 
     if not database_exists(config['url']):
-        print("Database %s created." %
-              (config['database']))
         create_database(config['url'])
-        #print("%sDatabase %s created.%s" %
-        #      (const.ANSI_BLACK, config['database'], const.ANSI_RESET))
+        print("%sDatabase %s created.%s" %
+              (const.ANSI_BLACK, config['database'], const.ANSI_RESET))
     else:
-        print("Database %s already exist." %
-              (config['database']))
-        #print("%sDatabase %s already exist.%s" %
-        #      (const.ANSI_BLACK, config['database'], const.ANSI_RESET))
+        print("%sDatabase %s already exist.%s" %
+              (const.ANSI_BLACK, config['database'], const.ANSI_RESET))
 
     engine = sql.create_engine(config['url'])
     conn = engine.connect()

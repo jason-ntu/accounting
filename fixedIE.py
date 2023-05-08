@@ -123,7 +123,14 @@ class FixedIEPage(Accessor):
         if len(rows) == 0:
             print("未找到名稱為 \"%s\" 的固定收支" % name)
         else:
-            option = cls.select_update_option()
+            cls.hint_update_option()
+            while True:
+                try:
+                    option = FixedIEUpdateOption(int(input()))
+                    break
+                except ValueError:
+                    print("請輸入 1 到 3 之間的數字")
+
             if option == FixedIEUpdateOption.AMOUNT:
                 cls.update_amount(name)
             elif option == FixedIEUpdateOption.CATEGORY:
@@ -137,20 +144,8 @@ class FixedIEPage(Accessor):
         print("請輸入要修改的固定收支的名稱:")
 
     @staticmethod
-    def select_update_option():
-        print("請選擇要修改的項目：")
-        print("1. 金額")
-        print("2. 類別")
-        print("3. 返回")
-        while True:
-            try:
-                choice = int(input())
-                if choice in [1, 2, 3]:
-                    return FixedIEUpdateOption(choice)
-                else:
-                    print("請輸入 1 到 3 之間的數字")
-            except ValueError:
-                print("請輸入數字")
+    def hint_update_option():
+        print("請選擇要修改的項目(1 金額, 2 類別, 3 返回):")
 
     @classmethod
     def update_amount(cls, name):

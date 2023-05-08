@@ -32,6 +32,8 @@ class TestReport(TestCase):
     def test_chooseInterval_with_invalid_date(self, _input, _stdout):
         self.reportPage.chooseInterval()
         self.assertIn('日期格式錯誤', _stdout.getvalue())
+        _stdout.truncate(0)
+        _stdout.seek(0)
         self.reportPage.chooseInterval()
         self.assertEqual(_input.call_count, 4)
         self.assertIn('日期格式錯誤', _stdout.getvalue())
@@ -41,6 +43,8 @@ class TestReport(TestCase):
     def test_chooseInterval_invaild_internal(self, _input, _stdout):
         self.reportPage.chooseInterval()
         self.assertIn('Error: 時間區間至少一天',_stdout.getvalue())
+        _stdout.truncate(0)
+        _stdout.seek(0)
         self.reportPage.chooseInterval()
         self.assertIn('Error: 時間區間至少一天',_stdout.getvalue())
 
