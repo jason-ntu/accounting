@@ -1,6 +1,7 @@
 from enum import IntEnum, auto
 import sqlalchemy as sql
-from accessor import Accessor
+from accessor import Accessor, ExecutionStatus as es
+import const
 
 class PaymentOption(IntEnum):
     CREATE = auto()
@@ -9,6 +10,10 @@ class PaymentOption(IntEnum):
     DELETE = auto()
     BACK = auto()
 
+class PaymentUpdateOption(IntEnum):
+    NAME = auto()
+    BALANCE = auto()
+    CATEGORY = auto()
 
 class PaymentCategory(IntEnum):
     CASH = auto()
@@ -17,12 +22,10 @@ class PaymentCategory(IntEnum):
     ELECTRONIC = auto()
     OTHER = auto()
 
-
 class Payment:
     name: str
     balance: int
     category: PaymentCategory
-
 
 class PaymentPage(Accessor):
 
@@ -48,16 +51,24 @@ class PaymentPage(Accessor):
 
     @classmethod
     def execute(cls, option):
+        cls.setUp_connection_and_table()
         if option is PaymentOption.CREATE:
-            cls.create()
+            successful = cls.create()
         elif option is PaymentOption.READ:
             cls.read()
+            cls.tearDown_connection(es.NONE)
+            return
         elif option is PaymentOption.UPDATE:
-            cls.update()
+            successful = cls.update()
         else:
-            cls.delete()
+            successful = cls.delete()
+        if successful:
+            cls.tearDown_connection(es.COMMIT)
+        else:
+            cls.tearDown_connection(es.ROLLBACK)
 
     @classmethod
+    # TODO Handle the case that the name is not unique
     def create(cls):
         cls.hint_create_name()
         name = input()
@@ -75,10 +86,8 @@ class PaymentPage(Accessor):
                 break
             except ValueError:
                 print("請輸入 1 到 5 之間的數字:")
-        cls.setUp_connection_and_table()
         query = cls.table.insert().values(name=name, balance=balance,category=category.name)
         rowsAffected = cls.conn.execute(query).rowcount
-        cls.tearDown_connection()
         return rowsAffected == 1
 
     @staticmethod
@@ -96,44 +105,90 @@ class PaymentPage(Accessor):
 
     @classmethod
     def read(cls):
-        cls.setUp_connection_and_table()
         query = sql.select(cls.table.c["name", "balance", "category"])
         results = cls.conn.execute(query).fetchall()
-        cls.tearDown_connection()
-        cls.format_print(results)
-        
-    @staticmethod
-    def format_print(results):
         for row in results:
             dictRow = row._asdict()
-            print("\"%s\" 剩餘 %s 元，支付類別為 %s" %(dictRow['name'], dictRow['balance'], dictRow['category']))
-
-    def update(self, name, newName):
-        pass
+            print("\"%s\" 剩餘 %s 元，支付類型為 %s" %(dictRow['name'], dictRow['balance'], dictRow['category']))
+        
+    @classmethod
+    # TODO Handle the case that the name doen't exist
+    # TODO Handle the case that the update is the saem as the original
+    def update(cls):
+        cls.hint_update_name()
+        name = input()
+        cls.hint_update_option()
+        while True:
+            try:
+                option = PaymentUpdateOption(int(input()))
+                break
+            except ValueError:
+                print("請輸入 1 到 3 之間的數字:")
+        if option is PaymentUpdateOption.NAME:
+            cls.hint_update_new_name()
+            newName = input()
+            query = cls.table.update().values(name=newName).where(cls.table.c.name == name)
+        elif option is PaymentUpdateOption.BALANCE:
+            cls.hint_update_new_balance()
+            while True:
+                try:
+                    newBalance = float(input())
+                    break
+                except ValueError:
+                    print("請輸入數字:")
+            query = cls.table.update().values(balance=newBalance).where(cls.table.c.name == name)
+        else:
+            cls.hint_update_new_category()
+            while True:
+                try:
+                    newCategory = PaymentCategory(int(input()))
+                    break
+                except ValueError:
+                    print("請輸入 1 到 5 之間的數字:")
+            query = cls.table.update().values(category=newCategory.name).where(cls.table.c.name == name)
+        rowsAffected = cls.conn.execute(query).rowcount
+        if rowsAffected > 1:
+            print("%s%s 對應到多個支付方式%s" % (const.ANSI_YELLOW, name, const.ANSI_RESET))
+            return False
+        elif rowsAffected == 0:
+            print("%s%s 對應不到任何支付方式%s" % (const.ANSI_YELLOW, name, const.ANSI_RESET))
+            return False
+        else:
+            return True
 
     @staticmethod
-    def hint_update_original_name():
-        print("請輸入要修改的支付方式的名稱:")
+    def hint_update_name():
+        print("請選擇要修改的支付方式(輸入名稱):")
     
     @staticmethod
     def hint_update_option():
-        print("請選擇要修改的項目(1 名稱, 2 餘額, 3 類別):")
+        print("請選擇要修改的項目(1 名稱, 2 餘額, 3 類型):")
     
     @staticmethod
-    def hint_update_name():
-        print("請選擇要修改的項目(1 名稱, 2 餘額, 3 類別):")
+    def hint_update_new_name():
+        print("請輸入新的名稱:")
 
     @staticmethod
-    def hint_update_balance():
-        print("請選擇要修改的項目(1 名稱, 2 餘額, 3 類別):")
+    def hint_update_new_balance():
+        print("請輸入新的餘額:")
 
     @staticmethod
-    def hint_update_category():
-        print("請選擇要修改的項目(1 名稱, 2 餘額, 3 類別):")
+    def hint_update_new_category():
+        print("請輸入新的類型(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他):")
     
+    @classmethod
+    def delete(cls):
+        cls.hint_delete()
+        name = input()
+        query = cls.table.delete().where(cls.table.c.name == name)
+        rowsAffected = cls.conn.execute(query).rowcount
+        if rowsAffected == 0:
+            print("%s%s 對應不到任何支付方式%s" % (const.ANSI_YELLOW, name, const.ANSI_RESET))
+            return False
+        return True
 
-    def delete(self, name):
-        pass
+    def hint_delete():
+        print("請選擇要刪除的支付方式(輸入名稱):")
 
     @classmethod
     def start(cls):
