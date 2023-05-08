@@ -2,6 +2,8 @@ from enum import IntEnum, auto
 from accessor import Accessor
 import sqlalchemy as sql
 import sys
+from datetime import datetime
+
 
 class AddRecordOption(IntEnum):
     FOOD = auto()
@@ -15,7 +17,6 @@ class PaymentOption(IntEnum):
     ELECTRONIC = auto()
     OTHER = auto()
     BACK = auto()
-
 
 class AddRecordPage(Accessor):
 
@@ -39,7 +40,7 @@ class AddRecordPage(Accessor):
         return option
 
     def choosePayment(self):
-        msg = "類型(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他, 6 回到上一頁): "
+        msg = "類型(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他): "
         while True:
             try:
                 option = PaymentOption(int(input(msg)))
@@ -63,8 +64,10 @@ class AddRecordPage(Accessor):
         # if payment is PaymentOption.BACK:
         #     return
         amountOfMoney = int(input("請輸入金額: "))
-        consumptionPlace = str(input("請輸入消費地點: "))
+        consumptionPlace = input("請輸入消費地點: ").encode("utf-8")
         spendingTime = str(input("請輸入消費時間(yyyy-mm-dd): "))
+        if (spendingTime == ""):
+            spendingTime = datetime.today().date()
         self.setUp_connection_and_table()
         query = self.table.insert().values(category=self.category, amount=amountOfMoney, payment=payment, place=consumptionPlace, time=spendingTime)
         rowsAffected = self.conn.execute(query).rowcount

@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from accessor import Accessor
 import sqlalchemy as sql
 from sqlalchemy import and_
+import sys
 
 
 class ViewRecordOption(IntEnum):
@@ -49,7 +50,7 @@ class ViewRecordPage(Accessor):
         print("類別\t金額\t方式\t場所\t時間\t")
         for row in results:
             dictRow = row._asdict() 
-            print(dictRow['category'],"\t",dictRow['amount'],"\t", dictRow['payment'],"\t", dictRow['place'],"\t", dictRow['time'])
+            print(dictRow['category'],"\t",dictRow['amount'],"\t", dictRow['payment'],"\t", dictRow['place'].decode("utf-8"),"\t", dictRow['time'])
 
     def viewToday(self):  # pragma: no cover
         Date = datetime.today().date()

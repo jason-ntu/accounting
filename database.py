@@ -50,7 +50,7 @@ def initialize(config):
                         sql.Column(
                             'amount', sql.Integer(), nullable=False),
                         sql.Column(
-                            'place', sql.String(30), nullable=False),
+                            'place', sql.LargeBinary(30), nullable=False),
                         sql.Column(
                             'time', sql.String(30), default=datetime.today(), nullable=False)
                         )

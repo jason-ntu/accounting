@@ -1,7 +1,7 @@
 import io
 from unittest import TestCase
 from unittest.mock import patch
-from viewRecord import ViewRecordPage, ViewRecordOption
+from Elia.accounting.readRecord import ViewRecordPage, ViewRecordOption
 from mock_db import MockDB
 import sys
 
