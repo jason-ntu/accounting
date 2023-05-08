@@ -34,7 +34,6 @@ class ViewRecordPage(Accessor):
         return option
 
     def execute(self,option):
-        # 呼叫報表function？
         if option is ViewRecordOption.TODAY:
             self.viewToday()
         elif option is ViewRecordOption.WEEK:
