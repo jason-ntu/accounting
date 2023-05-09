@@ -5,7 +5,7 @@ import sys
 from datetime import datetime
 
 
-class AddRecordOption(IntEnum):
+class CreateRecordOption(IntEnum):
     FOOD = auto()
     BEVERAGE = auto()
     BACK = auto()
@@ -18,41 +18,42 @@ class PaymentOption(IntEnum):
     OTHER = auto()
     BACK = auto()
 
-class AddRecordPage(Accessor):
+class CreateRecordPage(Accessor):
 
     errorMsg = "請輸入 1 到 3 之間的數字:"
-    paymentErrorMsg = "請輸入 1 到 6 之間的數字:"
+    paymentErrorMsg = "請輸入 1 到 5 之間的數字:"
     category = ""
     table_name = "Record"
+    paymentMsg = "類型 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他: "
+    
     
     def show(self):
-        print("%d: 新增食物類別" % AddRecordOption.FOOD)
-        print("%d: 新增飲料類別" % AddRecordOption.BEVERAGE)
-        print("%d: 回到上一頁" % AddRecordOption.BACK)
+        print("%d: 新增食物類別" % CreateRecordOption.FOOD)
+        print("%d: 新增飲料類別" % CreateRecordOption.BEVERAGE)
+        print("%d: 回到上一頁" % CreateRecordOption.BACK)
 
     def choose(self):
         while True:
             try:
-                option = AddRecordOption(int(input()))
+                option = CreateRecordOption(int(input()))
                 break
             except ValueError:
                 print(self.errorMsg)
         return option
 
     def choosePayment(self):
-        msg = "類型(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他): "
         while True:
             try:
-                option = PaymentOption(int(input(msg)))
+                option = PaymentOption(int(input(self.paymentMsg)))
                 break
             except ValueError:
                 print(self.paymentErrorMsg)
         return option.name
 
     def execute(self, option):
-        if option is AddRecordOption.FOOD:
+        if option is CreateRecordOption.FOOD:
             self.category = "FOOD"
-        elif option is AddRecordOption.BEVERAGE:
+        elif option is CreateRecordOption.BEVERAGE:
             self.category = "BEVERAGE"
         else:
             raise ValueError(self.errorMsg)
@@ -61,11 +62,12 @@ class AddRecordPage(Accessor):
     
     def createRecord(self):
         payment = self.choosePayment()
-        # if payment is PaymentOption.BACK:
-        #     return
-        amountOfMoney = int(input("請輸入金額: "))
-        consumptionPlace = input("請輸入消費地點: ").encode("utf-8")
-        spendingTime = str(input("請輸入消費時間(yyyy-mm-dd): "))
+        self.hintGetAmount()
+        amountOfMoney = int(input())
+        self.hintGetPlace()
+        consumptionPlace = input().encode("utf-8")
+        self.hintGetTime()
+        spendingTime = str(input())
         if (spendingTime == ""):
             spendingTime = datetime.today().date()
         self.setUp_connection_and_table()
@@ -73,15 +75,24 @@ class AddRecordPage(Accessor):
         rowsAffected = self.conn.execute(query).rowcount
         self.tearDown_connection()
         # return rowsAffected == 1
+    
+    def hintGetAmount(self):
+        print("請輸入金額")
+    
+    def hintGetPlace(self):
+        print("請輸入消費地點")
+    
+    def hintGetTime(self):
+        print("請輸入消費時間(yyyy-mm-dd)")
 
     def start(self):
         while True:
             self.show()
             option = self.choose()
-            if option is AddRecordOption.BACK:
+            if option is CreateRecordOption.BACK:
                 return
             self.execute(option)
 
 if __name__ == '__main__':  # pragma: no cover
-    addRecordPage = AddRecordPage()
-    addRecordPage.start()
+    createRecordPage = CreateRecordPage()
+    createRecordPage.start()
