@@ -1,4 +1,4 @@
-TEST_FILE_NAME := settingTest.py budgetTest.py paymentTest.py 
+TEST_FILE_NAME := settingTest.py budgetTest.py paymentTest.py fixedIETest.py
 RUN_FILE_NAME := setting.py
 CACHE := .coverage htmlcov coverage_html_report
 
@@ -13,7 +13,7 @@ test:
 testElia:
 	@python3 -m unittest viewRecordTest.py
 
-coverage: 
+coverage:
 	@coverage run -m unittest $(TEST_FILE_NAME)
 	@coverage report -m
 	@coverage html
