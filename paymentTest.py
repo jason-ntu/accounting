@@ -81,6 +81,7 @@ class TestPaymentPage(MockDB):
         with self.mock_db_config:
             PaymentPage.setUp_connection_and_table()
             PaymentPage.create()
+            PaymentPage.read()
             PaymentPage.tearDown_connection(es.NONE)
         self.assertEqual(_hint_create_name.call_count, 1)
         self.assertEqual(_hint_create_balance.call_count, 1)
@@ -89,6 +90,15 @@ class TestPaymentPage(MockDB):
         output_lines = _stdout.getvalue().strip().split('\n')
         self.assertEqual(output_lines[0], "請輸入數字:")
         self.assertEqual(output_lines[1], "請輸入 1 到 5 之間的數字:")
+        self.assertEqual(output_lines[2], "\"錢包\" 剩餘 10000.0 元，支付類型為 CASH")
+        self.assertEqual(
+            output_lines[3], "\"中華郵政\" 剩餘 25000.0 元，支付類型為 DEBIT_CARD")
+        self.assertEqual(
+            output_lines[4], "\"Line Pay\" 剩餘 3000.0 元，支付類型為 ELECTRONIC")
+        self.assertEqual(
+            output_lines[5], "\"Line Pay\" 剩餘 100.0 元，支付類型為 ELECTRONIC")
+        self.assertEqual(
+            output_lines[6], "\"冷錢包\" 剩餘 10000.0 元，支付類型為 OTHER")
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read(self, _stdout):
