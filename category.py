@@ -12,13 +12,34 @@ class CategoryOption(IntEnum):
 
 
 class CategoryPage(Accessor):
+    def show():
+        pass
+
+    def choose():
+        pass
+
+    def execute():
+        pass
+
     def create():
+        pass
+
+    def hint_create_name():
         pass
 
     def read():
         pass
-    
+
     def update():
+        pass
+
+    def hint_update_name():
+        pass
+
+    def hint_update_new_name():
+        pass
+
+    def hint_delete():
         pass
 
     def delete():
@@ -27,3 +48,6 @@ class CategoryPage(Accessor):
     @classmethod
     def start(cls):
         pass
+
+if __name__ == "__main__":  # pragma: no cover
+    CategoryPage.start()
