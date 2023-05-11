@@ -62,6 +62,12 @@ class MockDB(TestCase):
         ]
         conn.execute(payment.insert().values(default_payments))
 
+        default_fixedIE = [
+            {'name': "獎學金", 'amount': 10000, 'category': FixedIECategory.INCOME.name},
+            {'name': "房租", 'amount': 6000, 'category': FixedIECategory.EXPENSE.name}
+        ]
+        conn.execute(fixedIE.insert().values(default_fixedIE))
+
         conn.commit()
         conn.close()
 
