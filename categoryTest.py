@@ -94,8 +94,8 @@ class TestCategoryPage(MockDB):
             CategoryPage.read()
             CategoryPage.tearDown_connection(es.NONE)
         output_lines = _stdout.getvalue().strip().split('\n')
-        categories = ["食物", "飲料", "衣服", "住宿", "交通"]
-        for i in range(5):
+        categories = ["食物", "飲料", "衣服", "住宿", "交通", "其它"]
+        for i in range(len(output_lines)):
             self.assertEqual(output_lines[i], categories[i])
 
     @patch("sys.stdout", new_callable=io.StringIO)
@@ -106,7 +106,7 @@ class TestCategoryPage(MockDB):
         results = [False, False, False, True, True]
         outputs = ["%s目前沒有這個類別%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
                    "%s新名稱不得為空%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET), 
-                   "%s新名稱不得與其他類別的名稱重複%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET), "", ""]
+                   "%s新名稱不得與其它類別的名稱重複%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET), "", ""]
         for i in range(5):
             with self.mock_db_config:
                 CategoryPage.setUp_connection_and_table()

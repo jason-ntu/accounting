@@ -4,7 +4,7 @@ from budget import BudgetPage
 from fixedIE import FixedIEPage
 from category import CategoryPage
 from payment import PaymentPage
-from location import Location
+from location import LocationPage
 
 
 class SettingOption(IntEnum):
@@ -47,7 +47,7 @@ class SettingPage():
         elif option is SettingOption.BALANCE:
             PaymentPage.start()
         else:
-            Location.start()
+            LocationPage.start()
 
     @classmethod
     def start(cls):
