@@ -24,7 +24,8 @@ class CreateRecordPage(Accessor):
     paymentErrorMsg = "請輸入 1 到 5 之間的數字:"
     category = ""
     table_name = "Record"
-    paymentMsg = "類型 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他: "
+    paymentMsg = "支付方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他: "
+    IntegerErrorMsg = "輸入的數字須為整數"
     
     
     def show(self):
@@ -63,9 +64,9 @@ class CreateRecordPage(Accessor):
     def createRecord(self):
         payment = self.choosePayment()
         self.hintGetAmount()
-        amountOfMoney = int(input())
+        amountOfMoney = self.getAmount()
         self.hintGetPlace()
-        consumptionPlace = input().encode("utf-8")
+        consumptionPlace = input()
         self.hintGetTime()
         spendingTime = str(input())
         if (spendingTime == ""):
@@ -75,6 +76,15 @@ class CreateRecordPage(Accessor):
         rowsAffected = self.conn.execute(query).rowcount
         self.tearDown_connection()
         # return rowsAffected == 1
+    
+    def getAmount(self):
+        while True:
+            try:
+                money = int(input())
+                break
+            except ValueError:
+                print(self.IntegerErrorMsg)
+        return money
     
     def hintGetAmount(self):
         print("請輸入金額")

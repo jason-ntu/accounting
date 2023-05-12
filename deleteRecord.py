@@ -26,6 +26,12 @@ class DeleteRecordPage(Accessor):
         query = sql.delete(self.table).where(self.table.c.id == ID)
         resultProxy = self.conn.execute(query)
         deletedRows = resultProxy.rowcount
+        successful = (resultProxy.rowcount == 1)
+        # if not successful:
+        #     print("此紀錄ID不存在")
+        #     self.tearDown_connection(es.ROLLBACK)
+        #     return
+        # self.tearDown_connection(es.COMMIT)
         if (deletedRows != 1):
             print("此紀錄ID不存在")
         self.tearDown_connection()

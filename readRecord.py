@@ -49,7 +49,7 @@ class ReadRecordPage(Accessor):
     def recordFormatPrint(self, results):
         for row in results:
             dictRow = row._asdict() 
-            print(dictRow['id']," 類別:", dictRow['category']," 金額:", dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'].decode("utf-8"), " 時間:", dictRow['time'])
+            print(dictRow['id']," 類別:", dictRow['category']," 金額:", dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], " 時間:", dictRow['time'])
 
     def viewToday(self):  # pragma: no cover
         Date = datetime.today().date()

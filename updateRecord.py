@@ -39,7 +39,7 @@ class UpdateRecordPage(Accessor):
         print("請輸入新的地點")
     
     def hintNewTime(self):
-        print("請輸入新的日期(yyyy/mm/dd)")
+        print("請輸入新的日期(yyyy-mm-dd)")
     
     def chooseCategory(self):
         while True:
@@ -95,7 +95,8 @@ class UpdateRecordPage(Accessor):
 
     def updatePlace(self, ID):
         self.hintNewPlace()
-        newPlace = input().encode("utf-8")
+        # newPlace = input().encode("utf-8")
+        newPlace = input()
         self.setUp_connection_and_table()
         query = sql.update(self.table).where(self.table.c.id == ID).values(place=newPlace)
         resultProxy = self.conn.execute(query)
