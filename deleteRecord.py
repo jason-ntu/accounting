@@ -1,7 +1,7 @@
 from enum import IntEnum, auto
 from datetime import datetime
 import sqlalchemy as sql
-from accessor import Accessor
+from accessor import Accessor, ExecutionStatus as es
 from readRecord import ReadRecordPage, ReadRecordOption
 
 class DeleteRecordPage(Accessor):
@@ -25,16 +25,12 @@ class DeleteRecordPage(Accessor):
         self.setUp_connection_and_table()
         query = sql.delete(self.table).where(self.table.c.id == ID)
         resultProxy = self.conn.execute(query)
-        deletedRows = resultProxy.rowcount
         successful = (resultProxy.rowcount == 1)
-        # if not successful:
-        #     print("此紀錄ID不存在")
-        #     self.tearDown_connection(es.ROLLBACK)
-        #     return
-        # self.tearDown_connection(es.COMMIT)
-        if (deletedRows != 1):
+        if not successful:
             print("此紀錄ID不存在")
-        self.tearDown_connection()
+            self.tearDown_connection(es.ROLLBACK)
+            return
+        self.tearDown_connection(es.COMMIT)
 
 
     def start(self):

@@ -1,7 +1,7 @@
 from enum import IntEnum, auto
 from datetime import datetime
 import sqlalchemy as sql
-from accessor import Accessor
+from accessor import Accessor, ExecutionStatus as es
 from sqlalchemy import and_
 from readRecord import ReadRecordPage, ReadRecordOption
 from createRecord import PaymentOption, CreateRecordPage
@@ -66,10 +66,13 @@ class UpdateRecordPage(Accessor):
         self.setUp_connection_and_table()
         query = sql.update(self.table).where(self.table.c.id == ID).values(category=self.categoryList[newCategory-1])
         resultProxy = self.conn.execute(query)
-        updatedRows = resultProxy.rowcount
-        if (updatedRows != 1):
+        successful = (resultProxy.rowcount == 1)
+        if not successful:
             print("此紀錄ID不存在")
-        self.tearDown_connection()
+            self.tearDown_connection(es.ROLLBACK)
+            return
+        self.tearDown_connection(es.COMMIT)
+
 
     def updatePayment(self, ID):
         self.hintNewPayment()
@@ -77,10 +80,12 @@ class UpdateRecordPage(Accessor):
         self.setUp_connection_and_table()
         query = sql.update(self.table).where(self.table.c.id == ID).values(payment=self.paymentList[newPayment-1])
         resultProxy = self.conn.execute(query)
-        updatedRows = resultProxy.rowcount
-        if (updatedRows != 1):
+        successful = (resultProxy.rowcount == 1)
+        if not successful:
             print("此紀錄ID不存在")
-        self.tearDown_connection()
+            self.tearDown_connection(es.ROLLBACK)
+            return
+        self.tearDown_connection(es.COMMIT)
 
     def updateAmount(self, ID):
         self.hintNewAmount()
@@ -88,10 +93,12 @@ class UpdateRecordPage(Accessor):
         self.setUp_connection_and_table()
         query = sql.update(self.table).where(self.table.c.id == ID).values(amount=newAmount)
         resultProxy = self.conn.execute(query)
-        updatedRows = resultProxy.rowcount
-        if (updatedRows != 1):
+        successful = (resultProxy.rowcount == 1)
+        if not successful:
             print("此紀錄ID不存在")
-        self.tearDown_connection()
+            self.tearDown_connection(es.ROLLBACK)
+            return
+        self.tearDown_connection(es.COMMIT)
 
     def updatePlace(self, ID):
         self.hintNewPlace()
@@ -100,10 +107,12 @@ class UpdateRecordPage(Accessor):
         self.setUp_connection_and_table()
         query = sql.update(self.table).where(self.table.c.id == ID).values(place=newPlace)
         resultProxy = self.conn.execute(query)
-        updatedRows = resultProxy.rowcount
-        if (updatedRows != 1):
+        successful = (resultProxy.rowcount == 1)
+        if not successful:
             print("此紀錄ID不存在")
-        self.tearDown_connection()
+            self.tearDown_connection(es.ROLLBACK)
+            return
+        self.tearDown_connection(es.COMMIT)
 
     def updateTime(self, ID):
         self.hintNewTime()
@@ -111,10 +120,12 @@ class UpdateRecordPage(Accessor):
         self.setUp_connection_and_table()
         query = sql.update(self.table).where(self.table.c.id == ID).values(time=newTime)
         resultProxy = self.conn.execute(query)
-        updatedRows = resultProxy.rowcount
-        if (updatedRows != 1):
+        successful = (resultProxy.rowcount == 1)
+        if not successful:
             print("此紀錄ID不存在")
-        self.tearDown_connection()
+            self.tearDown_connection(es.ROLLBACK)
+            return
+        self.tearDown_connection(es.COMMIT)
 
     def updateDB(self, ID, option):
         if option is CategoryOption.CATEGORY:

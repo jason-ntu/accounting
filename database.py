@@ -3,7 +3,7 @@ import mysqlConfig as cfg
 import sqlalchemy as sql
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from payment import PaymentCategory
-from fixedIE import fixedIECategory
+from fixedIE import FixedIECategory
 from datetime import datetime
 
 
@@ -53,7 +53,6 @@ def initialize(config):
                             'place', sql.String(30), nullable=False), 
                         sql.Column(
                             'time', sql.Date(), default=datetime.today(), nullable=False)
-                            # 'time', sql.String(30), default=datetime.today(), nullable=False)
                         )
 
     fixedIE = sql.Table('FixedIE', metadata,
@@ -62,24 +61,6 @@ def initialize(config):
                 sql.Column('amount', sql.Float(), nullable=False),
                 sql.Column('category', sql.Enum(FixedIECategory), nullable=False)
     )
-
-    budget = sql.Table('Budget', metadata,
-                       sql.Column(
-                           'id', sql.Integer(), nullable=False, primary_key=True),
-                       sql.Column(
-                           'amount', sql.Float(), nullable=False)
-                       )
-
-    payment = sql.Table('Payment', metadata,
-                        sql.Column(
-                            'id', sql.Integer(), nullable=False, primary_key=True),
-                        sql.Column(
-                            'name', sql.String(30), nullable=False),
-                        sql.Column(
-                            'balance', sql.Float(), default=0, nullable=False),
-                        sql.Column(
-                            'category', sql.Enum(PaymentCategory), default=PaymentCategory.CASH, nullable=False)
-                        )
 
     metadata.create_all(engine)
 
