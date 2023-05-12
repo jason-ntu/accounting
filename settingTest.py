@@ -3,7 +3,7 @@ from unittest.mock import patch
 import io
 from setting import SettingPage, SettingOption
 from budget import BudgetPage
-from fixedIE import FixedIE
+from fixedIE import FixedIEPage
 from category import Category
 from payment import PaymentPage
 from location import Location
@@ -41,7 +41,7 @@ class TestSetting(TestCase):
     @patch.object(Location, "start")
     @patch.object(PaymentPage, "start")
     @patch.object(Category, "start")
-    @patch.object(FixedIE, "start")
+    @patch.object(FixedIEPage, "start")
     @patch.object(BudgetPage, "start")
     def test_execute(
         self,

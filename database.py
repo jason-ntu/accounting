@@ -3,10 +3,13 @@ import mysqlConfig as cfg
 import sqlalchemy as sql
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from payment import PaymentCategory
+from fixedIE import fixedIECategory
 from datetime import datetime
 
 
 def initialize(config):
+    print("Initialize database...")
+
     if not database_exists(config['url']):
         create_database(config['url'])
         print("%sDatabase %s created.%s" %
@@ -14,6 +17,7 @@ def initialize(config):
     else:
         print("%sDatabase %s already exist.%s" %
               (const.ANSI_BLACK, config['database'], const.ANSI_RESET))
+
     engine = sql.create_engine(config['url'])
     conn = engine.connect()
     metadata = sql.MetaData()
@@ -35,7 +39,7 @@ def initialize(config):
                         sql.Column(
                             'category', sql.Enum(PaymentCategory), default=PaymentCategory.CASH, nullable=False)
                         )
-    
+
     record = sql.Table('Record', metadata,
                         sql.Column(
                             'id', sql.Integer(), nullable=False, primary_key=True),
@@ -52,8 +56,33 @@ def initialize(config):
                             # 'time', sql.String(30), default=datetime.today(), nullable=False)
                         )
 
+    fixedIE = sql.Table('FixedIE', metadata,
+                sql.Column('id', sql.Integer(), nullable=False, primary_key=True),
+                sql.Column('name', sql.String(50), nullable=False),
+                sql.Column('amount', sql.Float(), nullable=False),
+                sql.Column('category', sql.Enum(FixedIECategory), nullable=False)
+    )
+
+    budget = sql.Table('Budget', metadata,
+                       sql.Column(
+                           'id', sql.Integer(), nullable=False, primary_key=True),
+                       sql.Column(
+                           'amount', sql.Float(), nullable=False)
+                       )
+
+    payment = sql.Table('Payment', metadata,
+                        sql.Column(
+                            'id', sql.Integer(), nullable=False, primary_key=True),
+                        sql.Column(
+                            'name', sql.String(30), nullable=False),
+                        sql.Column(
+                            'balance', sql.Float(), default=0, nullable=False),
+                        sql.Column(
+                            'category', sql.Enum(PaymentCategory), default=PaymentCategory.CASH, nullable=False)
+                        )
+
     metadata.create_all(engine)
-    
+
     conn.execute(budget.insert().values(id=1, amount=0))
     conn.commit()
 
