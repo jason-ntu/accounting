@@ -53,7 +53,6 @@ def initialize(config):
                             'place', sql.String(30), nullable=False), 
                         sql.Column(
                             'time', sql.Date(), default=datetime.today(), nullable=False)
-                            # 'time', sql.String(30), default=datetime.today(), nullable=False)
                         )
 
     fixedIE = sql.Table('FixedIE', metadata,

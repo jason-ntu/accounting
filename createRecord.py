@@ -1,5 +1,5 @@
 from enum import IntEnum, auto
-from accessor import Accessor
+from accessor import Accessor, ExecutionStatus as es
 import sqlalchemy as sql
 import sys
 from datetime import datetime
@@ -27,7 +27,6 @@ class CreateRecordPage(Accessor):
     paymentMsg = "支付方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他: "
     IntegerErrorMsg = "輸入的數字須為整數"
     
-    
     def show(self):
         print("%d: 新增食物類別" % CreateRecordOption.FOOD)
         print("%d: 新增飲料類別" % CreateRecordOption.BEVERAGE)
@@ -50,6 +49,21 @@ class CreateRecordPage(Accessor):
             except ValueError:
                 print(self.paymentErrorMsg)
         return option.name
+    
+    import datetime
+
+    def getValidDate(self):
+        while True:
+            dateString = input()
+            try:
+                datetime.strptime(dateString, '%Y-%m-%d').date()
+                break
+            except ValueError:
+                self.hintGetTime()
+
+
+        return dateString
+        
 
     def execute(self, option):
         if option is CreateRecordOption.FOOD:
@@ -68,14 +82,18 @@ class CreateRecordPage(Accessor):
         self.hintGetPlace()
         consumptionPlace = input()
         self.hintGetTime()
-        spendingTime = str(input())
+        spendingTime = self.getValidDate()
         if (spendingTime == ""):
             spendingTime = datetime.today().date()
         self.setUp_connection_and_table()
         query = self.table.insert().values(category=self.category, amount=amountOfMoney, payment=payment, place=consumptionPlace, time=spendingTime)
-        rowsAffected = self.conn.execute(query).rowcount
-        self.tearDown_connection()
-        # return rowsAffected == 1
+        resultProxy = self.conn.execute(query)
+        successful = (resultProxy.rowcount == 1)
+        if not successful:
+            print("此紀錄ID不存在")
+            self.tearDown_connection(es.ROLLBACK)
+            return
+        self.tearDown_connection(es.COMMIT)
     
     def getAmount(self):
         while True:
