@@ -118,16 +118,24 @@ class TestFixedIEPage(MockDB):
     def test_update(self, _read, _update_amount, _update_category, _hint_select_update_name, _hint_update_option, _hint_update_amount, hint_update_category, _input, _stdout):
         pass
 
-    @patch("sys.stdout", new_callable=io.StringIO)
+    #@patch("sys.stdout", new_callable=io.StringIO)
     @patch('builtins.input', side_effect=["獎學金", "unknown", "房租"])
     @patch.object(FixedIEPage, 'hint_delete_name')
-    def test_delete(self, _hint_delete_name, _input, _stdout):
-        #with self.mock_db_config:
-        #    FixedIEPage.setUp_connection_and_table()
-        #    self.assertEqual(FixedIEPage.delete(), True)
-        #    self.assertEqual(FixedIEPage.delete(), False)
-        #    self.assertEqual(FixedIEPage.delete(), True)
-        #    FixedIEPage.tearDown_connection(es.NONE)
+    def test_delete(self, _hint_delete_name, _input):#, _stdout):
+        with self.mock_db_config:
+            FixedIEPage.setUp_connection_and_table()
+            FixedIEPage.read()
+            print("\ndelete ...\n")
+            self.assertEqual(FixedIEPage.delete(), True)
+            print("\nafter delete ...\n")
+            FixedIEPage.read()
+            #FixedIEPage.delete()
+            #FixedIEPage.read()
+            #FixedIEPage.delete()
+            #self.assertEqual(FixedIEPage.delete(), True)
+            #self.assertEqual(FixedIEPage.delete(), False)
+            #self.assertEqual(FixedIEPage.delete(), True)
+            FixedIEPage.tearDown_connection(es.NONE)
         pass
 
 
