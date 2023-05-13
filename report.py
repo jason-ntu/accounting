@@ -14,11 +14,11 @@ class ReportPage:
 
     def chooseInterval(self):
         while True:
-            startDate_str = input("請輸入\"起始\"日期 (yyyy/mm/dd): ")
-            endDate_str = input("請輸入\"結束\"日期 (yyyy/mm/dd): ")
+            startDate_str = input("請輸入\"起始\"日期 (yyyy-mm-dd): ")
+            endDate_str = input("請輸入\"結束\"日期 (yyyy-mm-dd): ")
             try:
-                startDate = datetime.strptime(startDate_str, "%Y/%m/%d")
-                endDate = datetime.strptime(endDate_str, "%Y/%m/%d")
+                startDate = datetime.strptime(startDate_str, "%Y-%m-%d")
+                endDate = datetime.strptime(endDate_str, "%Y-%m-%d")
             except ValueError:
                 print("Error: 日期格式錯誤")
                 print("---------------------")
