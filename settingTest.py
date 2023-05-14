@@ -4,9 +4,9 @@ import io
 from setting import SettingPage, SettingOption
 from budget import BudgetPage
 from fixedIE import FixedIEPage
-from category import Category
+from category import CategoryPage
 from payment import PaymentPage
-from location import Location
+from location import LocationPage
 
 
 class TestSetting(TestCase):
@@ -38,9 +38,9 @@ class TestSetting(TestCase):
         self.assertEqual(SettingPage.choose(), 6)
         self.assertEqual(_input.call_count, 9)
 
-    @patch.object(Location, "start")
+    @patch.object(LocationPage, "start")
     @patch.object(PaymentPage, "start")
-    @patch.object(Category, "start")
+    @patch.object(CategoryPage, "start")
     @patch.object(FixedIEPage, "start")
     @patch.object(BudgetPage, "start")
     def test_execute(

@@ -43,6 +43,20 @@ class MockDB(TestCase):
                              'category', sql.Enum(PaymentCategory), default=PaymentCategory.CASH, nullable=False)
                          )
 
+        category = sql.Table('Category', metadata,
+                            sql.Column(
+                                'id', sql.Integer(), nullable=False, primary_key=True),
+                            sql.Column(
+                                'name', sql.String(50), nullable=False)
+                            )
+
+        location = sql.Table('Location', metadata,
+                             sql.Column(
+                                 'id', sql.Integer(), nullable=False, primary_key=True),
+                             sql.Column(
+                                 'name', sql.String(50), nullable=False)
+                             )
+
         fixedIE = sql.Table('FixedIE', metadata,
                         sql.Column('id', sql.Integer(), nullable=False, primary_key=True),
                         sql.Column('name', sql.String(50), nullable=False),
@@ -61,6 +75,32 @@ class MockDB(TestCase):
             {'name': "Line Pay", 'balance': 100, 'category': PaymentCategory.ELECTRONIC.name},
         ]
         conn.execute(payment.insert().values(default_payments))
+
+        default_fixedIE = [
+            {'name': "獎學金", 'amount': 10000, 'category': FixedIECategory.INCOME.name},
+            {'name': "房租", 'amount': 6000, 'category': FixedIECategory.EXPENSE.name}
+        ]
+        conn.execute(fixedIE.insert().values(default_fixedIE))
+
+
+        default_categories = [
+            {'name': "食物"},
+            {'name': "飲料"},
+            {'name': "衣服"},
+            {'name': "住宿"},
+            {'name': "交通"},
+            {'name': "其它"}
+        ]
+        conn.execute(category.insert().values(default_categories))
+
+        default_locations = [
+            {'name': "便利商店"},
+            {'name': "蝦皮"},
+            {'name': "誠品"},
+            {'name': "夜市"},
+            {'name': "其它"}
+        ]
+        conn.execute(category.insert().values(default_locations))
 
         conn.commit()
         conn.close()
