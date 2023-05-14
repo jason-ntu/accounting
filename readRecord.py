@@ -1,6 +1,6 @@
 from enum import IntEnum, auto
 from datetime import datetime, timedelta
-from accessor import Accessor
+from accessor import Accessor, ExecutionStatus as es
 import sqlalchemy as sql
 from sqlalchemy import and_
 import sys
@@ -56,7 +56,7 @@ class ReadRecordPage(Accessor):
         self.setUp_connection_and_table()
         query = sql.select(self.table).where(self.table.c.time == Date)
         results = self.conn.execute(query).fetchall()
-        self.tearDown_connection()
+        self.tearDown_connection(es.NONE)
         self.recordFormatPrint(results)
 
     def viewWeek(self):  # pragma: no cover
@@ -66,7 +66,7 @@ class ReadRecordPage(Accessor):
         self.setUp_connection_and_table()
         query = sql.select(self.table).where(and_(self.table.c.time >= startDate, self.table.c.time <= endDate))
         results = self.conn.execute(query).fetchall()
-        self.tearDown_connection()
+        self.tearDown_connection(es.NONE)
         self.recordFormatPrint(results)
 
     def viewMonth(self):  # pragma: no cover
@@ -77,7 +77,7 @@ class ReadRecordPage(Accessor):
         self.setUp_connection_and_table()
         query = sql.select(self.table).where(and_(self.table.c.time >= startDate, self.table.c.time <= endDate))
         results = self.conn.execute(query).fetchall()
-        self.tearDown_connection()
+        self.tearDown_connection(es.NONE)
         self.recordFormatPrint(results)
 
     def viewOther(self):  # pragma: no cover
@@ -86,7 +86,7 @@ class ReadRecordPage(Accessor):
         self.setUp_connection_and_table()
         query = sql.select(self.table).where(and_(self.table.c.time >= startDate, self.table.c.time <= endDate))
         results = self.conn.execute(query).fetchall()
-        self.tearDown_connection()
+        self.tearDown_connection(es.NONE)
         self.recordFormatPrint(results)
 
     def start(self):
