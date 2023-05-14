@@ -30,10 +30,18 @@ class MenuPage:
             option = self.choose()
             if option is MenuOption.CLOSE:
                 return
-            self.execute(option)
+            self.go(option)
 
     #呈現選擇畫面
     def show(self):
+        # print("========== 記帳簿 ==========")
+        # print("［首頁］")
+        # print("%d: 消費紀錄" % MenuOption.RECORD)
+        # print("%d: 查看報表" % MenuOption.REPORT)
+        # print("%d: 匯出資料" % MenuOption.EXPORT)
+        # print("%d: 基本設定" % MenuOption.SETTING)
+        # print("%d: 關閉程式" % MenuOption.CLOSE)
+        # print("========== 記帳簿 ==========")
         print(MenuText.TITLE)
         print(MenuText.RECORD)
         print(MenuText.REPORT)
@@ -53,7 +61,7 @@ class MenuPage:
             return option
     
     #前往下一頁
-    def execute(self, option):
+    def go(self, option):
         if option == MenuOption.RECORD:
             next = RecordPage()
         elif option == MenuOption.REPORT:
@@ -61,8 +69,10 @@ class MenuPage:
         elif option == MenuOption.EXPORT:
             pass
             #next = ExportPage()
-        else:
+        elif option == MenuOption.SETTING:
             next = SettingPage()
+        else:
+            raise ValueError()
         
         next.start()
 
