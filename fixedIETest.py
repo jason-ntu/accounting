@@ -11,11 +11,12 @@ class TestFixedIEPage(MockDB):
     def test_show(self, _stdout):
         FixedIEPage.show()
         output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(output_lines[0], "%d: 新增固定收支" % FixedIEOption.CREATE)
-        self.assertEqual(output_lines[1], "%d: 查看固定收支" % FixedIEOption.READ)
-        self.assertEqual(output_lines[2], "%d: 修改固定收支" % FixedIEOption.UPDATE)
-        self.assertEqual(output_lines[3], "%d: 刪除固定收支" % FixedIEOption.DELETE)
-        self.assertEqual(output_lines[4], "%d: 回到上一頁" % FixedIEOption.BACK)
+        self.assertEqual(output_lines[0], "[固定收支設定]")
+        self.assertEqual(output_lines[1], "%d: 新增固定收支" % FixedIEOption.CREATE)
+        self.assertEqual(output_lines[2], "%d: 查看固定收支" % FixedIEOption.READ)
+        self.assertEqual(output_lines[3], "%d: 修改固定收支" % FixedIEOption.UPDATE)
+        self.assertEqual(output_lines[4], "%d: 刪除固定收支" % FixedIEOption.DELETE)
+        self.assertEqual(output_lines[5], "%d: 回到上一頁" % FixedIEOption.BACK)
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_hints(self, _stdout):
@@ -127,9 +128,10 @@ class TestFixedIEPage(MockDB):
             FixedIEPage.update()
             FixedIEPage.read()
 
-            FixedIEPage.update()
+            result = FixedIEPage.update()
 
             FixedIEPage.tearDown_connection(es.NONE)
+        self.assertEqual(result, True)
         self.assertEqual(_read.call_count, 3)
         self.assertEqual(_update_amount.call_count, 1)
         self.assertEqual(_update_category.call_count, 1)

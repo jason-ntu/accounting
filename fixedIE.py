@@ -30,6 +30,7 @@ class FixedIEPage(Accessor):
 
     @staticmethod
     def show():
+        print("[固定收支設定]")
         print("%d: 新增固定收支" % FixedIEOption.CREATE)
         print("%d: 查看固定收支" % FixedIEOption.READ)
         print("%d: 修改固定收支" % FixedIEOption.UPDATE)
