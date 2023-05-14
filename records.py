@@ -19,33 +19,35 @@ class RecordOption(IntEnum):
     BACK = auto()
 
 class RecordPage:
-    # 消費紀錄 Records
-    def choose(self):
+    @staticmethod
+    def choose():
         while True:
             try:
                 option = RecordOption(int(input()))
                 break
             except ValueError:
-                print(self.errorMsg)
+                print("請輸入 1 到 5 之間的數字:")
         return option
 
-    
-    def start(self):
+    @classmethod
+    def start(clf):
         while True:
-            self.show()
-            option = self.choose()
+            clf.show()
+            option = clf.choose()
             if option is RecordOption.BACK:
                 return
-            self.enter(option)
+            clf.execute(option)
 
-    def show(self):
+    @staticmethod
+    def show():
         print("%d: 新增消費紀錄" % RecordOption.CREATE)
         print("%d: 檢視消費紀錄" % RecordOption.READ)
         print("%d: 修改消費紀錄" % RecordOption.UPDATE)
         print("%d: 刪除消費紀錄" % RecordOption.DELETE)
         print("%d: 回到上一頁" % RecordOption.BACK)
 
-    def enter(self, option):
+    @classmethod
+    def execute(cls, option):
         if option is RecordOption.CREATE:
             nextPage = CreateRecordPage()
         elif option is RecordOption.READ:
@@ -54,8 +56,8 @@ class RecordPage:
             nextPage = UpdateRecordPage()
         elif option is RecordOption.DELETE:
             nextPage = DeleteRecordPage()
-        else:
-            raise ValueError(self.errorMsg)
+        # else:
+        #     raise ValueError(cls.errorMsg)
         nextPage.start()
 
 if __name__ == '__main__': # pragma: no cover

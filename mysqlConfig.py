@@ -21,13 +21,12 @@ dev = {
                                        USER, PASSWORD, HOST, PORT, DEV_DB)
 }
 
-
 test = {
     'host': HOST,
     'user': USER,
     'password': PASSWORD,
     'port': PORT,
     'database': TEST_DB,
-    'url': "%s+%s://%s:%s@%s:%s/%s" % (DIALECT, DRIVER,
-                                       USER, PASSWORD, HOST, PORT, TEST_DB)
+    'url': "%s+%s://%s:%s@%s:%s/%s?charset=utf8mb4" % (DIALECT, DRIVER,
+                                       USER, PASSWORD, HOST, PORT, DEV_DB)
 }

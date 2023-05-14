@@ -6,6 +6,7 @@ import const
 from payment import PaymentCategory
 from fixedIE import FixedIECategory
 from sqlalchemy_utils import database_exists, create_database, drop_database
+from datetime import datetime
 
 class MockDB(TestCase):
 
@@ -64,6 +65,15 @@ class MockDB(TestCase):
                         sql.Column('category', sql.Enum(FixedIECategory), nullable=False)
         )
 
+        record = sql.Table('Record', metadata,
+                        sql.Column('id', sql.Integer(), nullable=False, primary_key=True),
+                        sql.Column('category', sql.String(30), nullable=False),
+                        sql.Column('payment', sql.String(30), nullable=False),
+                        sql.Column('amount', sql.Integer(), nullable=False),
+                        sql.Column('place', sql.String(30), nullable=False), 
+                        sql.Column('time', sql.Date(), default=datetime.today(), nullable=False)
+        )
+
         metadata.create_all(engine)
 
         conn.execute(budget.insert().values(id=1, amount=10000.00))
@@ -101,6 +111,12 @@ class MockDB(TestCase):
             {'name': "其它"}
         ]
         conn.execute(category.insert().values(default_locations))
+
+        default_records = [
+            {'category': "FOOD", 'payment': "現金", 'amount': 50, 'place': "7-11", 'time': datetime.today().date()},
+            {'category': "BEVERAGE", 'payment': "現金", 'amount': 100, 'place': "comebuy", 'time': datetime.today().date()}
+        ]
+        conn.execute(record.insert().values(default_records))
 
         conn.commit()
         conn.close()

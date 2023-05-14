@@ -60,8 +60,6 @@ class CreateRecordPage(Accessor):
                 break
             except ValueError:
                 self.hintGetTime()
-
-
         return dateString
         
 
