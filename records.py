@@ -1,13 +1,13 @@
 from enum import IntEnum, auto
-from addRecord import AddRecordPage
-from viewRecord import ViewRecordPage
-from changeRecord import ChangeRecordPage
+from readRecord import ReadRecordPage
 from deleteRecord import DeleteRecordPage
+from createRecord import CreateRecordPage
+from updateRecord import UpdateRecordPage
 
 
 # 消費紀錄 Records
 # > 新增消費紀錄
-# > 檢視消費紀錄
+# > 檢視消費紀錄 
 # > 修改消費紀錄
 # > 刪除消費紀錄
 
@@ -47,11 +47,11 @@ class RecordPage:
 
     def enter(self, option):
         if option is RecordOption.CREATE:
-            nextPage = AddRecordPage()
+            nextPage = CreateRecordPage()
         elif option is RecordOption.READ:
-            nextPage = ViewRecordPage()
+            nextPage = ReadRecordPage()
         elif option is RecordOption.UPDATE:
-            nextPage = ChangeRecordPage()
+            nextPage = UpdateRecordPage()
         elif option is RecordOption.DELETE:
             nextPage = DeleteRecordPage()
         else:
