@@ -28,5 +28,5 @@ test = {
     'port': PORT,
     'database': TEST_DB,
     'url': "%s+%s://%s:%s@%s:%s/%s?charset=utf8mb4" % (DIALECT, DRIVER,
-                                       USER, PASSWORD, HOST, PORT, DEV_DB)
+                                       USER, PASSWORD, HOST, PORT, TEST_DB)
 }
