@@ -16,108 +16,118 @@ class PaymentOption(IntEnum):
     CREDIT_CARD = auto()
     ELECTRONIC = auto()
     OTHER = auto()
-    BACK = auto()
 
 class CreateRecordPage(Accessor):
 
     errorMsg = "請輸入 1 到 3 之間的數字:"
-    paymentErrorMsg = "請輸入 1 到 5 之間的數字:"
     category = ""
     table_name = "Record"
-    paymentMsg = "支付方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他: "
-    IntegerErrorMsg = "輸入的數字須為整數"
     
-    def show(self):
+    @staticmethod
+    def show():
         print("%d: 新增食物類別" % CreateRecordOption.FOOD)
         print("%d: 新增飲料類別" % CreateRecordOption.BEVERAGE)
         print("%d: 回到上一頁" % CreateRecordOption.BACK)
 
-    def choose(self):
+    @staticmethod
+    def choose():
         while True:
             try:
                 option = CreateRecordOption(int(input()))
                 break
             except ValueError:
-                print(self.errorMsg)
+                print("請輸入 1 到 3 之間的數字:")
         return option
 
-    def choosePayment(self):
+    @staticmethod
+    def choosePayment():
         while True:
+            print("支付方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他: ")
             try:
-                option = PaymentOption(int(input(self.paymentMsg)))
+                option = PaymentOption(int(input()))
                 break
             except ValueError:
-                print(self.paymentErrorMsg)
+                print("請輸入 1 到 5 之間的數字:")
         return option.name
+        
+    @classmethod
+    def execute(clf, option):
+        if option is CreateRecordOption.FOOD:
+            clf.category = "FOOD"
+        elif option is CreateRecordOption.BEVERAGE:
+            clf.category = "BEVERAGE"
+        else:
+            raise ValueError(clf.errorMsg)
+        clf.createRecord()
     
-    import datetime
-
-    def getValidDate(self):
+    @classmethod
+    def createRecord(clf):
         while True:
-            dateString = input()
+            clf.hintPaymentMsg()
             try:
-                datetime.strptime(dateString, '%Y-%m-%d').date()
+                paymentOption = PaymentOption(int(input()))
                 break
             except ValueError:
-                self.hintGetTime()
-        return dateString
+                print("請輸入 1 到 5 之間的數字:")
         
-
-    def execute(self, option):
-        if option is CreateRecordOption.FOOD:
-            self.category = "FOOD"
-        elif option is CreateRecordOption.BEVERAGE:
-            self.category = "BEVERAGE"
-        else:
-            raise ValueError(self.errorMsg)
+        clf.hintGetAmount()
+        while True:
+            try:
+                amountOfMoney = int(input())
+                break
+            except ValueError:
+                clf.hintIntegerErorMsg()
         
-        self.createRecord()
-    
-    def createRecord(self):
-        payment = self.choosePayment()
-        self.hintGetAmount()
-        amountOfMoney = self.getAmount()
-        self.hintGetPlace()
+        clf.hintGetPlace()
         consumptionPlace = input()
-        self.hintGetTime()
-        spendingTime = self.getValidDate()
+        clf.hintGetTime()
+        while True:
+            try:
+                spendingTime = input()
+                datetime.strptime(spendingTime, '%Y-%m-%d').date()
+                break
+            except ValueError:
+                clf.hintGetTime()
         if (spendingTime == ""):
             spendingTime = datetime.today().date()
-        self.setUp_connection_and_table()
-        query = self.table.insert().values(category=self.category, amount=amountOfMoney, payment=payment, place=consumptionPlace, time=spendingTime)
-        resultProxy = self.conn.execute(query)
+        clf.setUp_connection_and_table()
+        query = clf.table.insert().values(category=clf.category, amount=amountOfMoney, payment=paymentOption.name, place=consumptionPlace, time=spendingTime)
+        resultProxy = clf.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
-            print("此紀錄ID不存在")
-            self.tearDown_connection(es.ROLLBACK)
+            print("新增資料失敗")
+            clf.tearDown_connection(es.ROLLBACK)
             return
-        self.tearDown_connection(es.COMMIT)
+        clf.tearDown_connection(es.COMMIT)
     
-    def getAmount(self):
-        while True:
-            try:
-                money = int(input())
-                break
-            except ValueError:
-                print(self.IntegerErrorMsg)
-        return money
-    
-    def hintGetAmount(self):
+    @staticmethod
+    def hintGetAmount():
         print("請輸入金額")
     
-    def hintGetPlace(self):
+    @staticmethod
+    def hintGetPlace():
         print("請輸入消費地點")
-    
-    def hintGetTime(self):
+
+    @staticmethod
+    def hintGetTime():
         print("請輸入消費時間(yyyy-mm-dd)")
 
-    def start(self):
+    @staticmethod
+    def hintIntegerErorMsg():
+        print("輸入的數字須為整數")
+
+    @staticmethod
+    def hintPaymentMsg():
+        print("支付方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他: ")
+
+    @classmethod
+    def start(clf):
         while True:
-            self.show()
-            option = self.choose()
+            clf.show()
+            option = clf.choose()
             if option is CreateRecordOption.BACK:
                 return
-            self.execute(option)
+            clf.execute(option)
 
 if __name__ == '__main__':  # pragma: no cover
     createRecordPage = CreateRecordPage()
