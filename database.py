@@ -40,6 +40,10 @@ def initialize(config):
                             'category', sql.Enum(PaymentCategory), default=PaymentCategory.CASH, nullable=False)
                         )
 
+    income = sql.Table('Income', metadata,
+                        sql.Column('id', sql.Integer(), nullable=False, primary_key=True),
+                        sql.Column('name', sql.String(50), nullable=False))
+
     record = sql.Table('Record', metadata,
                         sql.Column(
                             'id', sql.Integer(), nullable=False, primary_key=True),
@@ -50,7 +54,7 @@ def initialize(config):
                         sql.Column(
                             'amount', sql.Integer(), nullable=False),
                         sql.Column(
-                            'place', sql.String(30), nullable=False), 
+                            'place', sql.String(30), nullable=False),
                         sql.Column(
                             'time', sql.Date(), default=datetime.today(), nullable=False)
                         )
