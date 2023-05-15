@@ -30,6 +30,7 @@ class FixedIEPage(Accessor):
 
     @staticmethod
     def show():
+        print("[固定收支設定]")
         print("%d: 新增固定收支" % FixedIEOption.CREATE)
         print("%d: 查看固定收支" % FixedIEOption.READ)
         print("%d: 修改固定收支" % FixedIEOption.UPDATE)
@@ -58,7 +59,7 @@ class FixedIEPage(Accessor):
         elif option is FixedIEOption.UPDATE:
             cls.read()
             successful = cls.update()
-        elif option is FixedIEOption.DELETE:
+        else: # option is FixedIEOption.DELETE:
             cls.read()
             successful = cls.delete()
         if successful:
@@ -85,7 +86,6 @@ class FixedIEPage(Accessor):
             except ValueError:
                 print("請輸入數字:")
 
-        cls.setUp_connection_and_table()
         query = cls.table.insert().values(name=name, amount=amount, category=category.name)
         rowsAffected = cls.conn.execute(query).rowcount
         return rowsAffected == 1
@@ -94,7 +94,7 @@ class FixedIEPage(Accessor):
     def hint_create_name(category):
         if category == FixedIECategory.INCOME:
             print("請輸入新的固定收入...")
-        elif category == FixedIECategory.EXPENSE:
+        if category == FixedIECategory.EXPENSE:
             print("請輸入新的固定支出...")
         print("名稱:")
 
@@ -108,7 +108,6 @@ class FixedIEPage(Accessor):
 
     @classmethod
     def read(cls):
-        cls.setUp_connection_and_table()
         query = sql.select(cls.table.c["name", "amount", "category"])
         results = cls.conn.execute(query).fetchall()
         cls.format_print(results)
@@ -123,7 +122,6 @@ class FixedIEPage(Accessor):
     def update(cls):
         cls.hint_select_update_name()
         name = input()
-        cls.setUp_connection_and_table()
         query = cls.table.select().where(cls.table.c.name == name)
         result = cls.conn.execute(query)
         rows = result.fetchall()
@@ -142,10 +140,8 @@ class FixedIEPage(Accessor):
                 return cls.update_amount(name)
             elif option == FixedIEUpdateOption.CATEGORY:
                 return cls.update_category(name)
-            elif option == FixedIEUpdateOption.BACK:
+            else: # option == FixedIEUpdateOption.BACK:
                 return True
-            else:
-                return False
 
     @staticmethod
     def hint_select_update_name():
@@ -161,22 +157,29 @@ class FixedIEPage(Accessor):
         original_amount = result[1]
 
         cls.hint_update_amount()
-        new_amount = float(input())
+        while True:
+            try:
+                new_amount = float(input())
+                if new_amount <= 0:
+                    cls.hint_update_format_amount()
+                else:
+                    break
+            except:
+                cls.hint_update_format_amount()
 
-        cls.setUp_connection_and_table()
         query = cls.table.update().where(cls.table.c.name == name).values(amount=new_amount)
         rowsAffected = cls.conn.execute(query).rowcount
 
-        if rowsAffected == 0:
-            print("未更新任何資料")
-            return False
-        else:
-            print("名稱為 \"%s\" 的固定收支金額已成功更新為 %.2f" % (name, new_amount))
-            return True
+        print("名稱為 \"%s\" 的固定收支金額已成功更新為 %.2f" % (name, new_amount))
+        return True
 
     @staticmethod
     def hint_update_amount():
         print("修改金額為:")
+
+    @staticmethod
+    def hint_update_format_amount():
+        print("請輸入大於0的數字:")
 
     @classmethod
     def update_category(cls, name):
@@ -191,15 +194,10 @@ class FixedIEPage(Accessor):
             except ValueError:
                 print("請輸入 1 到 2 之間的數字:")
 
-        cls.setUp_connection_and_table()
         query = cls.table.update().where(cls.table.c.name == name).values(category=new_category.name)
         rowsAffected = cls.conn.execute(query).rowcount
-        if rowsAffected == 0:
-            print("未更新任何資料")
-            return False
-        else:
-            print("名稱為 \"%s\" 的固定收支已成功更類別為 %s" % (name, new_category.name))
-            return True
+        print("名稱為 \"%s\" 的固定收支已成功更類別為 %s" % (name, new_category.name))
+        return True
 
     @staticmethod
     def hint_update_category():
@@ -209,7 +207,6 @@ class FixedIEPage(Accessor):
     def delete(cls):
         cls.hint_delete_name()
         name = input()
-        cls.setUp_connection_and_table()
         query = cls.table.delete().where(cls.table.c.name == name)
         rowsAffected = cls.conn.execute(query).rowcount
         if rowsAffected == 0:
