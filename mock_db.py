@@ -114,7 +114,9 @@ class MockDB(TestCase):
 
         default_records = [
             {'category': "FOOD", 'payment': "現金", 'amount': 50, 'place': "7-11", 'time': datetime.today().date()},
-            {'category': "BEVERAGE", 'payment': "現金", 'amount': 100, 'place': "comebuy", 'time': datetime.today().date()}
+            {'category': "BEVERAGE", 'payment': "現金", 'amount': 100, 'place': "comebuy", 'time': datetime.today().date()},
+            {'category': "BEVERAGE", 'payment': "現金", 'amount': 150, 'place': "茶湯會", 'time': "2023-05-17"},
+            {'category': "FOOD", 'payment': "現金", 'amount': 80, 'place': "FamilyMart", 'time': "2023-05-25"}
         ]
         conn.execute(record.insert().values(default_records))
 
