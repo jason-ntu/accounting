@@ -54,10 +54,8 @@ class CreateRecordPage(Accessor):
     def execute(clf, option):
         if option is CreateRecordOption.FOOD:
             clf.category = "FOOD"
-        elif option is CreateRecordOption.BEVERAGE:
+        else :
             clf.category = "BEVERAGE"
-        else:
-            raise ValueError(clf.errorMsg)
         clf.createRecord()
     
     @classmethod
