@@ -32,10 +32,7 @@ class ExportPage(Accessor):
     @classmethod
     def execute(cls, option):
         cls.setUp_connection_and_table()
-        if option is ExportOption.CHOOSE:
-            successful = cls.chooseInterval()
-        else:
-            successful = False
+        successful = cls.chooseInterval()
         if successful:
             cls.tearDown_connection(es.COMMIT)
         else:
@@ -108,5 +105,5 @@ class ExportPage(Accessor):
             cls.execute(option)
 
 if __name__ == '__main__': # pragma: no cover
-    settingsPage = ExportPage()
-    settingsPage.start()
+    ExportPage = ExportPage()
+    ExportPage.start()
