@@ -121,7 +121,7 @@ class MockDB(TestCase):
             {'name': "夜市"},
             {'name': "其它"}
         ]
-        conn.execute(category.insert().values(default_locations))
+        conn.execute(location.insert().values(default_locations))
 
         default_records = [
             {'category': "FOOD", 'payment': "現金", 'amount': 50, 'place': "7-11", 'time': '2023-05-01'},
