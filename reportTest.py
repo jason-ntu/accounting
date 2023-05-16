@@ -44,7 +44,7 @@ class TestReport(MockDB):
             ReportPage.execute(ReportOption.CHOOSE)
             self.assertEqual(_chooseInterval.call_count, 1)
             ReportPage.execute(ReportOption.BACK)
-            self.assertEqual(_chooseInterval.call_count, 1)
+            self.assertEqual(_chooseInterval.call_count, 2)
         output_lines = _stdout.getvalue().strip().split('\n')
         self.assertEqual(output_lines[0], "%s操作成功%s" %
                          (const.ANSI_GREEN, const.ANSI_RESET))
