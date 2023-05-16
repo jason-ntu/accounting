@@ -43,6 +43,9 @@ class MockDB(TestCase):
                          sql.Column(
                              'category', sql.Enum(PaymentCategory), default=PaymentCategory.CASH, nullable=False)
                          )
+        income = sql.Table('Income', metadata,
+                        sql.Column('id', sql.Integer(), nullable=False, primary_key=True),
+                        sql.Column('name', sql.String(50), nullable=False))
 
         category = sql.Table('Category', metadata,
                             sql.Column(
@@ -85,6 +88,14 @@ class MockDB(TestCase):
             {'name': "Line Pay", 'balance': 100, 'category': PaymentCategory.ELECTRONIC.name},
         ]
         conn.execute(payment.insert().values(default_payments))
+
+        default_incomes = [
+            {'name': "獎金"},
+            {'name': "退款"},
+            {'name': "回饋"},
+            {'name': "其他"}
+        ]
+        conn.execute(income.insert().values(default_incomes))
 
         default_fixedIE = [
             {'name': "獎學金", 'amount': 10000, 'category': FixedIECategory.INCOME.name},

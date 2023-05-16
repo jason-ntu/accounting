@@ -35,10 +35,7 @@ class ReportPage(Accessor):
     @classmethod
     def execute(cls, option):
         cls.setUp_connection_and_table()
-        if option is ReportOption.CHOOSE:
-            successful = cls.chooseInterval()
-        else:
-            successful = False
+        successful = cls.chooseInterval()
         if successful:
             cls.tearDown_connection(es.COMMIT)
         else:
