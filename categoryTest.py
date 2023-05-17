@@ -114,8 +114,10 @@ class TestCategoryPage(MockDB):
         outputs = [
             "%s目前沒有這個類別%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
             "%s新名稱不得為空%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
-            "%s新名稱不得與其它類別的名稱重複%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET), "", ""
-                   ]
+            "%s新名稱不得與其它類別的名稱重複%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
+            "",
+            ""
+            ]
                 
         for i in range(5):
             with self.mock_db_config:

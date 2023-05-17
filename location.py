@@ -13,42 +13,129 @@ class LocationOption(IntEnum):
 
 
 class LocationPage(Accessor):
+
+    table_name = "Location"
+
+    @staticmethod
     def show():
-        pass
+        print("%d: 新增地點" % LocationOption.CREATE)
+        print("%d: 查看地點" % LocationOption.READ)
+        print("%d: 修改地點" % LocationOption.UPDATE)
+        print("%d: 刪除地點" % LocationOption.DELETE)
+        print("%d: 回到上一頁" % LocationOption.BACK)
 
+    @staticmethod
     def choose():
-        pass
+        while True:
+            try:
+                option = LocationOption(int(input()))
+                break
+            except ValueError:
+                print("請輸入 1 到 5 之間的數字:")
+        return option
 
-    def execute():
-        pass
+    @classmethod
+    def execute(cls, option):
+        cls.setUp_connection_and_table()
+        if option is LocationOption.CREATE:
+            successful = cls.create()
+        elif option is LocationOption.READ:
+            cls.read()
+            cls.tearDown_connection(es.NONE)
+            return
+        elif option is LocationOption.UPDATE:
+            successful = cls.update()
+        else:
+            successful = cls.delete()
+        if successful:
+            cls.tearDown_connection(es.COMMIT)
+        else:
+            cls.tearDown_connection(es.ROLLBACK)
 
-    def create():
-        pass
+    @classmethod
+    def create(cls):
+        cls.hint_create_name()
+        name = input()
+        if name == "":
+            print("%s名稱不得為空%s" % (const.ANSI_YELLOW, const.ANSI_RESET))
+            return False
+        query = sql.select(cls.table.c["name"]).where(cls.table.c.name == name)
+        results = cls.conn.execute(query).fetchall()
+        if len(results) > 0:
+            print("%s名稱不得與其它地點的名稱重複%s" % (const.ANSI_YELLOW, const.ANSI_RESET))
+            return False
+        query = cls.table.insert().values(name=name)
+        rowsAffected = cls.conn.execute(query).rowcount
+        return rowsAffected == 1
 
+    @staticmethod
     def hint_create_name():
-        pass
+        print("請輸入新地點的名稱:")
 
-    def read():
-        pass
+    @classmethod
+    def read(cls):
+        query = sql.select(cls.table.c["name"])
+        results = cls.conn.execute(query).fetchall()
+        for row in results:
+            dictRow = row._asdict()
+            print(dictRow['name'])
 
-    def update():
-        pass
+    @classmethod
+    def update(cls):
+        cls.hint_update_name()
+        name = input()
+        cls.hint_update_new_name()
+        new_name = input()
+        if new_name == "":
+            print("%s新名稱不得為空%s" % (const.ANSI_YELLOW, const.ANSI_RESET))
+            return False
+        query = sql.select(cls.table.c["name"]).where(
+            cls.table.c.name == new_name)
+        results = cls.conn.execute(query).fetchall()
+        if len(results) > 0 and name != new_name:
+            print("%s新名稱不得與其它地點的名稱重複%s" %
+                  (const.ANSI_YELLOW, const.ANSI_RESET))
+            return False
+        query = cls.table.update().values(name=new_name).where(cls.table.c.name == name)
+        rowsAffected = cls.conn.execute(query).rowcount
+        if rowsAffected == 0:
+            print("%s目前沒有這個地點%s" %
+                  (const.ANSI_YELLOW, const.ANSI_RESET))
+            return False
+        return True
 
     def hint_update_name():
-        pass
+        print("請選擇要修改的地點(輸入名稱):")
 
     def hint_update_new_name():
-        pass
+        print("請輸入新的名稱:")
+
+    @classmethod
+    def delete(cls):
+        cls.hint_delete()
+        name = input()
+        if name == "":
+            print("%s名稱不得為空%s" % (const.ANSI_YELLOW, const.ANSI_RESET))
+            return False
+        query = cls.table.delete().where(cls.table.c.name == name)
+        rowsAffected = cls.conn.execute(query).rowcount
+        if rowsAffected == 0:
+            print("%s目前沒有這個地點%s" %
+                  (const.ANSI_YELLOW, const.ANSI_RESET))
+            return False
+        return True
 
     def hint_delete():
-        pass
-
-    def delete():
-        pass
+        print("請選擇要刪除的地點(輸入名稱):")
 
     @classmethod
     def start(cls):
-        pass
+        while True:
+            cls.show()
+            option = cls.choose()
+            if option is LocationOption.BACK:
+                return
+            cls.execute(option)
 
 
 if __name__ == "__main__":  # pragma: no cover

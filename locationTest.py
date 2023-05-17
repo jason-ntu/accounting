@@ -69,7 +69,7 @@ class TestLocationPage(MockDB):
                          (const.ANSI_GREEN, const.ANSI_RESET))
 
     @patch("sys.stdout", new_callable=io.StringIO)
-    @patch('builtins.input', side_effect=["", "食物", "文具", 123])
+    @patch('builtins.input', side_effect=["", "便利商店", "學校", 123])
     @patch.object(LocationPage, 'hint_create_name')
     def test_create(self, _hint_create_name, _input, _stdout):
         results = [False, False, True, True]
@@ -100,14 +100,25 @@ class TestLocationPage(MockDB):
             self.assertEqual(output_lines[i], locations[i])
 
     @patch("sys.stdout", new_callable=io.StringIO)
-    @patch('builtins.input', side_effect=["百貨公司", "蝦皮", "", "便利商店", "夜市", "誠品", "誠品", "蝦皮", "淘寶"])
+    @patch('builtins.input', side_effect=[
+        # pairs of input for 5 cases
+        "百貨公司", "商場",
+        "蝦皮", "",
+        "便利商店", "夜市",
+        "誠品", "誠品",
+        "蝦皮", "淘寶"])
     @patch.object(LocationPage, 'hint_update_new_name')
     @patch.object(LocationPage, 'hint_update_name')
     def test_update(self, _hint_update_name, _hint_update_new_name, _input, _stdout):
         results = [False, False, False, True, True]
-        outputs = ["%s目前沒有這個地點%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
-                   "%s新名稱不得為空%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
-                   "%s新名稱不得與其他地點的名稱重複%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET), "", ""]
+        outputs = [
+            "%s目前沒有這個地點%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
+            "%s新名稱不得為空%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
+            "%s新名稱不得與其它地點的名稱重複%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
+            "",
+            ""
+            ]
+        
         for i in range(5):
             with self.mock_db_config:
                 LocationPage.setUp_connection_and_table()
@@ -116,8 +127,8 @@ class TestLocationPage(MockDB):
                 LocationPage.tearDown_connection(es.NONE)
             self.assertEqual(result, results[i])
             self.assertEqual(_hint_update_name.call_count, i+1)
-            self.assertEqual(_hint_update_new_name.call_count, i)
-            self.assertEqual(_input.call_count, 2*i + 1)
+            self.assertEqual(_hint_update_new_name.call_count, i+1)
+            self.assertEqual(_input.call_count, 2*i+2)
             self.assertEqual(_stdout.getvalue(), outputs[i])
             _stdout.truncate(0)
             _stdout.seek(0)
