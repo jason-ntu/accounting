@@ -20,7 +20,7 @@ class SettingPage():
     @staticmethod
     def show():
         print("%d: 查看/修改總預算" % SettingOption.BUDGET)
-        print("%d: 新增每月固定收支" % SettingOption.FIXEDIE)
+        print("%d: 查看/新增每月固定收支" % SettingOption.FIXEDIE)
         print("%d: 查看/新增/修改/刪除類別" % SettingOption.CATEGORY)
         print("%d: 查看/新增/修改/刪除支付方式" % SettingOption.BALANCE)
         print("%d: 查看/新增/修改/刪除地點" % SettingOption.LOCATION)
