@@ -22,12 +22,12 @@ class TestPaymentPage(MockDB):
         hints = [(PaymentPage.hint_create_name, "請輸入新支付方式的...\n名稱:\n"),
                  (PaymentPage.hint_create_balance, "餘額:\n"),
                  (PaymentPage.hint_create_category, "類型(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他):\n"),
-                 (PaymentPage.hint_update_name, "請選擇要修改的支付方式(輸入名稱):\n"),
+                 (PaymentPage.hint_update_name, "請輸入要修改的支付方式名稱:\n"),
                  (PaymentPage.hint_update_option, "請選擇要修改的項目(1 名稱, 2 餘額, 3 類型):\n"),
                  (PaymentPage.hint_update_new_name, "請輸入新的名稱:\n"),
                  (PaymentPage.hint_update_new_balance, "請輸入新的餘額:\n"),
                  (PaymentPage.hint_update_new_category, "請輸入新的類型(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他):\n"),
-                 (PaymentPage.hint_delete, "請選擇要刪除的支付方式(輸入名稱):\n")]
+                 (PaymentPage.hint_delete, "請輸入要刪除的支付方式名稱:\n")]
         for hint in hints:
             hint[0]()
             self.assertMultiLineEqual(_stdout.getvalue(), hint[1])
