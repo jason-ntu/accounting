@@ -114,7 +114,7 @@ class IncomePage(Accessor):
 
     @staticmethod
     def hint_update_name():
-        print("請選擇要修改的收入方式(輸入名稱):")
+        print("請輸入要修改的收入方式名稱:")
 
     @staticmethod
     def hint_update_new_name():
@@ -132,7 +132,7 @@ class IncomePage(Accessor):
         return True
 
     def hint_delete():
-        print("請選擇要刪除的收入方式(輸入名稱):")
+        print("請輸入要刪除的收入方式名稱:")
 
     @classmethod
     def start(cls):

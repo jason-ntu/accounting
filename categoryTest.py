@@ -20,9 +20,9 @@ class TestCategoryPage(MockDB):
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_hints(self, _stdout):
         hints = [(CategoryPage.hint_create_name, "請輸入新類別的名稱:\n"),
-                 (CategoryPage.hint_update_name, "請選擇要修改的類別(輸入名稱):\n"),
+                 (CategoryPage.hint_update_name, "請輸入要修改的類別名稱:\n"),
                  (CategoryPage.hint_update_new_name, "請輸入新的名稱:\n"),
-                 (CategoryPage.hint_delete, "請選擇要刪除的類別(輸入名稱):\n")]
+                 (CategoryPage.hint_delete, "請輸入要刪除的類別名稱:\n")]
         for hint in hints:
             hint[0]()
             self.assertMultiLineEqual(_stdout.getvalue(), hint[1])

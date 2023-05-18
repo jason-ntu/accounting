@@ -21,9 +21,9 @@ class TestLocationPage(MockDB):
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_hints(self, _stdout):
         hints = [(LocationPage.hint_create_name, "請輸入新地點的名稱:\n"),
-                 (LocationPage.hint_update_name, "請選擇要修改的地點(輸入名稱):\n"),
+                 (LocationPage.hint_update_name, "請輸入要修改的地點名稱:\n"),
                  (LocationPage.hint_update_new_name, "請輸入新的名稱:\n"),
-                 (LocationPage.hint_delete, "請選擇要刪除的地點(輸入名稱):\n")]
+                 (LocationPage.hint_delete, "請輸入要刪除的地點名稱:\n")]
         for hint in hints:
             hint[0]()
             self.assertMultiLineEqual(_stdout.getvalue(), hint[1])

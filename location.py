@@ -105,7 +105,7 @@ class LocationPage(Accessor):
         return True
 
     def hint_update_name():
-        print("請選擇要修改的地點(輸入名稱):")
+        print("請輸入要修改的地點名稱:")
 
     def hint_update_new_name():
         print("請輸入新的名稱:")
@@ -126,7 +126,7 @@ class LocationPage(Accessor):
         return True
 
     def hint_delete():
-        print("請選擇要刪除的地點(輸入名稱):")
+        print("請輸入要刪除的地點名稱:")
 
     @classmethod
     def start(cls):
