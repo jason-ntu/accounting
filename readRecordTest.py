@@ -101,8 +101,10 @@ class TestReadRecord(MockDB):
         output_lines = _stdout.getvalue().strip().split('\n')
         self.assertEqual(output_lines[0], "請輸入 開始 時間(yyyy-mm-dd): ")
         self.assertEqual(output_lines[1], "請輸入 結束 時間(yyyy-mm-dd): ")
-        self.assertEqual(output_lines[2], "3  類別: BEVERAGE  金額: 150  支付方式: 現金  地點: 茶湯會  時間: " + "2023-05-17")
-        self.assertEqual(output_lines[3], "4  類別: FOOD  金額: 80  支付方式: 現金  地點: FamilyMart  時間: " + "2023-05-25")
+        self.assertEqual(output_lines[2], "1  類別: FOOD  金額: 50  支付方式: 現金  地點: 7-11  時間: 2023-05-18")
+        self.assertEqual(output_lines[3], "2  類別: BEVERAGE  金額: 100  支付方式: 現金  地點: comebuy  時間: 2023-05-18")
+        self.assertEqual(output_lines[4], "3  類別: BEVERAGE  金額: 150  支付方式: 現金  地點: 茶湯會  時間: 2023-05-17")
+        self.assertEqual(output_lines[5], "4  類別: FOOD  金額: 80  支付方式: 現金  地點: FamilyMart  時間: 2023-05-25")
 
     @patch.object(ReadRecordPage, "execute")
     @patch.object(ReadRecordPage, "choose",
