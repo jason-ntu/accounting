@@ -50,7 +50,7 @@ class fixedIERecord():
         """
 
     @classmethod
-    def Start(cls):
+    def start(cls):
         results = cls.readFixedIE()
         for row in results:
             dictRow = row._asdict()
@@ -68,4 +68,4 @@ class fixedIERecord():
 
 if __name__ == "__main__":  # pragma: no cover
     fixedIERecord = fixedIERecord
-    fixedIERecord.Start()
+    fixedIERecord.start()
