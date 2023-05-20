@@ -68,6 +68,10 @@ class UpdateRecordPage(Accessor):
     def hintIntegerErorMsg():
         print("輸入的數字須為整數")
     
+    @staticmethod
+    def hintGetID():
+        print("請輸入想更改的紀錄ID: ")
+    
     @classmethod
     def chooseItem(clf):
         while True:
@@ -83,7 +87,8 @@ class UpdateRecordPage(Accessor):
     def checkIDInteger(clf):
         while True:
             try:
-                ID = int(input("請輸入想更改的紀錄ID: "))
+                clf.hintGetID()
+                ID = int(input())
                 break
             except ValueError:
                 print("輸入的ID須為整數")
