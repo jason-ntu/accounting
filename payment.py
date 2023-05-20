@@ -153,19 +153,6 @@ class PaymentPage(Accessor):
                     print("請輸入 1 到 5 之間的數字:")
             query = cls.table.update().values(category=newCategory.name).where(cls.table.c.name == name)
         rowsAffected = cls.conn.execute(query).rowcount
-<<<<<<< HEAD
-        cls.tearDown_connection()
-        if rowsAffected == 1:
-            print("修改成功！")
-            return True
-        else:  
-            print("修改過程有誤。")
-            return False
-
-    @staticmethod
-    def hint_update_name():
-        print("請選擇要修改的支付方式(輸入名稱):")
-=======
         if rowsAffected > 1:
             print("%s%s 對應到多個支付方式%s" % (const.ANSI_YELLOW, name, const.ANSI_RESET))
             return False
@@ -178,7 +165,6 @@ class PaymentPage(Accessor):
     @staticmethod
     def hint_update_name():
         print("請輸入要修改的支付方式名稱:")
->>>>>>> 91fe9647f04d7a2bfbcc136138c72d6e33940eec
     
     @staticmethod
     def hint_update_option():
@@ -196,10 +182,6 @@ class PaymentPage(Accessor):
     def hint_update_new_category():
         print("請輸入新的類型(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他):")
     
-<<<<<<< HEAD
-    def delete(self, name):
-        pass
-=======
     @classmethod
     def delete(cls):
         cls.hint_delete()
@@ -213,7 +195,6 @@ class PaymentPage(Accessor):
 
     def hint_delete():
         print("請輸入要刪除的支付方式名稱:")
->>>>>>> 91fe9647f04d7a2bfbcc136138c72d6e33940eec
 
     @classmethod
     def start(cls):

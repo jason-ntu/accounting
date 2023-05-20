@@ -7,12 +7,14 @@ from payment import PaymentCategory
 from fixedIE import FixedIECategory
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from datetime import datetime
+from freezegun import freeze_time
 
 class MockDB(TestCase):
 
     config = cfg.test
 
     @classmethod
+    @freeze_time("2023-05-18")
     def setUpClass(cls):
         if database_exists(cls.config['url']):
             drop_database(cls.config['url'])
@@ -73,7 +75,7 @@ class MockDB(TestCase):
                         sql.Column('category', sql.String(30), nullable=False),
                         sql.Column('payment', sql.String(30), nullable=False),
                         sql.Column('amount', sql.Integer(), nullable=False),
-                        sql.Column('place', sql.String(30), nullable=False),
+                        sql.Column('place', sql.String(30), nullable=False), 
                         sql.Column('time', sql.Date(), default=datetime.today(), nullable=False)
         )
 
