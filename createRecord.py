@@ -6,6 +6,7 @@ from datetime import datetime
 import re
 from fixedIE import FixedIEType
 from category import CategoryPage
+from payment import PaymentPage, PaymentCategory
 from records import RecordPage
 
 
@@ -13,13 +14,6 @@ class CreateRecordOption(IntEnum):
     INCOME = auto()
     EXPENSE = auto()
     BACK = auto()
-
-class PaymentOption(IntEnum):
-    CASH = auto()
-    DEBIT_CARD = auto()
-    CREDIT_CARD = auto()
-    ELECTRONIC = auto()
-    OTHER = auto()
 
 class CreateRecordPage(RecordPage):
 
@@ -64,13 +58,18 @@ class CreateRecordPage(RecordPage):
             except ValueError:
                 clf.hintGetCategory()
 
+        clf.paymentList = PaymentPage.getList()
         while True:
-            clf.hintPaymentMsg()
+            clf.showPayment()
+            clf.hintGetPayment()
             try:
-                paymentOption = PaymentOption(int(input()))
+                choice = int(input())
+                if choice not in range(1, len(clf.paymentList)+1):
+                    raise ValueError
+                payment = clf.paymentList[choice-1]
                 break
             except ValueError:
-                print("請輸入 1 到 5 之間的數字:")
+                clf.hintGetPayment()
 
         clf.hintGetAmount()
         while True:
@@ -91,7 +90,7 @@ class CreateRecordPage(RecordPage):
             except ValueError:
                 clf.hintGetConsumptionDate()
 
-        if paymentOption is paymentOption.CREDIT_CARD:
+        if payment['category'] == PaymentCategory.CREDIT_CARD.name:
             clf.hintGetDeductionDate()
             while True:
                 try:
@@ -122,7 +121,7 @@ class CreateRecordPage(RecordPage):
         clf.setUp_connection_and_table()
         query = clf.table.insert().values(IE=clf.IE,
                                           category=category,
-                                          amount=amountOfMoney, payment=paymentOption.name,
+                                          amount=amountOfMoney, payment=payment['name'],
                                           place=consumptionPlace, consumptionDate=spendingTime,
                                           deductionDate=deducteTime, invoice=invoiceNumber, note=note)
         resultProxy = clf.conn.execute(query)
@@ -132,11 +131,7 @@ class CreateRecordPage(RecordPage):
             clf.tearDown_connection(es.ROLLBACK)
             return
         clf.tearDown_connection(es.COMMIT)
-
-    @staticmethod
-    def hintPaymentMsg():
-        print("收支方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他: ")
-
+        
     @staticmethod
     def hintGetAmount():
         print("請輸入金額")

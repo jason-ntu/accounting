@@ -1,12 +1,12 @@
 from enum import IntEnum, auto
 from datetime import datetime
 import sqlalchemy as sql
-from accessor import Accessor, ExecutionStatus as es
+from accessor import ExecutionStatus as es
 from sqlalchemy import and_
 from readRecord import ReadRecordPage, ReadRecordOption
-from createRecord import PaymentOption, CreateRecordPage
 from records import RecordPage
 from category import CategoryPage
+from payment import PaymentPage
 import re
 
 class ItemOption(IntEnum):
@@ -40,10 +40,6 @@ class UpdateRecordPage(RecordPage):
     def hintNewAmount():
         print("請輸入新的金額")
 
-    @staticmethod
-    def hintNewPayment():
-        print("請選擇新的收支方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他")
-    
     @staticmethod
     def hintNewPlace():
         print("請輸入新的地點")
@@ -116,19 +112,20 @@ class UpdateRecordPage(RecordPage):
 
     @classmethod
     def updatePayment(clf, ID):
-        clf.hintNewPayment()
+        clf.paymentList = PaymentPage.getList()
+        clf.showPayment()
+        clf.hintGetPayment()
         while True:
             try:
-                newPayment = int(input())
-                if newPayment <= len(clf.paymentList):
-                    break
-                else: 
-                    raise ValueError()
+                choice  = int(input())
+                if choice not in range(1, len(clf.paymentList)+1):
+                    raise ValueError
+                payment = clf.paymentList[choice-1]
+                break
             except ValueError:
-                clf.hintNewPayment()
-
+                clf.hintGetPayment()
         clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(payment=clf.paymentList[newPayment-1])
+        query = sql.update(clf.table).where(clf.table.c.id == ID).values(payment=payment['name'])
         resultProxy = clf.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:

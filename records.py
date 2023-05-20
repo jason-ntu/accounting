@@ -18,6 +18,7 @@ class RecordPage(Accessor):
 
     table_name = "Record"
     categoryList = []
+    paymentList = []
     
     @staticmethod
     def choose():
@@ -71,6 +72,15 @@ class RecordPage(Accessor):
     @classmethod
     def hintGetCategory(cls):
         print("請輸入 1 到 %d 之間的數字:" % len(cls.categoryList))
+    
+    @classmethod
+    def showPayment(clf):
+        for i in range(len(clf.paymentList)):
+            print("%d %s(%s)" % (i+1, clf.paymentList[i]['name'], clf.paymentList[i]['category']))
+
+    @classmethod
+    def hintGetPayment(cls):
+        print("請輸入 1 到 %d 之間的數字:" % len(cls.paymentList))
 
 if __name__ == '__main__': # pragma: no cover
     RecordPage.start()
