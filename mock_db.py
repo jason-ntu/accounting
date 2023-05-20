@@ -4,7 +4,7 @@ import sqlalchemy as sql
 from mock import patch
 import const
 from payment import PaymentCategory
-from fixedIE import FixedIECategory
+from fixedIE import FixedIEType, CategoryOption, PaymentOption
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from datetime import datetime
 from freezegun import freeze_time
@@ -64,10 +64,22 @@ class MockDB(TestCase):
                              )
 
         fixedIE = sql.Table('FixedIE', metadata,
-                        sql.Column('id', sql.Integer(), nullable=False, primary_key=True),
-                        sql.Column('name', sql.String(50), nullable=False),
-                        sql.Column('amount', sql.Float(), nullable=False),
-                        sql.Column('category', sql.Enum(FixedIECategory), nullable=False)
+                        sql.Column(
+                            'id', sql.Integer(), nullable=False, primary_key=True),
+                        sql.Column(
+                            'name', sql.String(50), nullable=False),
+                        sql.Column(
+                            'IE', sql.Enum(FixedIEType), nullable=False),
+                        sql.Column(
+                            'category', sql.String(30), nullable=False),
+                        sql.Column(
+                            'payment', sql.String(30), nullable=False),
+                        sql.Column(
+                            'amount', sql.Float(), nullable=False),
+                        sql.Column(
+                            'day', sql.Integer(), nullable=False),
+                        sql.Column(
+                            'note', sql.String(30), nullable=True)
         )
 
         record = sql.Table('Record', metadata,
@@ -75,7 +87,7 @@ class MockDB(TestCase):
                         sql.Column('category', sql.String(30), nullable=False),
                         sql.Column('payment', sql.String(30), nullable=False),
                         sql.Column('amount', sql.Integer(), nullable=False),
-                        sql.Column('place', sql.String(30), nullable=False), 
+                        sql.Column('place', sql.String(30), nullable=False),
                         sql.Column('time', sql.Date(), default=datetime.today(), nullable=False)
         )
 
@@ -100,8 +112,8 @@ class MockDB(TestCase):
         conn.execute(income.insert().values(default_incomes))
 
         default_fixedIE = [
-            {'name': "獎學金", 'amount': 10000, 'category': FixedIECategory.INCOME.name},
-            {'name': "房租", 'amount': 6000, 'category': FixedIECategory.EXPENSE.name}
+            {'IE': FixedIEType.INCOME.name, 'name': "獎學金", 'category': CategoryOption.OTHER.name, 'payment': PaymentOption.OTHER.name, 'amount': 10000, 'day': 15, 'note': ''},
+            {'IE': FixedIEType.EXPENSE.name, 'name': "房租", 'category': CategoryOption.OTHER.name, 'payment': PaymentOption.OTHER.name, 'amount': 6000, 'day': 20, 'note': 'sos'}
         ]
         conn.execute(fixedIE.insert().values(default_fixedIE))
 

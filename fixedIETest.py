@@ -1,6 +1,6 @@
 import io
 from unittest.mock import patch
-from fixedIE import FixedIEPage, FixedIEOption, FixedIECategory
+from fixedIE import FixedIEPage, FixedIEOption, FixedIEType
 from mock_db import MockDB
 from accessor import ExecutionStatus as es
 import const
@@ -20,16 +20,23 @@ class TestFixedIEPage(MockDB):
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_hints(self, _stdout):
-        hints_argc1 = [(FixedIEPage.hint_create_name, FixedIECategory.INCOME,  "請輸入新的固定收入...\n名稱:\n"),
-                       (FixedIEPage.hint_create_name, FixedIECategory.EXPENSE, "請輸入新的固定支出...\n名稱:\n")]
-        hints_argc0 = [(FixedIEPage.hint_create_amount, "金額:\n"),
-                       (FixedIEPage.hint_create_category, "類型(1 固定收入, 2 固定支出):\n"),
-                       (FixedIEPage.hint_select_update_name, "請輸入要修改的固定收支的名稱:\n"),
-                       (FixedIEPage.hint_update_option, "請選擇要修改的項目(1 金額, 2 類別, 3 返回):\n"),
-                       (FixedIEPage.hint_update_amount, "修改金額為:\n"),
-                       (FixedIEPage.hint_update_format_amount, "請輸入大於0的數字:\n"),
-                       (FixedIEPage.hint_update_category, "修改類型為(1 固定收入, 2 固定支出):\n"),
-                       (FixedIEPage.hint_delete_name, "請輸入要刪除的固定收支的名稱:\n")]
+        hints_argc1 = [(FixedIEPage.hint_create_name, FixedIEType.INCOME,  "請輸入新的固定收入名稱: "),
+                       (FixedIEPage.hint_create_name, FixedIEType.EXPENSE, "請輸入新的固定支出名稱: ")]
+        hints_argc0 = [(FixedIEPage.hint_create_amount, "金額: "),
+                       (FixedIEPage.hint_create_type, "類型(1 固定收入, 2 固定支出): "),
+                       (FixedIEPage.hint_create_category, "記錄類別(1 食物, 2 飲料, 3 其他): "),
+                       (FixedIEPage.hint_create_payment, "收支方式(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他): "),
+                       (FixedIEPage.hint_create_note, "請輸入備註: "),
+                       (FixedIEPage.hint_select_update_name, "請輸入要修改的固定收支的名稱: "),
+                       (FixedIEPage.hint_update_option, "請選擇要修改的項目(1 類別, 2 收支方式, 3 金額, 4 時間, 5 備註, 6 返回): "),
+                       (FixedIEPage.hint_update_category, "修改記錄類別為(1 食物, 2 飲料, 3 其他): "),
+                       (FixedIEPage.hint_update_payment, "修改收支方式為(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他): "),
+                       (FixedIEPage.hint_update_amount, "修改金額為: "),
+                       (FixedIEPage.hint_update_format_amount, "請輸入大於0的數字: "),
+                       (FixedIEPage.hint_update_day, "修改每月收支日為(1-31): "),
+                       (FixedIEPage.hint_update_note, "修改備註為: "),
+                       (FixedIEPage.hint_delete_name, "請輸入要刪除的固定收支的名稱: ")
+                       ]
         for hint in hints_argc1:
             hint[0](hint[1])
             self.assertMultiLineEqual(_stdout.getvalue(), hint[2])
@@ -81,23 +88,32 @@ class TestFixedIEPage(MockDB):
                          (const.ANSI_GREEN, const.ANSI_RESET))
 
     @patch("sys.stdout", new_callable=io.StringIO)
-    @patch('builtins.input', side_effect=[ 3, 1, "獎學金", "一萬",10000, 2, "房租", 8000])
+    @patch('builtins.input', side_effect=[ 3, 1, "獎學金", 0 ,2 , 0, 5, "一萬", 10000, 80, 25 , '', 2, "房租", 2, 5, 8000, 5, 'sos'])
+    @patch.object(FixedIEPage, 'hint_create_note')
+    @patch.object(FixedIEPage, 'hint_create_day')
+    @patch.object(FixedIEPage, 'hint_create_payment')
     @patch.object(FixedIEPage, 'hint_create_category')
     @patch.object(FixedIEPage, 'hint_create_amount')
     @patch.object(FixedIEPage, 'hint_create_name')
-    def test_create(self, _hint_create_name, _hint_create_amount, _hint_create_category, _input, _stdout):
+    @patch.object(FixedIEPage, 'hint_create_type')
+    def test_create(self, _hint_create_type, _hint_create_name, _hint_create_amount, _hint_create_category, _hint_create_payment, _hint_create_day, _hint_create_note, _input, _stdout):
         with self.mock_db_config:
             FixedIEPage.setUp_connection_and_table()
             FixedIEPage.create()
             FixedIEPage.create()
             FixedIEPage.tearDown_connection(es.NONE)
-        self.assertEqual(_hint_create_category.call_count, 2)
+        self.assertEqual(_hint_create_type.call_count, 2)
         self.assertEqual(_hint_create_name.call_count, 2)
         self.assertEqual(_hint_create_amount.call_count, 2)
-        self.assertEqual(_input.call_count, 8)
+        self.assertEqual(_hint_create_category.call_count, 2)
+        self.assertEqual(_hint_create_payment.call_count, 2)
+        self.assertEqual(_input.call_count, 19)
         output_lines = _stdout.getvalue().strip().split('\n')
         self.assertEqual(output_lines[0], "請輸入 1 到 2 之間的數字:")
-        self.assertEqual(output_lines[1], "請輸入數字:")
+        self.assertEqual(output_lines[1], "請輸入 1 到 3 之間的數字:")
+        self.assertEqual(output_lines[2], "請輸入 1 到 5 之間的數字:")
+        self.assertEqual(output_lines[3], "請輸入數字:")
+        self.assertEqual(output_lines[4], "請輸入 1 到 31 之間的數字:")
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read(self, _stdout):
@@ -106,17 +122,17 @@ class TestFixedIEPage(MockDB):
             FixedIEPage.read()
             FixedIEPage.tearDown_connection(es.NONE)
         output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(output_lines[0], "固定收支: 名稱\"獎學金\" 金額10000.0 類別INCOME")
-        self.assertEqual(output_lines[1], "固定收支: 名稱\"房租\" 金額6000.0 類別EXPENSE")
+        self.assertEqual(output_lines[0], "INCOME 名稱\"獎學金\" 類別OTHER 收支方式OTHER 金額10000.0 每月15號 備註:")
+        self.assertEqual(output_lines[1], "EXPENSE 名稱\"房租\" 類別OTHER 收支方式OTHER 金額6000.0 每月20號 備註:sos")
 
     @patch("sys.stdout", new_callable=io.StringIO)
-    @patch('builtins.input', side_effect=["獎學金", 0, 1, "房租", 2, "unknown", "房租", 3])
+    @patch('builtins.input', side_effect=["獎學金", 0, 3, "房租", 4, "unknown", "房租", 6])
     @patch.object(FixedIEPage, 'hint_update_option')
     @patch.object(FixedIEPage, 'hint_select_update_name')
-    @patch.object(FixedIEPage, 'update_category')
+    @patch.object(FixedIEPage, 'update_day')
     @patch.object(FixedIEPage, 'update_amount')
     @patch.object(FixedIEPage, 'read')
-    def test_update(self, _read, _update_amount, _update_category, _hint_select_update_name, _hint_update_option, _input, _stdout):
+    def test_update(self, _read, _update_amount, _update_day, _hint_select_update_name, _hint_update_option, _input, _stdout):
         with self.mock_db_config:
             FixedIEPage.setUp_connection_and_table()
             FixedIEPage.update()
@@ -134,12 +150,19 @@ class TestFixedIEPage(MockDB):
         self.assertEqual(result, True)
         self.assertEqual(_read.call_count, 3)
         self.assertEqual(_update_amount.call_count, 1)
-        self.assertEqual(_update_category.call_count, 1)
+        self.assertEqual(_update_day.call_count, 1)
         self.assertEqual(_hint_select_update_name.call_count, 4)
         self.assertEqual(_hint_update_option.call_count, 3)
         output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(output_lines[0], "請輸入 1 到 3 之間的數字")
+        self.assertEqual(output_lines[0], "請輸入 1 到 6 之間的數字:")
         self.assertEqual(output_lines[1], "未找到名稱為 \"unknown\" 的固定收支")
+
+    def test_update_catrgory(self):
+        pass
+
+    def test_update_payment(self):
+        pass
+
 
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch('builtins.input', side_effect=[8000,"八千", 12000, -1000, 8000])
@@ -159,22 +182,11 @@ class TestFixedIEPage(MockDB):
         self.assertEqual(output_lines[1], "名稱為 \"獎學金\" 的固定收支金額已成功更新為 12000.00")
         self.assertEqual(output_lines[2], "名稱為 \"房租\" 的固定收支金額已成功更新為 8000.00")
 
-    @patch("sys.stdout", new_callable=io.StringIO)
-    @patch('builtins.input', side_effect=[0, 2 , "x", 1 , 1 , 2])
-    @patch.object(FixedIEPage, 'hint_update_category')
-    def test_update_catrgory(self, _hint_update_category, _input, _stdout):
-        with self.mock_db_config:
-            FixedIEPage.setUp_connection_and_table()
-            FixedIEPage.update_category("獎學金")
-            FixedIEPage.update_category("房租")
-            FixedIEPage.tearDown_connection(es.NONE)
-        self.assertEqual(_hint_update_category.call_count, 2)
-        output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(output_lines[0], "請輸入 1 到 2 之間的數字:")
-        self.assertEqual(output_lines[1], "名稱為 \"獎學金\" 的固定收支已成功更類別為 EXPENSE")
-        self.assertEqual(output_lines[2], "請輸入 1 到 2 之間的數字:")
-        self.assertEqual(output_lines[3], "名稱為 \"房租\" 的固定收支已成功更類別為 INCOME")
+    def test_update_day(self):
+        pass
 
+    def test_update_note(self):
+        pass
 
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch('builtins.input', side_effect=["獎學金", "unknown", "房租"])
