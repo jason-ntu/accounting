@@ -21,8 +21,8 @@ class ItemOption(IntEnum):
 class UpdateRecordPage(Accessor):
 
     table_name = "Record"
-    IDerrorMsg = "輸入的ID須為整數"
-    errorMsg = "請輸入 1 到 9 之間的數字: "
+    # IDerrorMsg = "輸入的ID須為整數"
+    # errorMsg = "請輸入 1 到 9 之間的數字: "
     categoryList = ["FOOD", "BEVERAGE"]
     paymentList = ["CASH", "DEBIT_CARD", "CREDIT_CARD", "ELECTRONIC", "OTHER"]
     IEList = ["INCOME", "EXPENSE"]
@@ -292,10 +292,9 @@ class UpdateRecordPage(Accessor):
             clf.updateDeductionDate(ID)
         elif option is ItemOption.INVOICE:
             clf.updateInvoice(ID)
-        elif option is ItemOption.NOTE:
+        else: 
             clf.updateNote(ID)
-        else:
-            raise ValueError(clf.errorMsg)
+        
 
     @classmethod
     def updateByID(clf):  # pragma: no cover
