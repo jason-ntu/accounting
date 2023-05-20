@@ -12,7 +12,7 @@ class ItemOption(IntEnum):
     CATEGORY = auto()
     PAYMENT = auto()
     AMOUNT = auto()
-    PLACE = auto()
+    LOCATION = auto()
     CONSUMPTIONTIME = auto()
     DEDUCTIONTIME = auto()
     INVOICE = auto()
@@ -284,7 +284,7 @@ class UpdateRecordPage(Accessor):
             clf.updatePayment(ID)
         elif option is ItemOption.AMOUNT:
             clf.updateAmount(ID)
-        elif option is ItemOption.PLACE:
+        elif option is ItemOption.LOCATION:
             clf.updatePlace(ID)
         elif option is ItemOption.CONSUMPTIONTIME:
             clf.updateConsumptionDate(ID)
