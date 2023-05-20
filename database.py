@@ -72,6 +72,8 @@ def initialize(config):
                         sql.Column(
                             'id', sql.Integer(), nullable=False, primary_key=True),
                         sql.Column(
+                            'IE', sql.String(10), nullable=False),
+                        sql.Column(
                             'category', sql.String(30), nullable=False),
                         sql.Column(
                             'payment', sql.String(30), nullable=False),
@@ -80,7 +82,13 @@ def initialize(config):
                         sql.Column(
                             'place', sql.String(30), nullable=False),
                         sql.Column(
-                            'time', sql.Date(), default=datetime.today(), nullable=False)
+                            'consumptionDate', sql.Date(), default=datetime.today(), nullable=False),
+                        sql.Column(
+                            'deductionDate', sql.Date(), default=datetime.today(), nullable=False),
+                        sql.Column(
+                            'invoice', sql.String(30), nullable=True),
+                        sql.Column(
+                            'note', sql.String(30), nullable=True)
                         )
 
     metadata.create_all(engine)

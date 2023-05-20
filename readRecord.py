@@ -15,7 +15,6 @@ class ReadRecordOption(IntEnum):
 
 class ReadRecordPage(Accessor):
 
-    errorMsg = "請輸入 1 到 5 之間的數字:"
     table_name = "Record"
 
     @staticmethod
@@ -52,21 +51,22 @@ class ReadRecordPage(Accessor):
             cls.viewWeek()
         elif option is ReadRecordOption.MONTH:
             cls.viewMonth()
-        elif option is ReadRecordOption.OTHER:
+        else :
             cls.viewOther()
-        # else:
-        #     raise ValueError(cls.errorMsg)
     
     @classmethod
     def viewToday(clf):  
         Date = datetime.today().date()
         clf.setUp_connection_and_table()
-        query = sql.select(clf.table).where(clf.table.c.time == Date)
+        query = sql.select(clf.table).where(clf.table.c.consumptionDate == Date)
         results = clf.conn.execute(query).fetchall()
         clf.tearDown_connection(es.NONE)
         for row in results:
             dictRow = row._asdict() 
-            print(dictRow['id']," 類別:", dictRow['category']," 金額:", dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], " 時間:", dictRow['time'])
+            print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
+                  dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
+                  " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
 
     @classmethod
@@ -75,12 +75,15 @@ class ReadRecordPage(Accessor):
         startDate = Date - timedelta(days=Date.weekday())
         endDate = startDate + timedelta(days=6)
         clf.setUp_connection_and_table()
-        query = sql.select(clf.table).where(and_(clf.table.c.time >= startDate, clf.table.c.time <= endDate))
+        query = sql.select(clf.table).where(and_(clf.table.c.consumptionDate >= startDate, clf.table.c.consumptionDate <= endDate))
         results = clf.conn.execute(query).fetchall()
         clf.tearDown_connection(es.NONE)
         for row in results:
             dictRow = row._asdict() 
-            print(dictRow['id']," 類別:", dictRow['category']," 金額:", dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], " 時間:", dictRow['time'])
+            print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
+                  dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
+                  " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
 
     @classmethod
@@ -90,13 +93,15 @@ class ReadRecordPage(Accessor):
         nextMonth = Date.replace(day=28) + timedelta(days=4)
         endDate = nextMonth - timedelta(days=nextMonth.day)
         clf.setUp_connection_and_table()
-        query = sql.select(clf.table).where(and_(clf.table.c.time >= startDate, clf.table.c.time <= endDate))
+        query = sql.select(clf.table).where(and_(clf.table.c.consumptionDate >= startDate, clf.table.c.consumptionDate <= endDate))
         results = clf.conn.execute(query).fetchall()
         clf.tearDown_connection(es.NONE)
         for row in results:
             dictRow = row._asdict() 
-            print(dictRow['id']," 類別:", dictRow['category']," 金額:", dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], " 時間:", dictRow['time'])
-
+            print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
+                  dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
+                  " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
     @classmethod
     def viewOther(clf):  
@@ -105,12 +110,15 @@ class ReadRecordPage(Accessor):
         clf.hintGetEndDate()
         endDate = str(input())
         clf.setUp_connection_and_table()
-        query = sql.select(clf.table).where(and_(clf.table.c.time >= startDate, clf.table.c.time <= endDate))
+        query = sql.select(clf.table).where(and_(clf.table.c.consumptionDate >= startDate, clf.table.c.consumptionDate <= endDate))
         results = clf.conn.execute(query).fetchall()
         clf.tearDown_connection(es.NONE)
         for row in results:
             dictRow = row._asdict() 
-            print(dictRow['id']," 類別:", dictRow['category']," 金額:", dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], " 時間:", dictRow['time'])
+            print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
+                  dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
+                  " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
 
     @classmethod
