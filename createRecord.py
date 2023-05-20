@@ -62,7 +62,7 @@ class CreateRecordPage(Accessor):
             clf.showCategory()
             clf.hintGetCategory()
             try:
-                category = CategoryOption(int(input()))
+                categoryOption = CategoryOption(int(input()))
                 break
             except ValueError:
                 print("請輸入 1 到 2 之間的數字:")
@@ -123,7 +123,7 @@ class CreateRecordPage(Accessor):
                 invoiceNumber = input()
 
         clf.setUp_connection_and_table()
-        query = clf.table.insert().values(IE=clf.IE, category=clf.category, 
+        query = clf.table.insert().values(IE=clf.IE, category=categoryOption.name, 
                                           amount=amountOfMoney, payment=paymentOption.name, 
                                           place=consumptionPlace, consumptionDate=spendingTime, 
                                           deductionDate=deducteTime, invoice=invoiceNumber, note=note)
