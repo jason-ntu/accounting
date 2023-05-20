@@ -11,6 +11,7 @@ class CreateRecordOption(IntEnum):
     EXPENSE = auto()
     BACK = auto()
 
+# TODO: remove this class
 class CategoryOption(IntEnum):
     FOOD = auto()
     BEVERAGE = auto()
@@ -36,6 +37,7 @@ class CreateRecordPage(Accessor):
 
     @staticmethod
     def showCategory():
+        # TODO: read from database
         print("%d: 新增食物類別" % CategoryOption.FOOD)
         print("%d: 新增飲料類別" % CategoryOption.BEVERAGE)
 
@@ -66,6 +68,7 @@ class CreateRecordPage(Accessor):
                 categoryOption = CategoryOption(int(input()))
                 break
             except ValueError:
+                # TODO: update this error message
                 print("請輸入 1 到 2 之間的數字:")
 
         while True:
@@ -124,7 +127,9 @@ class CreateRecordPage(Accessor):
                 invoiceNumber = input()
 
         clf.setUp_connection_and_table()
-        query = clf.table.insert().values(IE=clf.IE, category=categoryOption.name,
+        query = clf.table.insert().values(IE=clf.IE,
+                                        #   TODO: update this
+                                          category=categoryOption.name,
                                           amount=amountOfMoney, payment=paymentOption.name,
                                           place=consumptionPlace, consumptionDate=spendingTime,
                                           deductionDate=deducteTime, invoice=invoiceNumber, note=note)
