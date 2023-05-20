@@ -7,7 +7,7 @@ import re
 
 class CreateRecordOption(IntEnum):
     INCOME = auto()
-    OUTCOME = auto()
+    EXPENSE = auto()
     BACK = auto()
 
 class CategoryOption(IntEnum):
@@ -30,7 +30,7 @@ class CreateRecordPage(Accessor):
     @staticmethod
     def show():
         print("%d: 新增收入" % CreateRecordOption.INCOME)
-        print("%d: 新增支出" % CreateRecordOption.OUTCOME)
+        print("%d: 新增支出" % CreateRecordOption.EXPENSE)
         print("%d: 回到上一頁" % CreateRecordOption.BACK)
     
     @staticmethod
@@ -53,7 +53,7 @@ class CreateRecordPage(Accessor):
         if option is CreateRecordOption.INCOME:
             clf.IE = "INCOME"
         else :
-            clf.IE = "OUTCOME"
+            clf.IE = "EXPENSE"
         clf.createRecord()
     
     @classmethod
