@@ -142,7 +142,7 @@ class CreateRecordPage(Accessor):
 
     @staticmethod
     def hintPaymentMsg():
-        print("支付方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他: ")
+        print("收支方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他: ")
 
     @staticmethod
     def hintGetAmount():

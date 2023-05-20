@@ -64,7 +64,7 @@ class ReadRecordPage(Accessor):
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
-                  dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['place'], 
                   " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
@@ -81,7 +81,7 @@ class ReadRecordPage(Accessor):
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
-                  dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['place'], 
                   " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
@@ -99,7 +99,7 @@ class ReadRecordPage(Accessor):
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
-                  dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['place'], 
                   " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
@@ -116,14 +116,13 @@ class ReadRecordPage(Accessor):
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
-                  dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['place'], 
                   " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
 
     @classmethod
     def start(clf):
-        print(datetime.today())
         while True:
             clf.show()
             option = clf.choose()

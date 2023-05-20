@@ -6,34 +6,38 @@ from readRecord import ReadRecordPage, ReadRecordOption
 
 class DeleteRecordPage(Accessor):
 
-    errorMsg = "請輸入 1 到 3 之間的數字:"
     table_name = "Record"
-    IDerrorMsg = "輸入的ID須為整數"
 
+    @staticmethod
+    def hintGetID():
+        print("請輸入想刪除的紀錄ID: ")
             
-    def checkIDInteger(self):
+    @classmethod
+    def checkIDInteger(clf):
         while True:
             try:
-                ID = int(input("請輸入想刪除的紀錄ID: "))
+                clf.hintGetID()
+                ID = int(input())
                 break
             except ValueError:
-                print(self.IDerrorMsg)
+                print("輸入的ID須為整數")
         return ID
 
-    def deleteByID(self):
-        ID = self.checkIDInteger()
-        self.setUp_connection_and_table()
-        query = sql.delete(self.table).where(self.table.c.id == ID)
-        resultProxy = self.conn.execute(query)
+    @classmethod
+    def deleteByID(clf):
+        ID = clf.checkIDInteger()
+        clf.setUp_connection_and_table()
+        query = sql.delete(clf.table).where(clf.table.c.id == ID)
+        resultProxy = clf.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
-            self.tearDown_connection(es.ROLLBACK)
+            clf.tearDown_connection(es.ROLLBACK)
             return
-        self.tearDown_connection(es.COMMIT)
+        clf.tearDown_connection(es.COMMIT)
 
-
-    def start(self):
+    @classmethod
+    def start(clf):
         while True:
             readRecordPage = ReadRecordPage()
             readRecordPage.show()
@@ -41,7 +45,7 @@ class DeleteRecordPage(Accessor):
             if option is ReadRecordOption.BACK:
                 return
             readRecordPage.execute(option)
-            self.deleteByID()
+            clf.deleteByID()
 
 if __name__ == '__main__':  # pragma: no cover
     deleteRecordPage = DeleteRecordPage()
