@@ -4,6 +4,7 @@ import sqlalchemy as sql
 import sys
 from datetime import datetime
 import re
+from fixedIE import FixedIEType
 
 class CreateRecordOption(IntEnum):
     INCOME = auto()
@@ -32,7 +33,7 @@ class CreateRecordPage(Accessor):
         print("%d: 新增收入" % CreateRecordOption.INCOME)
         print("%d: 新增支出" % CreateRecordOption.EXPENSE)
         print("%d: 回到上一頁" % CreateRecordOption.BACK)
-    
+
     @staticmethod
     def showCategory():
         print("%d: 新增食物類別" % CategoryOption.FOOD)
@@ -47,15 +48,15 @@ class CreateRecordPage(Accessor):
             except ValueError:
                 print("請輸入 1 到 3 之間的數字:")
         return option
-        
+
     @classmethod
     def execute(clf, option):
         if option is CreateRecordOption.INCOME:
-            clf.IE = "INCOME"
+            clf.IE = FixedIEType.INCOME.name
         else :
-            clf.IE = "EXPENSE"
+            clf.IE = FixedIEType.EXPENSE.name
         clf.createRecord()
-    
+
     @classmethod
     def createRecord(clf):
         while True:
@@ -74,7 +75,7 @@ class CreateRecordPage(Accessor):
                 break
             except ValueError:
                 print("請輸入 1 到 5 之間的數字:")
-        
+
         clf.hintGetAmount()
         while True:
             try:
@@ -82,7 +83,7 @@ class CreateRecordPage(Accessor):
                 break
             except ValueError:
                 clf.hintIntegerErorMsg()
-        
+
         clf.hintGetPlace()
         consumptionPlace = input()
         clf.hintGetConsumptionDate()
@@ -123,9 +124,9 @@ class CreateRecordPage(Accessor):
                 invoiceNumber = input()
 
         clf.setUp_connection_and_table()
-        query = clf.table.insert().values(IE=clf.IE, category=categoryOption.name, 
-                                          amount=amountOfMoney, payment=paymentOption.name, 
-                                          place=consumptionPlace, consumptionDate=spendingTime, 
+        query = clf.table.insert().values(IE=clf.IE, category=categoryOption.name,
+                                          amount=amountOfMoney, payment=paymentOption.name,
+                                          place=consumptionPlace, consumptionDate=spendingTime,
                                           deductionDate=deducteTime, invoice=invoiceNumber, note=note)
         resultProxy = clf.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
@@ -134,11 +135,11 @@ class CreateRecordPage(Accessor):
             clf.tearDown_connection(es.ROLLBACK)
             return
         clf.tearDown_connection(es.COMMIT)
-    
+
     @staticmethod
     def hintGetCategory():
         print("請選擇紀錄類別")
-    
+
     @staticmethod
     def hintPaymentMsg():
         print("收支方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他: ")
@@ -146,7 +147,7 @@ class CreateRecordPage(Accessor):
     @staticmethod
     def hintGetAmount():
         print("請輸入金額")
-    
+
     @staticmethod
     def hintGetPlace():
         print("請輸入消費地點")
@@ -154,7 +155,7 @@ class CreateRecordPage(Accessor):
     @staticmethod
     def hintGetConsumptionDate():
         print("請輸入消費日期(yyyy-mm-dd)")
-    
+
     @staticmethod
     def hintGetDeductionDate():
         print("請輸入扣款日期(yyyy-mm-dd)")
@@ -170,7 +171,7 @@ class CreateRecordPage(Accessor):
     @staticmethod
     def hintGetInvoice():
         print("請輸入發票末八碼數字")
-    
+
     @classmethod
     def start(clf):
         while True:

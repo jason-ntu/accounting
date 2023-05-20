@@ -3,7 +3,7 @@ import mysqlConfig as cfg
 import sqlalchemy as sql
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from payment import PaymentCategory
-from fixedIE import FixedIECategory
+from fixedIE import FixedIEType, CategoryOption, PaymentOption
 from datetime import datetime
 
 
@@ -60,19 +60,29 @@ def initialize(config):
 
 
     fixedIE = sql.Table('FixedIE', metadata,
-                        sql.Column('id', sql.Integer(),
-                                nullable=False, primary_key=True),
-                        sql.Column('name', sql.String(50), nullable=False),
-                        sql.Column('amount', sql.Float(), nullable=False),
-                        sql.Column('category', sql.Enum(
-                            FixedIECategory), nullable=False)
+                        sql.Column(
+                            'id', sql.Integer(), nullable=False, primary_key=True),
+                        sql.Column(
+                            'name', sql.String(50), nullable=False),
+                        sql.Column(
+                            'IE', sql.Enum(FixedIEType), nullable=False),
+                        sql.Column(
+                            'category', sql.String(30), nullable=False), #new
+                        sql.Column(
+                            'payment', sql.String(30), nullable=False), #new
+                        sql.Column(
+                            'amount', sql.Float(), nullable=False),
+                        sql.Column(
+                            'day', sql.Integer(), nullable=False),
+                        sql.Column(
+                            'note', sql.String(30), nullable=True)
                         )
 
     record = sql.Table('Record', metadata,
                         sql.Column(
                             'id', sql.Integer(), nullable=False, primary_key=True),
                         sql.Column(
-                            'IE', sql.String(10), nullable=False),
+                            'IE', sql.Enum(FixedIEType), nullable=False),
                         sql.Column(
                             'category', sql.String(30), nullable=False),
                         sql.Column(
