@@ -7,6 +7,7 @@ from readRecord import ReadRecordPage, ReadRecordOption
 from records import RecordPage
 from category import CategoryPage
 from payment import PaymentPage
+from location import LocationPage
 import re
 
 class ItemOption(IntEnum):
@@ -37,11 +38,19 @@ class UpdateRecordPage(RecordPage):
         print("請選擇 1 收入 2 支出")
 
     @staticmethod
+    def hintNewCategory():
+        print("請輸入新的紀錄類型")
+
+    @staticmethod
+    def hintNewPayment():
+        print("請輸入新的收支方式")
+
+    @staticmethod
     def hintNewAmount():
         print("請輸入新的金額")
 
     @staticmethod
-    def hintNewPlace():
+    def hintNewLocation():
         print("請輸入新的地點")
     
     @staticmethod
@@ -90,18 +99,18 @@ class UpdateRecordPage(RecordPage):
     def updateCategory(clf, ID):
         clf.categoryList = CategoryPage.getList()
         clf.showCategory()
-        clf.hintGetCategory()
+        clf.hintNewCategory()
         while True:
             try:
                 choice = int(input())
                 if choice not in range(1, len(clf.categoryList)+1):
                     raise ValueError
-                category = clf.categoryList[choice-1]
+                newCategory = clf.categoryList[choice-1]
                 break
             except ValueError:
-                clf.hintGetCategory()
+                clf.hintRetryCategory()
         clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(category=category)
+        query = sql.update(clf.table).where(clf.table.c.id == ID).values(category=newCategory)
         resultProxy = clf.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
@@ -114,18 +123,18 @@ class UpdateRecordPage(RecordPage):
     def updatePayment(clf, ID):
         clf.paymentList = PaymentPage.getList()
         clf.showPayment()
-        clf.hintGetPayment()
+        clf.hintNewPayment()
         while True:
             try:
                 choice  = int(input())
                 if choice not in range(1, len(clf.paymentList)+1):
                     raise ValueError
-                payment = clf.paymentList[choice-1]
+                newPayment = clf.paymentList[choice-1]
                 break
             except ValueError:
-                clf.hintGetPayment()
+                clf.hintRetryPayment()
         clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(payment=payment['name'])
+        query = sql.update(clf.table).where(clf.table.c.id == ID).values(payment=newPayment['name'])
         resultProxy = clf.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
@@ -154,11 +163,21 @@ class UpdateRecordPage(RecordPage):
         clf.tearDown_connection(es.COMMIT)
 
     @classmethod
-    def updatePlace(clf, ID):
-        clf.hintNewPlace()
-        newPlace = input()
+    def updateLocation(clf, ID):
+        clf.locationList = LocationPage.getList()
+        clf.showLocation()
+        clf.hintNewLocation()
+        while True:
+            try:
+                choice = int(input())
+                if choice not in range(1, len(clf.locationList)+1):
+                    raise ValueError
+                newLocation = clf.locationList[choice-1]
+                break
+            except ValueError:
+                clf.hintRetryLocation()
         clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(place=newPlace)
+        query = sql.update(clf.table).where(clf.table.c.id == ID).values(location=newLocation)
         resultProxy = clf.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
@@ -280,7 +299,7 @@ class UpdateRecordPage(RecordPage):
         elif option is ItemOption.AMOUNT:
             clf.updateAmount(ID)
         elif option is ItemOption.LOCATION:
-            clf.updatePlace(ID)
+            clf.updateLocation(ID)
         elif option is ItemOption.CONSUMPTIONTIME:
             clf.updateConsumptionDate(ID)
         elif option is ItemOption.DEDUCTIONTIME:

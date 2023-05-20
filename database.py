@@ -90,7 +90,7 @@ def initialize(config):
                         sql.Column(
                             'amount', sql.Integer(), nullable=False),
                         sql.Column(
-                            'place', sql.String(30), nullable=False),
+                            'location', sql.String(30), nullable=False),
                         sql.Column(
                             'consumptionDate', sql.Date(), default=datetime.today(), nullable=False),
                         sql.Column(

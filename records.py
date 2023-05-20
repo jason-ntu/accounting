@@ -19,6 +19,7 @@ class RecordPage(Accessor):
     table_name = "Record"
     categoryList = []
     paymentList = []
+    locationList = []
     
     @staticmethod
     def choose():
@@ -65,22 +66,31 @@ class RecordPage(Accessor):
         #     raise ValueError(cls.errorMsg)
 
     @classmethod
-    def showCategory(clf):
-        for i in range(len(clf.categoryList)):
-            print("%d %s" % (i+1, clf.categoryList[i]))
+    def showCategory(cls):
+        for i in range(len(cls.categoryList)):
+            print("%d %s" % (i+1, cls.categoryList[i]))
     
     @classmethod
-    def hintGetCategory(cls):
+    def hintRetryCategory(cls):
         print("請輸入 1 到 %d 之間的數字:" % len(cls.categoryList))
     
     @classmethod
-    def showPayment(clf):
-        for i in range(len(clf.paymentList)):
-            print("%d %s(%s)" % (i+1, clf.paymentList[i]['name'], clf.paymentList[i]['category']))
+    def showPayment(cls):
+        for i in range(len(cls.paymentList)):
+            print("%d %s(%s)" % (i+1, cls.paymentList[i]['name'], cls.paymentList[i]['category']))
 
     @classmethod
-    def hintGetPayment(cls):
+    def hintRetryPayment(cls):
         print("請輸入 1 到 %d 之間的數字:" % len(cls.paymentList))
+    
+    @classmethod
+    def showLocation(cls):
+        for i in range(len(cls.locationList)):
+            print("%d %s" % (i+1, cls.locationList[i]))
+
+    @classmethod
+    def hintRetryLocation(cls):
+        print("請輸入 1 到 %d 之間的數字:" % len(cls.locationList))
 
 if __name__ == '__main__': # pragma: no cover
     RecordPage.start()
