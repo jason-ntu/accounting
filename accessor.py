@@ -1,5 +1,12 @@
+from enum import IntEnum, auto
 import sqlalchemy as sql
 import mysqlConfig as cfg
+import const
+
+class ExecutionStatus(IntEnum):
+    NONE = auto()
+    COMMIT = auto()
+    ROLLBACK = auto()
 
 class Accessor:
 
@@ -14,6 +21,13 @@ class Accessor:
                               mysql_autoload=True, autoload_with=engine)
 
     @classmethod
-    def tearDown_connection(cls):
-        cls.conn.commit()
+    def tearDown_connection(cls, operation=ExecutionStatus.COMMIT):
+        if operation is ExecutionStatus.COMMIT:
+            cls.conn.commit()
+            print("%s操作成功%s" % (const.ANSI_GREEN, const.ANSI_RESET))
+        elif operation is ExecutionStatus.ROLLBACK:
+            cls.conn.rollback()
+            print("%s操作失敗%s" % (const.ANSI_RED, const.ANSI_RESET))
+        else:
+            pass
         cls.conn.close()

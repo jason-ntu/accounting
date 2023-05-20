@@ -1,10 +1,10 @@
 from enum import IntEnum, auto
 from accessor import Accessor
 from budget import BudgetPage
-from fixedIE import FixedIE
-from category import Category
+from fixedIE import FixedIEPage
+from category import CategoryPage
 from payment import PaymentPage
-from location import Location
+from location import LocationPage
 
 
 class SettingOption(IntEnum):
@@ -20,7 +20,7 @@ class SettingPage():
     @staticmethod
     def show():
         print("%d: 查看/修改總預算" % SettingOption.BUDGET)
-        print("%d: 新增每月固定收支" % SettingOption.FIXEDIE)
+        print("%d: 查看/新增每月固定收支" % SettingOption.FIXEDIE)
         print("%d: 查看/新增/修改/刪除類別" % SettingOption.CATEGORY)
         print("%d: 查看/新增/修改/刪除支付方式" % SettingOption.BALANCE)
         print("%d: 查看/新增/修改/刪除地點" % SettingOption.LOCATION)
@@ -41,13 +41,13 @@ class SettingPage():
         if option is SettingOption.BUDGET:
             BudgetPage.start()
         elif option is SettingOption.FIXEDIE:
-            FixedIE.start()
+            FixedIEPage.start()
         elif option is SettingOption.CATEGORY:
-            Category.start()
+            CategoryPage.start()
         elif option is SettingOption.BALANCE:
             PaymentPage.start()
         else:
-            Location.start()
+            LocationPage.start()
 
     @classmethod
     def start(cls):

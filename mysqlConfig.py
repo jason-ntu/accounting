@@ -17,9 +17,10 @@ dev = {
     'password': PASSWORD,
     'port': PORT,
     'database': DEV_DB,
-    'url': "%s+%s://%s:%s@%s:%s/%s" % (DIALECT, DRIVER,
+    'url': "%s+%s://%s:%s@%s:%s/%s?charset=utf8mb4" % (DIALECT, DRIVER,
                                        USER, PASSWORD, HOST, PORT, DEV_DB)
 }
+
 
 test = {
     'host': HOST,

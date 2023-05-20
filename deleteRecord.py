@@ -1,49 +1,47 @@
 from enum import IntEnum, auto
+from datetime import datetime
+import sqlalchemy as sql
+from accessor import Accessor, ExecutionStatus as es
+from readRecord import ReadRecordPage, ReadRecordOption
 
-class DeleteRecordOption(IntEnum):
-    DATE = auto()
-    CATEGORY = auto()
-    BACK = auto()
-
-class DeleteRecordPage:
+class DeleteRecordPage(Accessor):
 
     errorMsg = "請輸入 1 到 3 之間的數字:"
+    table_name = "Record"
+    IDerrorMsg = "輸入的ID須為整數"
 
-    def show(self):
-        print("%d: 依據日期刪除紀錄" % DeleteRecordOption.DATE)
-        print("%d: 依據類別刪除紀錄" % DeleteRecordOption.CATEGORY)
-        print("%d: 回到上一頁" % DeleteRecordOption.BACK)
-
-    def choose(self):
+            
+    def checkIDInteger(self):
         while True:
             try:
-                option = DeleteRecordOption(int(input()))
+                ID = int(input("請輸入想刪除的紀錄ID: "))
                 break
             except ValueError:
-                print(self.errorMsg)
-        return option
+                print(self.IDerrorMsg)
+        return ID
 
-    def execute(self,option):
-        if option is DeleteRecordOption.DATE:
-            self.deleteByDate()
-        elif option is DeleteRecordOption.CATEGORY:
-            self.deleteByCategory()
-        else:
-            raise ValueError(self.errorMsg)
+    def deleteByID(self):
+        ID = self.checkIDInteger()
+        self.setUp_connection_and_table()
+        query = sql.delete(self.table).where(self.table.c.id == ID)
+        resultProxy = self.conn.execute(query)
+        successful = (resultProxy.rowcount == 1)
+        if not successful:
+            print("此紀錄ID不存在")
+            self.tearDown_connection(es.ROLLBACK)
+            return
+        self.tearDown_connection(es.COMMIT)
 
-    def deleteByDate(self):  # pragma: no cover
-        pass
-
-    def deleteByCategory(self):  # pragma: no cover
-        pass
 
     def start(self):
         while True:
-            self.show()
-            option = self.choose()
-            if option is DeleteRecordOption.BACK:
+            readRecordPage = ReadRecordPage()
+            readRecordPage.show()
+            option = readRecordPage.choose()
+            if option is ReadRecordOption.BACK:
                 return
-            self.execute(option)
+            readRecordPage.execute(option)
+            self.deleteByID()
 
 if __name__ == '__main__':  # pragma: no cover
     deleteRecordPage = DeleteRecordPage()

@@ -2,6 +2,8 @@ import io
 from unittest.mock import patch
 from budget import BudgetPage, BudgetOption
 from mock_db import MockDB
+from accessor import ExecutionStatus as es
+import const
 
 
 class TestBudgetPage(MockDB):
@@ -24,30 +26,47 @@ class TestBudgetPage(MockDB):
         self.assertEqual(BudgetPage.choose(), 3)
         self.assertEqual(_input.call_count, 6)
 
-    @patch.object(BudgetPage, "update")
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch.object(BudgetPage, "update", side_effect=[True, False])
     @patch.object(BudgetPage, "read")
-    def test_execute(self, _read, _update):
-        BudgetPage.execute(BudgetOption.READ)
-        self.assertEqual(_read.call_count, 1)
-        BudgetPage.execute(BudgetOption.UPDATE)
-        self.assertEqual(_update.call_count, 1)
-
-    def test_read(self):
+    def test_execute(self, _read, _update, _stdout):
         with self.mock_db_config:
-            self.assertEqual(BudgetPage.read(), 10000)
+            BudgetPage.execute(BudgetOption.READ)
+            self.assertEqual(_read.call_count, 1)
+            BudgetPage.execute(BudgetOption.UPDATE)
+            BudgetPage.execute(BudgetOption.UPDATE)
+            self.assertEqual(_update.call_count, 2)
+        output_lines = _stdout.getvalue().strip().split("\n")
+        self.assertEqual(output_lines[0], "%s操作成功%s" %
+                         (const.ANSI_GREEN, const.ANSI_RESET))
+        self.assertEqual(output_lines[1], "%s操作失敗%s" %
+                         (const.ANSI_RED, const.ANSI_RESET))
+
+    @patch("sys.stdout", new_callable=io.StringIO)
+    def test_read(self, _stdout):
+        with self.mock_db_config:
+            BudgetPage.setUp_connection_and_table()
+            BudgetPage.read()
+            BudgetPage.tearDown_connection(es.NONE)
+        self.assertEqual(_stdout.getvalue(), "10000.0\n")
 
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch("builtins.input", side_effect=["XYZ", 12345, 12345.6])
     @patch.object(BudgetPage, "hint_update")
     def test_update(self, _hint_update, _input, _stdout):
         with self.mock_db_config:
+            BudgetPage.setUp_connection_and_table()
             self.assertEqual(BudgetPage.update(), True)
-            self.assertEqual(BudgetPage.read(), 12345)
+            BudgetPage.read()
             self.assertEqual(BudgetPage.update(), True)
-            self.assertEqual(BudgetPage.read(), 12345.6)
+            BudgetPage.read()
+            BudgetPage.tearDown_connection(es.NONE)
         self.assertEqual(_hint_update.call_count, 2)
         self.assertEqual(_input.call_count, 3)
-        self.assertEqual(_stdout.getvalue(), "請輸入數字:\n")
+        output_lines = _stdout.getvalue().strip().split("\n")
+        self.assertEqual(output_lines[0], "請輸入數字:")
+        self.assertEqual(output_lines[1], "12345.0")
+        self.assertEqual(output_lines[2], "12345.6")
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_hint_update(self, _stdout):
