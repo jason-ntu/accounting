@@ -35,8 +35,8 @@ class CreateRecordPage(Accessor):
         print("%d: 新增支出" % CreateRecordOption.EXPENSE)
         print("%d: 回到上一頁" % CreateRecordOption.BACK)
 
-    @staticmethod
-    def showCategory():
+    @classmethod
+    def showCategory(cls):
         # TODO: read from database
         print("%d: 新增食物類別" % CategoryOption.FOOD)
         print("%d: 新增飲料類別" % CategoryOption.BEVERAGE)
