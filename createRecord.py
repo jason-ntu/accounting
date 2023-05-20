@@ -6,6 +6,7 @@ from datetime import datetime
 import re
 from fixedIE import FixedIEType
 from category import CategoryPage
+from records import RecordPage
 
 
 class CreateRecordOption(IntEnum):
@@ -20,22 +21,15 @@ class PaymentOption(IntEnum):
     ELECTRONIC = auto()
     OTHER = auto()
 
-class CreateRecordPage(Accessor):
+class CreateRecordPage(RecordPage):
 
     IE = ""
-    categoryList = []
-    table_name = "Record"
 
     @staticmethod
     def show():
         print("%d: 新增收入" % CreateRecordOption.INCOME)
         print("%d: 新增支出" % CreateRecordOption.EXPENSE)
         print("%d: 回到上一頁" % CreateRecordOption.BACK)
-
-    @classmethod
-    def showCategory(clf):
-        for i in range(len(clf.categoryList)):
-            print("%d %s" % (i+1, clf.categoryList[i]))
 
     @staticmethod
     def choose():
@@ -65,10 +59,10 @@ class CreateRecordPage(Accessor):
                 choice = int(input())
                 if choice not in range(1, len(clf.categoryList)+1):
                     raise ValueError
-                categoryOption = clf.categoryList[choice-1]
+                category = clf.categoryList[choice-1]
                 break
             except ValueError:
-                print("請輸入 1 到 %d 之間的數字:" % len(clf.categoryList))
+                clf.hintGetCategory()
 
         while True:
             clf.hintPaymentMsg()
@@ -127,8 +121,7 @@ class CreateRecordPage(Accessor):
 
         clf.setUp_connection_and_table()
         query = clf.table.insert().values(IE=clf.IE,
-                                        #   TODO: update this
-                                          category=categoryOption,
+                                          category=category,
                                           amount=amountOfMoney, payment=paymentOption.name,
                                           place=consumptionPlace, consumptionDate=spendingTime,
                                           deductionDate=deducteTime, invoice=invoiceNumber, note=note)
@@ -139,10 +132,6 @@ class CreateRecordPage(Accessor):
             clf.tearDown_connection(es.ROLLBACK)
             return
         clf.tearDown_connection(es.COMMIT)
-
-    @staticmethod
-    def hintGetCategory():
-        print("請選擇紀錄類別")
 
     @staticmethod
     def hintPaymentMsg():

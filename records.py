@@ -1,9 +1,5 @@
 from enum import IntEnum, auto
-from readRecord import ReadRecordPage
-from deleteRecord import DeleteRecordPage
-from createRecord import CreateRecordPage
-from updateRecord import UpdateRecordPage
-
+from accessor import Accessor, ExecutionStatus as es
 
 # 消費紀錄 Records
 # > 新增消費紀錄
@@ -18,7 +14,11 @@ class RecordOption(IntEnum):
     DELETE = auto()
     BACK = auto()
 
-class RecordPage:
+class RecordPage(Accessor):
+
+    table_name = "Record"
+    categoryList = []
+    
     @staticmethod
     def choose():
         while True:
@@ -49,17 +49,28 @@ class RecordPage:
     @classmethod
     def execute(cls, option):
         if option is RecordOption.CREATE:
-            nextPage = CreateRecordPage()
+            from createRecord import CreateRecordPage
+            CreateRecordPage.start()
         elif option is RecordOption.READ:
-            nextPage = ReadRecordPage()
+            from readRecord import ReadRecordPage
+            ReadRecordPage.start()
         elif option is RecordOption.UPDATE:
-            nextPage = UpdateRecordPage()
+            from updateRecord import UpdateRecordPage
+            UpdateRecordPage.start()
         elif option is RecordOption.DELETE:
-            nextPage = DeleteRecordPage()
+            from deleteRecord import DeleteRecordPage
+            DeleteRecordPage.start()
         # else:
         #     raise ValueError(cls.errorMsg)
-        nextPage.start()
+
+    @classmethod
+    def showCategory(clf):
+        for i in range(len(clf.categoryList)):
+            print("%d %s" % (i+1, clf.categoryList[i]))
+    
+    @classmethod
+    def hintGetCategory(cls):
+        print("請輸入 1 到 %d 之間的數字:" % len(cls.categoryList))
 
 if __name__ == '__main__': # pragma: no cover
-    recordPage = RecordPage()
-    recordPage.start()
+    RecordPage.start()

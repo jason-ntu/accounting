@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from accessor import Accessor, ExecutionStatus as es
 import sqlalchemy as sql
 from sqlalchemy import and_
+from records import RecordPage
 import sys
 
 
@@ -13,9 +14,7 @@ class ReadRecordOption(IntEnum):
     OTHER = auto()
     BACK = auto()
 
-class ReadRecordPage(Accessor):
-
-    table_name = "Record"
+class ReadRecordPage(RecordPage):
 
     @staticmethod
     def show():

@@ -5,6 +5,8 @@ from accessor import Accessor, ExecutionStatus as es
 from sqlalchemy import and_
 from readRecord import ReadRecordPage, ReadRecordOption
 from createRecord import PaymentOption, CreateRecordPage
+from records import RecordPage
+from category import CategoryPage
 import re
 
 class ItemOption(IntEnum):
@@ -18,12 +20,10 @@ class ItemOption(IntEnum):
     INVOICE = auto()
     NOTE = auto()
 
-class UpdateRecordPage(Accessor):
+class UpdateRecordPage(RecordPage):
 
-    table_name = "Record"
     # IDerrorMsg = "輸入的ID須為整數"
     # errorMsg = "請輸入 1 到 9 之間的數字: "
-    categoryList = ["FOOD", "BEVERAGE"]
     paymentList = ["CASH", "DEBIT_CARD", "CREDIT_CARD", "ELECTRONIC", "OTHER"]
     IEList = ["INCOME", "EXPENSE"]
 
@@ -39,11 +39,6 @@ class UpdateRecordPage(Accessor):
     @staticmethod
     def hintNewAmount():
         print("請輸入新的金額")
-    
-    #TODO: update categoryList
-    @classmethod
-    def hintNewCategory(cls):
-        print("請選擇新的分類 1 食物 2 飲料")
 
     @staticmethod
     def hintNewPayment():
@@ -97,19 +92,20 @@ class UpdateRecordPage(Accessor):
     
     @classmethod
     def updateCategory(clf, ID):
-        clf.hintNewCategory()
+        clf.categoryList = CategoryPage.getList()
+        clf.showCategory()
+        clf.hintGetCategory()
         while True:
             try:
-                newCategory = int(input())
-                #TODO: update categoryList
-                if newCategory <= len(clf.categoryList):
-                    break
-                else: 
-                    raise ValueError()
+                choice = int(input())
+                if choice not in range(1, len(clf.categoryList)+1):
+                    raise ValueError
+                category = clf.categoryList[choice-1]
+                break
             except ValueError:
-                clf.hintNewCategory()
+                clf.hintGetCategory()
         clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(category=clf.categoryList[newCategory-1])
+        query = sql.update(clf.table).where(clf.table.c.id == ID).values(category=category)
         resultProxy = clf.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
