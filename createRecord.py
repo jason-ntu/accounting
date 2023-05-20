@@ -5,16 +5,13 @@ import sys
 from datetime import datetime
 import re
 from fixedIE import FixedIEType
+from category import CategoryPage
+
 
 class CreateRecordOption(IntEnum):
     INCOME = auto()
     EXPENSE = auto()
     BACK = auto()
-
-# TODO: remove this class
-class CategoryOption(IntEnum):
-    FOOD = auto()
-    BEVERAGE = auto()
 
 class PaymentOption(IntEnum):
     CASH = auto()
@@ -26,7 +23,7 @@ class PaymentOption(IntEnum):
 class CreateRecordPage(Accessor):
 
     IE = ""
-    category = ""
+    categoryList = []
     table_name = "Record"
 
     @staticmethod
@@ -36,10 +33,9 @@ class CreateRecordPage(Accessor):
         print("%d: 回到上一頁" % CreateRecordOption.BACK)
 
     @classmethod
-    def showCategory(cls):
-        # TODO: read from database
-        print("%d: 新增食物類別" % CategoryOption.FOOD)
-        print("%d: 新增飲料類別" % CategoryOption.BEVERAGE)
+    def showCategory(clf):
+        for i in range(len(clf.categoryList)):
+            print("%d %s" % (i+1, clf.categoryList[i]))
 
     @staticmethod
     def choose():
@@ -61,15 +57,18 @@ class CreateRecordPage(Accessor):
 
     @classmethod
     def createRecord(clf):
+        clf.categoryList = CategoryPage.getList()
         while True:
             clf.showCategory()
             clf.hintGetCategory()
             try:
-                categoryOption = CategoryOption(int(input()))
+                choice = int(input())
+                if choice not in range(1, len(clf.categoryList)+1):
+                    raise ValueError
+                categoryOption = clf.categoryList[choice-1]
                 break
             except ValueError:
-                # TODO: update this error message
-                print("請輸入 1 到 2 之間的數字:")
+                print("請輸入 1 到 %d 之間的數字:" % len(clf.categoryList))
 
         while True:
             clf.hintPaymentMsg()
@@ -129,7 +128,7 @@ class CreateRecordPage(Accessor):
         clf.setUp_connection_and_table()
         query = clf.table.insert().values(IE=clf.IE,
                                         #   TODO: update this
-                                          category=categoryOption.name,
+                                          category=categoryOption,
                                           amount=amountOfMoney, payment=paymentOption.name,
                                           place=consumptionPlace, consumptionDate=spendingTime,
                                           deductionDate=deducteTime, invoice=invoiceNumber, note=note)

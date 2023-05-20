@@ -40,8 +40,9 @@ class UpdateRecordPage(Accessor):
     def hintNewAmount():
         print("請輸入新的金額")
     
-    @staticmethod
-    def hintNewCategory():
+    #TODO: update categoryList
+    @classmethod
+    def hintNewCategory(cls):
         print("請選擇新的分類 1 食物 2 飲料")
 
     @staticmethod
@@ -100,6 +101,7 @@ class UpdateRecordPage(Accessor):
         while True:
             try:
                 newCategory = int(input())
+                #TODO: update categoryList
                 if newCategory <= len(clf.categoryList):
                     break
                 else: 
