@@ -15,6 +15,12 @@ class PaymentUpdateOption(IntEnum):
     BALANCE = auto()
     CATEGORY = auto()
 
+class PaymentUpdateOption(IntEnum):
+    NAME = auto()
+    BALANCE = auto()
+    CATEGORY = auto()
+
+
 class PaymentCategory(IntEnum):
     CASH = auto()
     DEBIT_CARD = auto()
@@ -158,7 +164,7 @@ class PaymentPage(Accessor):
 
     @staticmethod
     def hint_update_name():
-        print("請選擇要修改的支付方式(輸入名稱):")
+        print("請輸入要修改的支付方式名稱:")
     
     @staticmethod
     def hint_update_option():
@@ -188,7 +194,7 @@ class PaymentPage(Accessor):
         return True
 
     def hint_delete():
-        print("請選擇要刪除的支付方式(輸入名稱):")
+        print("請輸入要刪除的支付方式名稱:")
 
     @classmethod
     def start(cls):

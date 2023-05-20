@@ -44,9 +44,35 @@ def initialize(config):
                         sql.Column('id', sql.Integer(), nullable=False, primary_key=True),
                         sql.Column('name', sql.String(50), nullable=False))
 
+    category = sql.Table('Category', metadata,
+                        sql.Column(
+                            'id', sql.Integer(), nullable=False, primary_key=True),
+                        sql.Column(
+                            'name', sql.String(50), nullable=False)
+                        )
+
+    location = sql.Table('Location', metadata,
+                        sql.Column(
+                            'id', sql.Integer(), nullable=False, primary_key=True),
+                        sql.Column(
+                            'name', sql.String(50), nullable=False)
+                        )
+
+
+    fixedIE = sql.Table('FixedIE', metadata,
+                        sql.Column('id', sql.Integer(),
+                                nullable=False, primary_key=True),
+                        sql.Column('name', sql.String(50), nullable=False),
+                        sql.Column('amount', sql.Float(), nullable=False),
+                        sql.Column('category', sql.Enum(
+                            FixedIECategory), nullable=False)
+                        )
+
     record = sql.Table('Record', metadata,
                         sql.Column(
                             'id', sql.Integer(), nullable=False, primary_key=True),
+                        sql.Column(
+                            'IE', sql.String(10), nullable=False),
                         sql.Column(
                             'category', sql.String(30), nullable=False),
                         sql.Column(
@@ -56,19 +82,57 @@ def initialize(config):
                         sql.Column(
                             'place', sql.String(30), nullable=False),
                         sql.Column(
-                            'time', sql.Date(), default=datetime.today(), nullable=False)
+                            'consumptionDate', sql.Date(), default=datetime.today(), nullable=False),
+                        sql.Column(
+                            'deductionDate', sql.Date(), default=datetime.today(), nullable=False),
+                        sql.Column(
+                            'invoice', sql.String(30), nullable=True),
+                        sql.Column(
+                            'note', sql.String(30), nullable=True)
                         )
-
-    fixedIE = sql.Table('FixedIE', metadata,
-                sql.Column('id', sql.Integer(), nullable=False, primary_key=True),
-                sql.Column('name', sql.String(50), nullable=False),
-                sql.Column('amount', sql.Float(), nullable=False),
-                sql.Column('category', sql.Enum(FixedIECategory), nullable=False)
-    )
 
     metadata.create_all(engine)
 
     conn.execute(budget.insert().values(id=1, amount=0))
+
+    default_payments = [
+        {'name': "錢包", 'balance': 0,
+         'category': PaymentCategory.CASH.name},
+        {'name': "儲蓄卡", 'balance': 25000,
+         'category': PaymentCategory.DEBIT_CARD.name},
+        {'name': "信用卡", 'balance': 3000,
+         'category': PaymentCategory.CREDIT_CARD.name},
+        {'name': "Line Pay", 'balance': 100,
+         'category': PaymentCategory.ELECTRONIC.name},
+        {'name': "Metamask", 'balance': 100,
+         'category': PaymentCategory.OTHER.name},
+    ]
+    conn.execute(payment.insert().values(default_payments))
+
+    default_categories = [
+        {'name': "食物"},
+        {'name': "飲料"},
+        {'name': "衣服"},
+        {'name': "住宿"},
+        {'name': "交通"},
+        {'name': "其它"}
+    ]
+    conn.execute(category.insert().values(default_categories))
+
+    default_locations = [
+        {'name': "餐廳"},
+        {'name': "飲料店"},
+        {'name': "超商"},
+        {'name': "超市"},
+        {'name': "夜市"},
+        {'name': "文具店"},
+        {'name': "線上商店"},
+        {'name': "百貨公司"},
+        {'name': "學校"},
+        {'name': "其它"}
+    ]
+    conn.execute(location.insert().values(default_locations))
+
     conn.commit()
 
 # Remove originals records and intialize again

@@ -15,87 +15,121 @@ class ReadRecordOption(IntEnum):
 
 class ReadRecordPage(Accessor):
 
-    errorMsg = "請輸入 1 到 5 之間的數字:"
     table_name = "Record"
 
-    def show(self):
+    @staticmethod
+    def show():
         print("%d: 查看本日紀錄" % ReadRecordOption.TODAY)
         print("%d: 查看本週紀錄" % ReadRecordOption.WEEK)
         print("%d: 查看本月紀錄" % ReadRecordOption.MONTH)
         print("%d: 查看指定時間紀錄" % ReadRecordOption.OTHER)
         print("%d: 回到上一頁" % ReadRecordOption.BACK)
+    
+    @staticmethod
+    def hintGetStartDate():
+        print("請輸入 開始 時間(yyyy-mm-dd): ")
+    
+    @staticmethod
+    def hintGetEndDate():
+        print("請輸入 結束 時間(yyyy-mm-dd): ")
 
-    def choose(self):
+    @staticmethod
+    def choose():
         while True:
             try:
                 option = ReadRecordOption(int(input()))
                 break
             except ValueError:
-                print(self.errorMsg)
+                print("請輸入 1 到 5 之間的數字:")
         return option
 
-    def execute(self,option):
+    @classmethod
+    def execute(cls, option):
         if option is ReadRecordOption.TODAY:
-            self.viewToday()
+            cls.viewToday()
         elif option is ReadRecordOption.WEEK:
-            self.viewWeek()
+            cls.viewWeek()
         elif option is ReadRecordOption.MONTH:
-            self.viewMonth()
-        elif option is ReadRecordOption.OTHER:
-            self.viewOther()
-        else:
-            raise ValueError(self.errorMsg)
-        
-    def recordFormatPrint(self, results):
+            cls.viewMonth()
+        else :
+            cls.viewOther()
+    
+    @classmethod
+    def viewToday(clf):  
+        Date = datetime.today().date()
+        clf.setUp_connection_and_table()
+        query = sql.select(clf.table).where(clf.table.c.consumptionDate == Date)
+        results = clf.conn.execute(query).fetchall()
+        clf.tearDown_connection(es.NONE)
         for row in results:
             dictRow = row._asdict() 
-            print(dictRow['id']," 類別:", dictRow['category']," 金額:", dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], " 時間:", dictRow['time'])
+            print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
+                  dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
+                  " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
-    def viewToday(self):  # pragma: no cover
-        Date = datetime.today().date()
-        self.setUp_connection_and_table()
-        query = sql.select(self.table).where(self.table.c.time == Date)
-        results = self.conn.execute(query).fetchall()
-        self.tearDown_connection(es.NONE)
-        self.recordFormatPrint(results)
 
-    def viewWeek(self):  # pragma: no cover
+    @classmethod
+    def viewWeek(clf):  
         Date = datetime.today().date()
         startDate = Date - timedelta(days=Date.weekday())
         endDate = startDate + timedelta(days=6)
-        self.setUp_connection_and_table()
-        query = sql.select(self.table).where(and_(self.table.c.time >= startDate, self.table.c.time <= endDate))
-        results = self.conn.execute(query).fetchall()
-        self.tearDown_connection(es.NONE)
-        self.recordFormatPrint(results)
+        clf.setUp_connection_and_table()
+        query = sql.select(clf.table).where(and_(clf.table.c.consumptionDate >= startDate, clf.table.c.consumptionDate <= endDate))
+        results = clf.conn.execute(query).fetchall()
+        clf.tearDown_connection(es.NONE)
+        for row in results:
+            dictRow = row._asdict() 
+            print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
+                  dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
+                  " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
-    def viewMonth(self):  # pragma: no cover
+
+    @classmethod
+    def viewMonth(clf): 
         Date = datetime.today().date()
         startDate = datetime(Date.year, Date.month, 1).date()
         nextMonth = Date.replace(day=28) + timedelta(days=4)
         endDate = nextMonth - timedelta(days=nextMonth.day)
-        self.setUp_connection_and_table()
-        query = sql.select(self.table).where(and_(self.table.c.time >= startDate, self.table.c.time <= endDate))
-        results = self.conn.execute(query).fetchall()
-        self.tearDown_connection(es.NONE)
-        self.recordFormatPrint(results)
+        clf.setUp_connection_and_table()
+        query = sql.select(clf.table).where(and_(clf.table.c.consumptionDate >= startDate, clf.table.c.consumptionDate <= endDate))
+        results = clf.conn.execute(query).fetchall()
+        clf.tearDown_connection(es.NONE)
+        for row in results:
+            dictRow = row._asdict() 
+            print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
+                  dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
+                  " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
-    def viewOther(self):  # pragma: no cover
-        startDate = str(input("請輸入 開始 時間(yyyy-mm-dd): "))
-        endDate = str(input("請輸入 結束 時間(yyyy-mm-dd): "))
-        self.setUp_connection_and_table()
-        query = sql.select(self.table).where(and_(self.table.c.time >= startDate, self.table.c.time <= endDate))
-        results = self.conn.execute(query).fetchall()
-        self.tearDown_connection(es.NONE)
-        self.recordFormatPrint(results)
+    @classmethod
+    def viewOther(clf):  
+        clf.hintGetStartDate()
+        startDate = str(input())
+        clf.hintGetEndDate()
+        endDate = str(input())
+        clf.setUp_connection_and_table()
+        query = sql.select(clf.table).where(and_(clf.table.c.consumptionDate >= startDate, clf.table.c.consumptionDate <= endDate))
+        results = clf.conn.execute(query).fetchall()
+        clf.tearDown_connection(es.NONE)
+        for row in results:
+            dictRow = row._asdict() 
+            print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
+                  dictRow['amount']," 支付方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
+                  " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
-    def start(self):
+
+    @classmethod
+    def start(clf):
+        print(datetime.today())
         while True:
-            self.show()
-            option = self.choose()
+            clf.show()
+            option = clf.choose()
             if option is ReadRecordOption.BACK:
                 return
-            self.execute(option)
+            clf.execute(option)
 
 if __name__ == '__main__':  # pragma: no cover
     readRecordPage = ReadRecordPage()
