@@ -123,7 +123,6 @@ class ReadRecordPage(Accessor):
 
     @classmethod
     def start(clf):
-        print(datetime.today())
         while True:
             clf.show()
             option = clf.choose()
