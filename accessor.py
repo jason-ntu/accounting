@@ -17,14 +17,16 @@ class Accessor:
         engine = sql.create_engine(cfg.dev['url'])
         cls.conn = engine.connect()
         metadata = sql.MetaData()
+        # use cls.table to access the default table
         if len(tables) == 0:
             cls.table = sql.Table(cls.table_name, metadata,
                               mysql_autoload=True, autoload_with=engine)
-        else:
-            cls.tables = []
-            for table in tables:
-                cls.tables.append(sql.Table(table, metadata,
-                              mysql_autoload=True, autoload_with=engine))
+            return
+        # use cls.tables to access user-defined tables
+        cls.tables = []
+        for table in tables:
+            cls.tables.append(sql.Table(table, metadata,
+                            mysql_autoload=True, autoload_with=engine))
 
 
     @classmethod
