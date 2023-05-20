@@ -30,7 +30,7 @@ class UpdateRecordPage(Accessor):
     @staticmethod
     def hintChooseItem():
         print("請輸入要更改的項目")
-        print("1 收入支出 2 類別 3 支付方式 4 金額 5 地點 6 消費時間 7 扣款時間 8 發票號碼 9 備註")
+        print("1 收入支出 2 類別 3 收支方式 4 金額 5 地點 6 消費時間 7 扣款時間 8 發票號碼 9 備註")
 
     @staticmethod
     def hintNewIE():
@@ -46,7 +46,7 @@ class UpdateRecordPage(Accessor):
 
     @staticmethod
     def hintNewPayment():
-        print("請選擇新的支付方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他")
+        print("請選擇新的收支方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他")
     
     @staticmethod
     def hintNewPlace():
