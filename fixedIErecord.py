@@ -6,14 +6,13 @@ from accessor import Accessor, ExecutionStatus as es
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
-from fixedIE import FixedIEPage, FixedIEType, CategoryOption, PaymentOption
 
 class fixedIERecord(Accessor):
 
     @classmethod
     def readFixedIE(cls):
         cls.setUp_connection_and_table(["FixedIE"])
-        query = sql.select(cls.tables[0].c['IE', 'name', 'category', 'payment', 'amount', 'day', 'note', 'flag'])
+        query = sql.select(cls.tables[0].c['IE', 'name', 'category', 'payment', 'amount', 'location' ,'day', 'note', 'flag'])
         results = cls.conn.execute(query).fetchall()
         cls.tearDown_connection(es.NONE)
         return results
@@ -25,9 +24,9 @@ class fixedIERecord(Accessor):
                                               category = dictRow['category'],
                                               payment = dictRow['payment'],
                                               amount = dictRow['amount'],
-                                              location = 'none',
-                                              consumptionDate = date,
-                                              deductionDate = date,
+                                              location = dictRow['location'],
+                                              purchaseDate = date,
+                                              debitDate = date,
                                               invoice = '',
                                               note = dictRow['note'])
         resultProxy = cls.conn.execute(query)
@@ -85,7 +84,7 @@ class fixedIERecord(Accessor):
 
     @classmethod
     def start(cls):
-        last_end_time =  cls.getEndTime()
+        last_end_time = cls.getEndTime()
         now_time = datetime.today()
 
         results = cls.readFixedIE()
@@ -97,14 +96,21 @@ class fixedIERecord(Accessor):
             dictRow = row._asdict()
 
             for m in range(month_difference, -1, -1):
-                if now_time.day >= dictRow['day'] and m==0 and dictRow['flag'] == False:
+                if m == 0 and month_difference > 0:
+                    print("hi")
+                    cls.updateFlag(dictRow['name'], False)
+                    now_flag = False
+                if now_time.day >= dictRow['day'] and m == 0 and (dictRow['flag'] == False or now_flag == False):
+                    print("insert1")
                     cls.newFixedIERocord(dictRow, date(now_time.year, now_time.month, int(dictRow['day'])))
                     cls.updateFlag(dictRow['name'], True)
-                elif now_time.day < dictRow['day'] and m==1 and dictRow['flag'] == True:
-                    cls.updateFlag(dictRow['name'], False)
+                    now_flag = True
+                elif m == 1 and dictRow['flag'] == True:
+                    print("cont")
+                    continue
                 elif m > 0:
+                    print("insert2")
                     cls.newFixedIERocord(dictRow, date(now_time.year, now_time.month-m, int(dictRow['day'])))
-                    cls.updateFlag(dictRow['name'], False)
 
         cls.recordEndTime()
 
