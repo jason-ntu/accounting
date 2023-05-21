@@ -30,7 +30,6 @@ class fixedIERecord(Accessor):
                                               deductionDate = date,
                                               invoice = '',
                                               note = dictRow['note'])
-
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
