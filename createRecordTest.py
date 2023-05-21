@@ -94,7 +94,7 @@ class TestCreateRecord(MockDB):
         hints = [(CreateRecordPage.hintGetAmount, "請輸入金額\n"),
                  (CreateRecordPage.hintGetLocation, "請輸入消費地點\n"),
                  (CreateRecordPage.hintGetTime, "請輸入消費時間(yyyy-mm-dd)\n"),
-                 (CreateRecordPage.hintIntegerErorMsg, "請輸入數字\n")]
+                 (CreateRecordPage.hintNumberErorMsg, "請輸入數字\n")]
         
         for hint in hints:
             hint[0]()

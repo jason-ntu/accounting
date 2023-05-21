@@ -95,6 +95,7 @@ class FixedIEPage(Accessor):
         cls.hint_create_name(IE)
         name = input()
 
+        # TODO: should read from "category"
         cls.hint_create_category()
         while True:
             try:
@@ -103,6 +104,7 @@ class FixedIEPage(Accessor):
             except ValueError:
                 print("請輸入 1 到 3 之間的數字:")
 
+        # TODO: should read from "payment"
         cls.hint_create_payment()
         while True:
             try:
@@ -110,7 +112,7 @@ class FixedIEPage(Accessor):
                 break
             except ValueError:
                 print("請輸入 1 到 5 之間的數字:")
-
+        
         cls.hint_create_amount()
         while True:
             try:
@@ -118,6 +120,8 @@ class FixedIEPage(Accessor):
                 break
             except ValueError:
                 print("請輸入數字:")
+
+        # TODO: should ask location
 
         cls.hint_create_day()
         while True:

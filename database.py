@@ -92,9 +92,9 @@ def initialize(config):
                         sql.Column(
                             'location', sql.String(30), nullable=False),
                         sql.Column(
-                            'consumptionDate', sql.Date(), default=datetime.today(), nullable=False),
+                            'purchaseDate', sql.Date(), default=datetime.today(), nullable=False),
                         sql.Column(
-                            'deductionDate', sql.Date(), default=datetime.today(), nullable=False),
+                            'debitDate', sql.Date(), default=datetime.today(), nullable=False),
                         sql.Column(
                             'invoice', sql.String(30), nullable=True),
                         sql.Column(
