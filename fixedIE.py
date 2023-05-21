@@ -1,7 +1,7 @@
 from enum import IntEnum, auto
 import sqlalchemy as sql
-from accessor import Accessor, ExecutionStatus as es
-from datetime import datetime
+from accessor import ExecutionStatus as es
+from records import RecordPage
 
 class FixedIEOption(IntEnum):
     CREATE = auto()
@@ -14,6 +14,7 @@ class FixedIEUpdateOption(IntEnum):
     CATEGORY = auto()
     PAYMENT = auto()
     AMOUNT = auto()
+    LOCATION = auto()
     DAY = auto()
     NOTE = auto()
     BACK = auto()
@@ -22,19 +23,7 @@ class FixedIEType(IntEnum):
     INCOME = auto()
     EXPENSE = auto()
 
-class CategoryOption(IntEnum):
-    FOOD = auto()
-    BEVERAGE = auto()
-    OTHER = auto()
-
-class PaymentOption(IntEnum):
-    CASH = auto()
-    DEBIT_CARD = auto()
-    CREDIT_CARD = auto()
-    ELECTRONIC = auto()
-    OTHER = auto()
-
-class FixedIEPage(Accessor):
+class FixedIEPage(RecordPage):
 
     table_name = "FixedIE"
 
@@ -79,62 +68,49 @@ class FixedIEPage(Accessor):
 
     @classmethod
     def create(cls):
-        cls.hint_create_type()
-        while True:
-            try:
-                IE = FixedIEType(int(input()))
-                break
-            except ValueError:
-                print("請輸入 1 到 2 之間的數字:")
+        # TODO: should update askIE, but may need to refactor createRecord and updateRecord
+        IEnumber = cls.askIE()
+        if IEnumber == 1:
+            IE = FixedIEType.INCOME
+        else:
+            IE = FixedIEType.EXPENSE
 
         cls.hint_create_name(IE)
         name = input()
 
-        # TODO: should read from "category"
-        cls.hint_create_category()
-        while True:
-            try:
-                category = CategoryOption(int(input()))
-                break
-            except ValueError:
-                print("請輸入 1 到 3 之間的數字:")
-
-        # TODO: should read from "payment"
-        cls.hint_create_payment()
-        while True:
-            try:
-                payment = PaymentOption(int(input()))
-                break
-            except ValueError:
-                print("請輸入 1 到 5 之間的數字:")
-        
-        cls.hint_create_amount()
-        while True:
-            try:
-                amount = float(input())
-                break
-            except ValueError:
-                print("請輸入數字:")
-
-        # TODO: should ask location
-
+        category = cls.askCategory()
+        payment = cls.askPayment()
+        amount = cls.askAmount()
+        location = cls.askLocation()
         cls.hint_create_day()
+        day = cls.askDay()
+        note = cls.askNote()
+
+        query = cls.table.insert().values(IE=IE.name, name=name,
+                                          category=category, payment=payment['name'],
+                                          amount=amount, location=location,
+                                          day=day, note=note, flag=False)
+        rowsAffected = cls.conn.execute(query).rowcount
+        return rowsAffected == 1
+    
+    @classmethod
+    def askDay(cls):
         while True:
             try:
                 day = int(input())
-                if day >= 1 and day <= 31:
-                    break
-                else:
-                    print("請輸入 1 到 31 之間的數字:")
+                if day in range(1, 32):
+                    return day
+                raise ValueError
             except ValueError:
-                print("請輸入 1 到 31 之間的數字:")
+                cls.hintDayErorMsg()
+        
+    @staticmethod
+    def hintDayErorMsg():
+        print("請輸入 1 到 31 之間的數字:")
 
-        cls.hint_create_note()
-        note = input()
-
-        query = cls.table.insert().values(IE=IE.name, name=name, category=category.name, payment=payment.name, amount=amount, day=day, note=note, flag=False)
-        rowsAffected = cls.conn.execute(query).rowcount
-        return rowsAffected == 1
+    @staticmethod
+    def hintGetIE():
+        print("類型(1 固定收入, 2 固定支出):")
 
     @staticmethod
     def hint_create_name(IE):
@@ -146,10 +122,6 @@ class FixedIEPage(Accessor):
     @staticmethod
     def hint_create_amount():
         print("金額:")
-
-    @staticmethod
-    def hint_create_type():
-        print("類型(1 固定收入, 2 固定支出):")
 
     @staticmethod
     def hint_create_category():
@@ -169,7 +141,7 @@ class FixedIEPage(Accessor):
 
     @classmethod
     def read(cls):
-        query = sql.select(cls.table.c['IE', 'name', 'category', 'payment', 'amount', 'day', 'note'])
+        query = sql.select(cls.table.c['IE', 'name', 'category', 'payment', 'amount', 'location', 'day', 'note'])
         results = cls.conn.execute(query).fetchall()
         cls.format_print(results)
 
@@ -177,7 +149,7 @@ class FixedIEPage(Accessor):
     def format_print(results):
         for row in results:
             dictRow = row._asdict()
-            print("%s 名稱\"%s\" 類別%s 收支方式%s 金額%s 每月%s號 備註:%s" %(dictRow['IE'], dictRow['name'], dictRow['category'], dictRow['payment'], dictRow['amount'], dictRow['day'], dictRow['note']))
+            print("%s 名稱\"%s\" 類別%s 收支方式%s 金額%s 地點%s 每月%s號 備註:%s" %(dictRow['IE'], dictRow['name'], dictRow['category'], dictRow['payment'], dictRow['amount'], dictRow['location'], dictRow['day'], dictRow['note']))
 
     @classmethod
     def update(cls):
@@ -195,7 +167,7 @@ class FixedIEPage(Accessor):
                     option = FixedIEUpdateOption(int(input()))
                     break
                 except ValueError:
-                    print("請輸入 1 到 6 之間的數字:",)
+                    print("請輸入 1 到 7 之間的數字:",)
 
             if option == FixedIEUpdateOption.CATEGORY:
                 return cls.update_category(name)
@@ -203,6 +175,8 @@ class FixedIEPage(Accessor):
                 return cls.update_payment(name)
             elif option == FixedIEUpdateOption.AMOUNT:
                 return cls.update_amount(name)
+            elif option == FixedIEUpdateOption.LOCATION:
+                return cls.update_location(name)
             elif option == FixedIEUpdateOption.DAY:
                 return cls.update_day(name)
             elif option == FixedIEUpdateOption.NOTE:
@@ -216,76 +190,43 @@ class FixedIEPage(Accessor):
 
     @staticmethod
     def hint_update_option():
-        print("請選擇要修改的項目(1 類別, 2 收支方式, 3 金額, 4 時間, 5 備註, 6 返回):")
+        print("請選擇要修改的項目(1 類別, 2 收支方式, 3 金額, 4 地點, 5 時間, 6 備註, 7 返回):")
 
     @classmethod
     def update_category(cls, name):
-        result = cls.conn.execute(cls.table.select().where(cls.table.c.name == name)).fetchone()
-        original_category = result[2]
-
-        cls.hint_update_category()
-        while True:
-            try:
-                new_category = CategoryOption(int(input()))
-                break
-            except ValueError:
-                print("請輸入 1 到 3 之間的數字:")
-
-        query = cls.table.update().where(cls.table.c.name == name).values(category=new_category.name)
+        new_category = cls.askCategory()
+        query = cls.table.update().where(cls.table.c.name == name).values(category=new_category)
         rowsAffected = cls.conn.execute(query).rowcount
         successful = (rowsAffected == 1)
         if not successful:
             return False
         else:
-            print("名稱為 \"%s\" 的固定收支類別已成功更新為 %s" % (name, new_category.name))
+            print("名稱為 \"%s\" 的固定收支類別已成功更新為 %s" % (name, new_category))
             return True
-
+    
     @staticmethod
-    def hint_update_category():
-        print("修改記錄類別為(1 食物, 2 飲料, 3 其他):")
+    def hintGetCategory():
+        print("請輸入紀錄類型:")
 
     @classmethod
     def update_payment(cls, name):
-        result = cls.conn.execute(cls.table.select().where(cls.table.c.name == name)).fetchone()
-        original_payment = result[3]
-
-        cls.hint_update_payment()
-        while True:
-            try:
-                new_payment = PaymentOption(int(input()))
-                break
-            except ValueError:
-                print("請輸入 1 到 5 之間的數字:")
-
-        query = cls.table.update().where(cls.table.c.name == name).values(payment=new_payment.name)
+        new_payment = cls.askPayment()
+        query = cls.table.update().where(cls.table.c.name == name).values(payment=new_payment['name'])
         rowsAffected = cls.conn.execute(query).rowcount
         successful = (rowsAffected == 1)
         if not successful:
             return False
         else:
-            print("名稱為 \"%s\" 的固定收支方式已成功為 %s" % (name, new_payment.name))
+            print("名稱為 \"%s\" 的固定收支方式已成功為 %s" % (name, new_payment['name']))
             return True
 
     @staticmethod
-    def hint_update_payment():
-        print("修改收支方式為(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他):")
+    def hintGetPayment():
+        print("請輸入收支方式:")
 
     @classmethod
     def update_amount(cls, name):
-        result = cls.conn.execute(cls.table.select().where(cls.table.c.name == name)).fetchone()
-        original_amount = result[4]
-
-        cls.hint_update_amount()
-        while True:
-            try:
-                new_amount = float(input())
-                if new_amount <= 0:
-                    cls.hint_update_format_amount()
-                else:
-                    break
-            except:
-                cls.hint_update_format_amount()
-
+        new_amount = cls.askAmount()
         query = cls.table.update().where(cls.table.c.name == name).values(amount=new_amount)
         rowsAffected = cls.conn.execute(query).rowcount
         successful = (rowsAffected == 1)
@@ -296,29 +237,29 @@ class FixedIEPage(Accessor):
             return True
 
     @staticmethod
-    def hint_update_amount():
-        print("修改金額為:")
+    def hintGetAmount():
+        print("請輸入金額:")
+
+    @classmethod
+    def update_location(cls, name):
+        new_location = cls.askLocation()
+        query = cls.table.update().where(cls.table.c.name == name).values(location=new_location)
+        rowsAffected = cls.conn.execute(query).rowcount
+        successful = (rowsAffected == 1)
+        if not successful:
+            return False
+        else:
+            print("名稱為 \"%s\" 的固定收支地點已成功更新為 %s" % (name, new_location))
+            return True
 
     @staticmethod
-    def hint_update_format_amount():
-        print("請輸入大於0的數字:")
+    def hintGetLocation():
+        print("請輸入地點:")
 
     @classmethod
     def update_day(cls, name):
-        result = cls.conn.execute(cls.table.select().where(cls.table.c.name == name)).fetchone()
-        original_day = result[5]
-
         cls.hint_update_day()
-        while True:
-            try:
-                new_day = int(input())
-                if new_day >= 1 and new_day <= 31:
-                    break
-                else:
-                    print("請輸入 1 到 31 之間的數字:")
-            except ValueError:
-                print("請輸入 1 到 31 之間的數字:")
-
+        new_day = cls.askDay()
         query = cls.table.update().where(cls.table.c.name == name).values(day=new_day)
         rowsAffected = cls.conn.execute(query).rowcount
         successful = (rowsAffected == 1)
@@ -334,12 +275,7 @@ class FixedIEPage(Accessor):
 
     @classmethod
     def update_note(cls, name):
-        result = cls.conn.execute(cls.table.select().where(cls.table.c.name == name)).fetchone()
-        original_note = result[6]
-
-        cls.hint_update_note()
-        new_note = input()
-
+        new_note = cls.askNote()
         query = cls.table.update().where(cls.table.c.name == name).values(note=new_note)
         rowsAffected = cls.conn.execute(query).rowcount
         successful = (rowsAffected == 1)
@@ -350,8 +286,8 @@ class FixedIEPage(Accessor):
             return True
 
     @staticmethod
-    def hint_update_note():
-        print("修改備註為:")
+    def hintGetNote():
+        print("請輸入備註:")
 
     @classmethod
     def delete(cls):

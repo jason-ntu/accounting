@@ -3,7 +3,7 @@ import mysqlConfig as cfg
 import sqlalchemy as sql
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from payment import PaymentCategory
-from fixedIE import FixedIEType, CategoryOption, PaymentOption
+from fixedIE import FixedIEType
 from datetime import datetime
 
 
@@ -80,6 +80,8 @@ def initialize(config):
                         sql.Column(
                             'amount', sql.Float(), nullable=False),
                         sql.Column(
+                            'location', sql.String(30), nullable=False),
+                        sql.Column(
                             'day', sql.Integer(), nullable=False),
                         sql.Column(
                             'note', sql.String(30), nullable=True),
@@ -97,7 +99,7 @@ def initialize(config):
                         sql.Column(
                             'payment', sql.String(30), nullable=False),
                         sql.Column(
-                            'amount', sql.Integer(), nullable=False),
+                            'amount', sql.Float(), nullable=False),
                         sql.Column(
                             'location', sql.String(30), nullable=False),
                         sql.Column(

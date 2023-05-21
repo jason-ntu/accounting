@@ -1,11 +1,9 @@
 from enum import IntEnum, auto
-from datetime import datetime
 import sqlalchemy as sql
 from accessor import ExecutionStatus as es
 from sqlalchemy import and_
 from readRecord import ReadRecordPage, ReadRecordOption
 from records import RecordPage
-import re
 
 class ItemOption(IntEnum):
     IE = auto()
@@ -19,8 +17,6 @@ class ItemOption(IntEnum):
     NOTE = auto()
 
 class UpdateRecordPage(RecordPage):
-
-    IEList = ["INCOME", "EXPENSE"]
 
     @staticmethod
     def hintChooseItem():

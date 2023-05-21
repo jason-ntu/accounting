@@ -1,7 +1,7 @@
 from enum import IntEnum, auto
-from accessor import Accessor, ExecutionStatus as es
+from accessor import Accessor
 from category import CategoryPage
-from payment import PaymentPage, PaymentCategory
+from payment import PaymentPage
 from location import LocationPage
 from datetime import datetime
 import re
@@ -22,6 +22,7 @@ class RecordOption(IntEnum):
 class RecordPage(Accessor):
 
     table_name = "Record"
+    IEList = ["INCOME", "EXPENSE"]
     categoryList = []
     paymentList = []
     locationList = []
@@ -75,14 +76,14 @@ class RecordPage(Accessor):
         cls.hintGetIE()
         while True:
             try:
-                ie = int(input())
-                if ie <= len(cls.IEList):
+                IE = int(input())
+                if IE <= len(cls.IEList):
                     break
                 else: 
                     raise ValueError()
             except ValueError:
                 cls.hintGetIE()
-        return ie
+        return IE
 
     @classmethod
     def askCategory(cls):
@@ -140,10 +141,17 @@ class RecordPage(Accessor):
         while True:
             try:
                 amount = float(input())
-                break
+                if amount <= 0:
+                    raise ValueError
+                else:
+                    break
             except ValueError:
                 cls.hintNumberErorMsg()
         return amount
+
+    @staticmethod
+    def hintRetryAmount():
+        print("請輸入大於0的數字:")
 
     @classmethod
     def askLocation(cls):
