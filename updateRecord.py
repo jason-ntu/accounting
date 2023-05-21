@@ -18,8 +18,6 @@ class ItemOption(IntEnum):
 
 class UpdateRecordPage(RecordPage):
 
-    IEList = ["INCOME", "EXPENSE"]
-
     @staticmethod
     def hintChooseItem():
         print("1 收入支出 2 類別 3 收支方式 4 金額 5 地點 6 消費時間 7 扣款時間 8 發票號碼 9 備註")

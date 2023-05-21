@@ -14,8 +14,6 @@ class CreateRecordOption(IntEnum):
 
 class CreateRecordPage(RecordPage):
 
-    IE = ""
-
     @staticmethod
     def show():
         print("%d: 新增收入" % CreateRecordOption.INCOME)
