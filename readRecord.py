@@ -1,6 +1,6 @@
 from enum import IntEnum, auto
 from datetime import datetime, timedelta
-from accessor import Accessor, ExecutionStatus as es
+from accessor import ExecutionStatus as es
 import sqlalchemy as sql
 from sqlalchemy import and_
 from records import RecordPage
