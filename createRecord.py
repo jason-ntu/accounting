@@ -46,18 +46,7 @@ class CreateRecordPage(RecordPage):
 
     @classmethod
     def createRecord(cls):
-        cls.categoryList = CategoryPage.getList()
-        cls.showCategory()
-        cls.hintGetCategory()
-        while True:
-            try:
-                choice = int(input())
-                if choice not in range(1, len(cls.categoryList)+1):
-                    raise ValueError
-                category = cls.categoryList[choice-1]
-                break
-            except ValueError:
-                cls.hintRetryCategory()
+        category = cls.askCategory()
 
         cls.paymentList = PaymentPage.getList()
         cls.showPayment()

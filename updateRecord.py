@@ -95,18 +95,7 @@ class UpdateRecordPage(RecordPage):
     
     @classmethod
     def updateCategory(cls, ID):
-        cls.categoryList = CategoryPage.getList()
-        cls.showCategory()
-        cls.hintNewCategory()
-        while True:
-            try:
-                choice = int(input())
-                if choice not in range(1, len(cls.categoryList)+1):
-                    raise ValueError
-                newCategory = cls.categoryList[choice-1]
-                break
-            except ValueError:
-                cls.hintRetryCategory()
+        newCategory = cls.askCategory()
         cls.setUp_connection_and_table()
         query = sql.update(cls.table).where(cls.table.c.id == ID).values(category=newCategory)
         resultProxy = cls.conn.execute(query)

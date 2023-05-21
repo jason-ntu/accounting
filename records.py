@@ -1,5 +1,8 @@
 from enum import IntEnum, auto
 from accessor import Accessor, ExecutionStatus as es
+from category import CategoryPage
+from payment import PaymentPage, PaymentCategory
+from location import LocationPage
 
 # 消費紀錄 Records
 # > 新增消費紀錄
@@ -64,6 +67,23 @@ class RecordPage(Accessor):
             DeleteRecordPage.start()
         # else:
         #     raise ValueError(cls.errorMsg)
+
+
+    @classmethod
+    def askCategory(cls):
+        cls.categoryList = CategoryPage.getList()
+        cls.showCategory()
+        cls.hintGetCategory()
+        while True:
+            try:
+                choice = int(input())
+                if choice not in range(1, len(cls.categoryList)+1):
+                    raise ValueError
+                category = cls.categoryList[choice-1]
+                break
+            except ValueError:
+                cls.hintRetryCategory()
+        return category
 
     @classmethod
     def showCategory(cls):
