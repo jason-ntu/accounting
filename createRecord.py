@@ -5,41 +5,26 @@ import sys
 from datetime import datetime
 import re
 from fixedIE import FixedIEType
+from category import CategoryPage
+from payment import PaymentPage, PaymentCategory
+from location import LocationPage
+from records import RecordPage
+
 
 class CreateRecordOption(IntEnum):
     INCOME = auto()
     EXPENSE = auto()
     BACK = auto()
 
-# TODO: remove this class
-class CategoryOption(IntEnum):
-    FOOD = auto()
-    BEVERAGE = auto()
-
-class PaymentOption(IntEnum):
-    CASH = auto()
-    DEBIT_CARD = auto()
-    CREDIT_CARD = auto()
-    ELECTRONIC = auto()
-    OTHER = auto()
-
-class CreateRecordPage(Accessor):
+class CreateRecordPage(RecordPage):
 
     IE = ""
-    category = ""
-    table_name = "Record"
 
     @staticmethod
     def show():
         print("%d: 新增收入" % CreateRecordOption.INCOME)
         print("%d: 新增支出" % CreateRecordOption.EXPENSE)
         print("%d: 回到上一頁" % CreateRecordOption.BACK)
-
-    @classmethod
-    def showCategory(cls):
-        # TODO: read from database
-        print("%d: 新增食物類別" % CategoryOption.FOOD)
-        print("%d: 新增飲料類別" % CategoryOption.BEVERAGE)
 
     @staticmethod
     def choose():
@@ -61,34 +46,53 @@ class CreateRecordPage(Accessor):
 
     @classmethod
     def createRecord(clf):
+        clf.categoryList = CategoryPage.getList()
+        clf.showCategory()
+        clf.hintGetCategory()
         while True:
-            clf.showCategory()
-            clf.hintGetCategory()
             try:
-                categoryOption = CategoryOption(int(input()))
+                choice = int(input())
+                if choice not in range(1, len(clf.categoryList)+1):
+                    raise ValueError
+                category = clf.categoryList[choice-1]
                 break
             except ValueError:
-                # TODO: update this error message
-                print("請輸入 1 到 2 之間的數字:")
+                clf.hintRetryCategory()
 
+        clf.paymentList = PaymentPage.getList()
+        clf.showPayment()
+        clf.hintGetPayment()
         while True:
-            clf.hintPaymentMsg()
             try:
-                paymentOption = PaymentOption(int(input()))
+                choice = int(input())
+                if choice not in range(1, len(clf.paymentList)+1):
+                    raise ValueError
+                payment = clf.paymentList[choice-1]
                 break
             except ValueError:
-                print("請輸入 1 到 5 之間的數字:")
+                clf.hintRetryPayment()
 
         clf.hintGetAmount()
         while True:
             try:
-                amountOfMoney = int(input())
+                amount = float(input())
                 break
             except ValueError:
                 clf.hintIntegerErorMsg()
 
-        clf.hintGetPlace()
-        consumptionPlace = input()
+        clf.locationList = LocationPage.getList()
+        clf.showLocation()
+        clf.hintGetLocation()
+        while True:
+            try:
+                choice = int(input())
+                if choice not in range(1, len(clf.locationList)+1):
+                    raise ValueError
+                location = clf.locationList[choice-1]
+                break
+            except ValueError:
+                clf.hintRetryLocation()
+
         clf.hintGetConsumptionDate()
         while True:
             try:
@@ -98,7 +102,7 @@ class CreateRecordPage(Accessor):
             except ValueError:
                 clf.hintGetConsumptionDate()
 
-        if paymentOption is paymentOption.CREDIT_CARD:
+        if payment['category'] == PaymentCategory.CREDIT_CARD.name:
             clf.hintGetDeductionDate()
             while True:
                 try:
@@ -128,10 +132,9 @@ class CreateRecordPage(Accessor):
 
         clf.setUp_connection_and_table()
         query = clf.table.insert().values(IE=clf.IE,
-                                        #   TODO: update this
-                                          category=categoryOption.name,
-                                          amount=amountOfMoney, payment=paymentOption.name,
-                                          place=consumptionPlace, consumptionDate=spendingTime,
+                                          category=category,
+                                          amount=amount, payment=payment['name'],
+                                          location=location, consumptionDate=spendingTime,
                                           deductionDate=deducteTime, invoice=invoiceNumber, note=note)
         resultProxy = clf.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
@@ -140,21 +143,21 @@ class CreateRecordPage(Accessor):
             clf.tearDown_connection(es.ROLLBACK)
             return
         clf.tearDown_connection(es.COMMIT)
-
+        
     @staticmethod
     def hintGetCategory():
-        print("請選擇紀錄類別")
+        print("請輸入紀錄類型")
 
     @staticmethod
-    def hintPaymentMsg():
-        print("收支方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他: ")
-
+    def hintGetPayment():
+        print("請輸入收支方式")
+    
     @staticmethod
     def hintGetAmount():
         print("請輸入金額")
 
     @staticmethod
-    def hintGetPlace():
+    def hintGetLocation():
         print("請輸入消費地點")
 
     @staticmethod
@@ -167,7 +170,7 @@ class CreateRecordPage(Accessor):
 
     @staticmethod
     def hintIntegerErorMsg():
-        print("輸入的數字須為整數")
+        print("請輸入數字")
 
     @staticmethod
     def hintGetNote():

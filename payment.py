@@ -205,6 +205,17 @@ class PaymentPage(Accessor):
                 return
             cls.execute(option)
 
+    @classmethod
+    def getList(cls):
+        cls.setUp_connection_and_table()
+        query = sql.select(cls.table.c['name', 'category'])
+        results = cls.conn.execute(query).fetchall()
+        cls.tearDown_connection(es.NONE)
+        paymentList = []
+        for row in results:
+            dictRow = row._asdict()
+            paymentList.append(dictRow)
+        return paymentList
 
 if __name__ == "__main__":  # pragma: no cover
     PaymentPage.start()

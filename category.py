@@ -135,6 +135,17 @@ class CategoryPage(Accessor):
             if option is CategoryOption.BACK:
                 return
             cls.execute(option)
+    
+    @classmethod
+    def getList(cls):
+        cls.setUp_connection_and_table()
+        query = sql.select(cls.table.c.name)
+        results = cls.conn.execute(query).fetchall()
+        cls.tearDown_connection(es.NONE)
+        categoryList = []
+        for result in results:
+            categoryList.append(result[0])
+        return categoryList
 
 if __name__ == "__main__":  # pragma: no cover
     CategoryPage.start()

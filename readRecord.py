@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from accessor import Accessor, ExecutionStatus as es
 import sqlalchemy as sql
 from sqlalchemy import and_
+from records import RecordPage
 import sys
 
 
@@ -13,9 +14,7 @@ class ReadRecordOption(IntEnum):
     OTHER = auto()
     BACK = auto()
 
-class ReadRecordPage(Accessor):
-
-    table_name = "Record"
+class ReadRecordPage(RecordPage):
 
     @staticmethod
     def show():
@@ -64,7 +63,7 @@ class ReadRecordPage(Accessor):
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
-                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['location'], 
                   " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
@@ -81,7 +80,7 @@ class ReadRecordPage(Accessor):
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
-                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['location'], 
                   " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
@@ -99,7 +98,7 @@ class ReadRecordPage(Accessor):
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
-                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['location'], 
                   " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
@@ -116,7 +115,7 @@ class ReadRecordPage(Accessor):
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
-                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['place'], 
+                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['location'], 
                   " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 

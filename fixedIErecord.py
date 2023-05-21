@@ -32,7 +32,7 @@ class fixedIERecord():
                                           category = dictRow['category'].name,
                                           payment = dictRow['payment'].name,
                                           amount = dictRow['amount'],
-                                          place = 'none',
+                                          location = 'none',
                                           consumptionDate = datetime.now().date(),
                                           deductionDate = datetime.now().date(),
                                           invoice = '',

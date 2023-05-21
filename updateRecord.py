@@ -1,10 +1,13 @@
 from enum import IntEnum, auto
 from datetime import datetime
 import sqlalchemy as sql
-from accessor import Accessor, ExecutionStatus as es
+from accessor import ExecutionStatus as es
 from sqlalchemy import and_
 from readRecord import ReadRecordPage, ReadRecordOption
-from createRecord import PaymentOption, CreateRecordPage
+from records import RecordPage
+from category import CategoryPage
+from payment import PaymentPage
+from location import LocationPage
 import re
 
 class ItemOption(IntEnum):
@@ -18,12 +21,10 @@ class ItemOption(IntEnum):
     INVOICE = auto()
     NOTE = auto()
 
-class UpdateRecordPage(Accessor):
+class UpdateRecordPage(RecordPage):
 
-    table_name = "Record"
     # IDerrorMsg = "輸入的ID須為整數"
     # errorMsg = "請輸入 1 到 9 之間的數字: "
-    categoryList = ["FOOD", "BEVERAGE"]
     paymentList = ["CASH", "DEBIT_CARD", "CREDIT_CARD", "ELECTRONIC", "OTHER"]
     IEList = ["INCOME", "EXPENSE"]
 
@@ -37,19 +38,19 @@ class UpdateRecordPage(Accessor):
         print("請選擇 1 收入 2 支出")
 
     @staticmethod
-    def hintNewAmount():
-        print("請輸入新的金額")
-    
-    @staticmethod
     def hintNewCategory():
-        print("請選擇新的分類 1 食物 2 飲料")
+        print("請輸入新的紀錄類型")
 
     @staticmethod
     def hintNewPayment():
-        print("請選擇新的收支方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他")
-    
+        print("請輸入新的收支方式")
+
     @staticmethod
-    def hintNewPlace():
+    def hintNewAmount():
+        print("請輸入新的金額")
+
+    @staticmethod
+    def hintNewLocation():
         print("請輸入新的地點")
     
     @staticmethod
@@ -96,18 +97,20 @@ class UpdateRecordPage(Accessor):
     
     @classmethod
     def updateCategory(clf, ID):
+        clf.categoryList = CategoryPage.getList()
+        clf.showCategory()
         clf.hintNewCategory()
         while True:
             try:
-                newCategory = int(input())
-                if newCategory <= len(clf.categoryList):
-                    break
-                else: 
-                    raise ValueError()
+                choice = int(input())
+                if choice not in range(1, len(clf.categoryList)+1):
+                    raise ValueError
+                newCategory = clf.categoryList[choice-1]
+                break
             except ValueError:
-                clf.hintNewCategory()
+                clf.hintRetryCategory()
         clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(category=clf.categoryList[newCategory-1])
+        query = sql.update(clf.table).where(clf.table.c.id == ID).values(category=newCategory)
         resultProxy = clf.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
@@ -118,19 +121,20 @@ class UpdateRecordPage(Accessor):
 
     @classmethod
     def updatePayment(clf, ID):
+        clf.paymentList = PaymentPage.getList()
+        clf.showPayment()
         clf.hintNewPayment()
         while True:
             try:
-                newPayment = int(input())
-                if newPayment <= len(clf.paymentList):
-                    break
-                else: 
-                    raise ValueError()
+                choice  = int(input())
+                if choice not in range(1, len(clf.paymentList)+1):
+                    raise ValueError
+                newPayment = clf.paymentList[choice-1]
+                break
             except ValueError:
-                clf.hintNewPayment()
-
+                clf.hintRetryPayment()
         clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(payment=clf.paymentList[newPayment-1])
+        query = sql.update(clf.table).where(clf.table.c.id == ID).values(payment=newPayment['name'])
         resultProxy = clf.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
@@ -159,11 +163,21 @@ class UpdateRecordPage(Accessor):
         clf.tearDown_connection(es.COMMIT)
 
     @classmethod
-    def updatePlace(clf, ID):
-        clf.hintNewPlace()
-        newPlace = input()
+    def updateLocation(clf, ID):
+        clf.locationList = LocationPage.getList()
+        clf.showLocation()
+        clf.hintNewLocation()
+        while True:
+            try:
+                choice = int(input())
+                if choice not in range(1, len(clf.locationList)+1):
+                    raise ValueError
+                newLocation = clf.locationList[choice-1]
+                break
+            except ValueError:
+                clf.hintRetryLocation()
         clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(place=newPlace)
+        query = sql.update(clf.table).where(clf.table.c.id == ID).values(location=newLocation)
         resultProxy = clf.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
@@ -285,7 +299,7 @@ class UpdateRecordPage(Accessor):
         elif option is ItemOption.AMOUNT:
             clf.updateAmount(ID)
         elif option is ItemOption.LOCATION:
-            clf.updatePlace(ID)
+            clf.updateLocation(ID)
         elif option is ItemOption.CONSUMPTIONTIME:
             clf.updateConsumptionDate(ID)
         elif option is ItemOption.DEDUCTIONTIME:
