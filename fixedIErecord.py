@@ -33,8 +33,8 @@ class fixedIERecord():
                                           payment = dictRow['payment'].name,
                                           amount = dictRow['amount'],
                                           location = 'none',
-                                          consumptionDate = datetime.now().date(),
-                                          deductionDate = datetime.now().date(),
+                                          purchaseDate = datetime.now().date(),
+                                          debitDate = datetime.now().date(),
                                           invoice = '',
                                           note = dictRow['note'])
         resultProxy = cls.conn.execute(query)

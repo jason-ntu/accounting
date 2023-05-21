@@ -3,6 +3,8 @@ from accessor import Accessor, ExecutionStatus as es
 from category import CategoryPage
 from payment import PaymentPage, PaymentCategory
 from location import LocationPage
+from datetime import datetime
+import re
 
 # 消費紀錄 Records
 # > 新增消費紀錄
@@ -68,6 +70,19 @@ class RecordPage(Accessor):
         # else:
         #     raise ValueError(cls.errorMsg)
 
+    @classmethod
+    def askIE(cls):
+        cls.hintGetIE()
+        while True:
+            try:
+                ie = int(input())
+                if ie <= len(cls.IEList):
+                    break
+                else: 
+                    raise ValueError()
+            except ValueError:
+                cls.hintGetIE()
+        return ie
 
     @classmethod
     def askCategory(cls):
@@ -158,6 +173,60 @@ class RecordPage(Accessor):
     @staticmethod
     def hintNumberErorMsg():
         print("請輸入數字")
+
+    @classmethod
+    def askPurchaseDate(cls):
+        cls.hintGetPurchaseDate()
+        while True:
+            try:
+                date = cls.askDate()
+                break
+            except ValueError:
+                cls.hintGetPurchaseDate()
+        return date
+    
+    @classmethod
+    def askDebitDate(cls):
+        cls.hintGetDebitDate()
+        while True:
+            try:
+                date = cls.askDate()
+                break
+            except ValueError:
+                cls.hintGetDebitDate()
+        return date
+    
+    @classmethod
+    def askDate(cls):
+        date = input()
+        if (date == ""):
+            date = datetime.today().date()
+        else:
+            datetime.strptime(date, '%Y-%m-%d').date()
+        return date
+
+    @classmethod
+    def askInvoice(cls):
+        cls.hintGetInvoice()
+        invoice = input()
+        while invoice != "":
+            try:
+                pattern = r'\d{8}$'
+                match = re.match(pattern, invoice)
+                if match:
+                    break
+                else:
+                    raise ValueError()
+            except ValueError:
+                cls.hintGetInvoice()
+                invoice = input()
+        return invoice
+
+    @classmethod
+    def askNote(cls):
+        cls.hintGetNote()
+        note = input()
+        return note
 
 if __name__ == '__main__': # pragma: no cover
     RecordPage.start()

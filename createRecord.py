@@ -47,62 +47,21 @@ class CreateRecordPage(RecordPage):
     @classmethod
     def createRecord(cls):
         category = cls.askCategory()
-        
         payment = cls.askPayment()
-
         amount = cls.askAmount()
-
         location = cls.askLocation()
-        
-        cls.hintGetConsumptionDate()
-        while True:
-            try:
-                spendingTime = input()
-                if (spendingTime == ""):
-                    spendingTime = datetime.today().date()
-                    break
-                datetime.strptime(spendingTime, '%Y-%m-%d').date()
-                break
-            except ValueError:
-                cls.hintGetConsumptionDate()
-
+        purchaseDate = cls.askPurchaseDate()
+        debitDate = purchaseDate
         if payment['category'] == PaymentCategory.CREDIT_CARD.name:
-            cls.hintGetDeductionDate()
-            while True:
-                try:
-                    deducteTime = input()
-                    if (deducteTime == ""):
-                        deducteTime = datetime.today().date()
-                        break
-                    datetime.strptime(deducteTime, '%Y-%m-%d').date()
-                    break
-                except ValueError:
-                    cls.hintGetDeductionDate()
-        else: deducteTime = spendingTime
-
-        cls.hintGetNote()
-        note = input()
-
-        cls.hintGetInvoice()
-        invoiceNumber = input()
-        while invoiceNumber != "":
-            try:
-                pattern = r'\d{8}$'
-                match = re.match(pattern, invoiceNumber)
-                if match:
-                    break
-                else:
-                    raise ValueError()
-            except ValueError:
-                cls.hintGetInvoice()
-                invoiceNumber = input()
+            debitDate = cls.askDebitDate()
+        invoice = cls.askInvoice()
+        note = cls.askNote()
 
         cls.setUp_connection_and_table()
-        query = cls.table.insert().values(IE=cls.IE,
-                                          category=category,
+        query = cls.table.insert().values(IE=cls.IE,category=category,
                                           amount=amount, payment=payment['name'],
-                                          location=location, consumptionDate=spendingTime,
-                                          deductionDate=deducteTime, invoice=invoiceNumber, note=note)
+                                          location=location, purchaseDate=purchaseDate,
+                                          debitDate=debitDate, invoice=invoice, note=note)
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
@@ -128,11 +87,11 @@ class CreateRecordPage(RecordPage):
         print("請輸入消費地點:")
 
     @staticmethod
-    def hintGetConsumptionDate():
+    def hintGetPurchaseDate():
         print("請輸入消費日期(yyyy-mm-dd):")
 
     @staticmethod
-    def hintGetDeductionDate():
+    def hintGetDebitDate():
         print("請輸入扣款日期(yyyy-mm-dd):")
 
     @staticmethod

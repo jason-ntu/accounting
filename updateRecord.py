@@ -5,9 +5,6 @@ from accessor import ExecutionStatus as es
 from sqlalchemy import and_
 from readRecord import ReadRecordPage, ReadRecordOption
 from records import RecordPage
-from category import CategoryPage
-from payment import PaymentPage
-from location import LocationPage
 import re
 
 class ItemOption(IntEnum):
@@ -52,8 +49,12 @@ class UpdateRecordPage(RecordPage):
         print("請輸入新的消費地點:")
     
     @staticmethod
-    def hintGetTime():
-        print("請輸入新的日期(yyyy-mm-dd):")
+    def hintGetPurchaseDate():
+        print("請輸入新的消費日期(yyyy-mm-dd):")
+    
+    @staticmethod
+    def hintGetDebitDate():
+        print("請輸入新的扣款日期(yyyy-mm-dd):")
     
     @staticmethod
     def hintGetInvoice():
@@ -143,16 +144,7 @@ class UpdateRecordPage(RecordPage):
     
     @classmethod
     def updateIE(cls, ID):
-        cls.hintGetIE()
-        while True:
-            try:
-                newIE = int(input())
-                if newIE <= len(cls.IEList):
-                    break
-                else: 
-                    raise ValueError()
-            except ValueError:
-                cls.hintGetIE()
+        newIE = cls.askIE()
         cls.setUp_connection_and_table()
         query = sql.update(cls.table).where(cls.table.c.id == ID).values(IE=cls.IEList[newIE-1])
         resultProxy = cls.conn.execute(query)
@@ -164,18 +156,10 @@ class UpdateRecordPage(RecordPage):
         cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-    def updateConsumptionDate(cls, ID):
-        cls.hintGetTime()
-        while True:
-            try:
-                newTime = input()
-                datetime.strptime(newTime, '%Y-%m-%d').date()
-                break
-            except ValueError:
-                cls.hintGetTime()
-
+    def updatePurchaseDate(cls, ID):
+        newDate = cls.askPurchaseDate()
         cls.setUp_connection_and_table()
-        query = sql.update(cls.table).where(cls.table.c.id == ID).values(consumptionDate=newTime)
+        query = sql.update(cls.table).where(cls.table.c.id == ID).values(purchaseDate=newDate)
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
@@ -185,17 +169,10 @@ class UpdateRecordPage(RecordPage):
         cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-    def updateDeductionDate(cls, ID):
-        cls.hintGetTime()
-        while True:
-            try:
-                newTime = input()
-                datetime.strptime(newTime, '%Y-%m-%d').date()
-                break
-            except ValueError:
-                cls.hintGetTime()
+    def updateDebitDate(cls, ID):
+        newDate = cls.askDebitDate()
         cls.setUp_connection_and_table()
-        query = sql.update(cls.table).where(cls.table.c.id == ID).values(deductionDate=newTime)
+        query = sql.update(cls.table).where(cls.table.c.id == ID).values(debitDate=newDate)
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
@@ -206,19 +183,7 @@ class UpdateRecordPage(RecordPage):
 
     @classmethod
     def updateInvoice(cls, ID):
-        cls.hintGetInvoice()
-        newInvoice = input()
-        while newInvoice != "":
-            try:
-                pattern = r'\d{8}$'
-                match = re.match(pattern, newInvoice)
-                if match:
-                    break
-                else:
-                    raise ValueError()
-            except ValueError:
-                cls.hintGetInvoice()
-                newInvoice = input()
+        newInvoice = cls.askInvoice()
         cls.setUp_connection_and_table()
         query = sql.update(cls.table).where(cls.table.c.id == ID).values(invoice=newInvoice)
         resultProxy = cls.conn.execute(query)
@@ -231,8 +196,7 @@ class UpdateRecordPage(RecordPage):
 
     @classmethod
     def updateNote(cls, ID):
-        cls.hintGetNote()
-        newNote = input()
+        newNote = cls.askNote()
         cls.setUp_connection_and_table()
         query = sql.update(cls.table).where(cls.table.c.id == ID).values(note=newNote)
         resultProxy = cls.conn.execute(query)
@@ -256,9 +220,9 @@ class UpdateRecordPage(RecordPage):
         elif option is ItemOption.LOCATION:
             cls.updateLocation(ID)
         elif option is ItemOption.CONSUMPTIONTIME:
-            cls.updateConsumptionDate(ID)
+            cls.updatePurchaseDate(ID)
         elif option is ItemOption.DEDUCTIONTIME:
-            cls.updateDeductionDate(ID)
+            cls.updateDebitDate(ID)
         elif option is ItemOption.INVOICE:
             cls.updateInvoice(ID)
         else: 
