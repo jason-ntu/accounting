@@ -63,16 +63,16 @@ class TestCreateRecord(MockDB):
     @patch('builtins.input', side_effect=[8, 1, 100, "全家", '2023-05-21'])
     @patch.object(CreateRecordPage, "hintPaymentMsg")
     @patch.object(CreateRecordPage, "hintGetAmount")
-    @patch.object(CreateRecordPage, "hintGetPlace")
+    @patch.object(CreateRecordPage, "hintGetLocation")
     @patch.object(CreateRecordPage, "hintGetTime")
-    def test_createRecord(self, _hintGetTime, _hintGetPlace, _hintGetAmount, _hintPaymentMsg, _input, _stdout):
+    def test_createRecord(self, _hintGetTime, _hintGetLocation, _hintGetAmount, _hintPaymentMsg, _input, _stdout):
         with self.mock_db_config:
             CreateRecordPage.setUp_connection_and_table()
             CreateRecordPage.createRecord()
             CreateRecordPage.tearDown_connection(es.NONE)
         self.assertEqual(_hintPaymentMsg.call_count, 2)
         self.assertEqual(_hintGetAmount.call_count, 1)
-        self.assertEqual(_hintGetPlace.call_count, 1)
+        self.assertEqual(_hintGetLocation.call_count, 1)
         self.assertEqual(_hintGetTime.call_count, 1)
         output_lines = _stdout.getvalue().strip().split('\n')
         self.assertEqual(output_lines[0], "請輸入 1 到 5 之間的數字:")
@@ -92,10 +92,9 @@ class TestCreateRecord(MockDB):
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_hints(self, _stdout):
         hints = [(CreateRecordPage.hintGetAmount, "請輸入金額\n"),
-                 (CreateRecordPage.hintGetPlace, "請輸入消費地點\n"),
+                 (CreateRecordPage.hintGetLocation, "請輸入消費地點\n"),
                  (CreateRecordPage.hintGetTime, "請輸入消費時間(yyyy-mm-dd)\n"),
-                 (CreateRecordPage.hintIntegerErorMsg, "輸入的數字須為整數\n"),
-                 (CreateRecordPage.hintPaymentMsg, "支付方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他: \n")]
+                 (CreateRecordPage.hintIntegerErorMsg, "請輸入數字\n")]
         
         for hint in hints:
             hint[0]()

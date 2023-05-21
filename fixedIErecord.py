@@ -25,7 +25,7 @@ class fixedIERecord(Accessor):
                                               category = dictRow['category'],
                                               payment = dictRow['payment'],
                                               amount = dictRow['amount'],
-                                              place = 'none',
+                                              location = 'none',
                                               consumptionDate = date,
                                               deductionDate = date,
                                               invoice = '',

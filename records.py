@@ -1,9 +1,5 @@
 from enum import IntEnum, auto
-from readRecord import ReadRecordPage
-from deleteRecord import DeleteRecordPage
-from createRecord import CreateRecordPage
-from updateRecord import UpdateRecordPage
-
+from accessor import Accessor, ExecutionStatus as es
 
 # 消費紀錄 Records
 # > 新增消費紀錄
@@ -18,7 +14,13 @@ class RecordOption(IntEnum):
     DELETE = auto()
     BACK = auto()
 
-class RecordPage:
+class RecordPage(Accessor):
+
+    table_name = "Record"
+    categoryList = []
+    paymentList = []
+    locationList = []
+    
     @staticmethod
     def choose():
         while True:
@@ -49,17 +51,46 @@ class RecordPage:
     @classmethod
     def execute(cls, option):
         if option is RecordOption.CREATE:
-            nextPage = CreateRecordPage()
+            from createRecord import CreateRecordPage
+            CreateRecordPage.start()
         elif option is RecordOption.READ:
-            nextPage = ReadRecordPage()
+            from readRecord import ReadRecordPage
+            ReadRecordPage.start()
         elif option is RecordOption.UPDATE:
-            nextPage = UpdateRecordPage()
+            from updateRecord import UpdateRecordPage
+            UpdateRecordPage.start()
         elif option is RecordOption.DELETE:
-            nextPage = DeleteRecordPage()
+            from deleteRecord import DeleteRecordPage
+            DeleteRecordPage.start()
         # else:
         #     raise ValueError(cls.errorMsg)
-        nextPage.start()
+
+    @classmethod
+    def showCategory(cls):
+        for i in range(len(cls.categoryList)):
+            print("%d %s" % (i+1, cls.categoryList[i]))
+    
+    @classmethod
+    def hintRetryCategory(cls):
+        print("請輸入 1 到 %d 之間的數字:" % len(cls.categoryList))
+    
+    @classmethod
+    def showPayment(cls):
+        for i in range(len(cls.paymentList)):
+            print("%d %s(%s)" % (i+1, cls.paymentList[i]['name'], cls.paymentList[i]['category']))
+
+    @classmethod
+    def hintRetryPayment(cls):
+        print("請輸入 1 到 %d 之間的數字:" % len(cls.paymentList))
+    
+    @classmethod
+    def showLocation(cls):
+        for i in range(len(cls.locationList)):
+            print("%d %s" % (i+1, cls.locationList[i]))
+
+    @classmethod
+    def hintRetryLocation(cls):
+        print("請輸入 1 到 %d 之間的數字:" % len(cls.locationList))
 
 if __name__ == '__main__': # pragma: no cover
-    recordPage = RecordPage()
-    recordPage.start()
+    RecordPage.start()
