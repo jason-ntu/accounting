@@ -1,6 +1,7 @@
 from enum import IntEnum, auto
 import sqlalchemy as sql
 from accessor import Accessor, ExecutionStatus as es
+from datetime import datetime
 
 class FixedIEOption(IntEnum):
     CREATE = auto()
@@ -32,12 +33,6 @@ class PaymentOption(IntEnum):
     CREDIT_CARD = auto()
     ELECTRONIC = auto()
     OTHER = auto()
-
-class FixedIE:
-    name: str
-    amount: int
-    _type: FixedIEType
-
 
 class FixedIEPage(Accessor):
 
@@ -133,40 +128,40 @@ class FixedIEPage(Accessor):
         cls.hint_create_note()
         note = input()
 
-        query = cls.table.insert().values(IE=IE.name, name=name, category=category.name, payment=payment.name, amount=amount, day=day, note=note)
+        query = cls.table.insert().values(IE=IE.name, name=name, category=category.name, payment=payment.name, amount=amount, day=day, note=note, flag=False)
         rowsAffected = cls.conn.execute(query).rowcount
         return rowsAffected == 1
 
     @staticmethod
     def hint_create_name(IE):
         if IE == FixedIEType.INCOME:
-            print("請輸入新的固定收入名稱: ",end='')
+            print("請輸入新的固定收入名稱:")
         if IE == FixedIEType.EXPENSE:
-            print("請輸入新的固定支出名稱: ",end='')
+            print("請輸入新的固定支出名稱:")
 
     @staticmethod
     def hint_create_amount():
-        print("金額: ",end='')
+        print("金額:")
 
     @staticmethod
     def hint_create_type():
-        print("類型(1 固定收入, 2 固定支出): ",end='')
+        print("類型(1 固定收入, 2 固定支出):")
 
     @staticmethod
     def hint_create_category():
-        print("記錄類別(1 食物, 2 飲料, 3 其他): ",end='')
+        print("記錄類別(1 食物, 2 飲料, 3 其他):")
 
     @staticmethod
     def hint_create_payment():
-        print("收支方式(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他): ",end='')
+        print("收支方式(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他):")
 
     @staticmethod
     def hint_create_day():
-        print("請輸入每月收支日(1-31): ",end='')
+        print("請輸入每月收支日(1-31):")
 
     @staticmethod
     def hint_create_note():
-        print("請輸入備註: ",end='')
+        print("請輸入備註:")
 
     @classmethod
     def read(cls):
@@ -213,11 +208,11 @@ class FixedIEPage(Accessor):
 
     @staticmethod
     def hint_select_update_name():
-        print("請輸入要修改的固定收支的名稱: ",end='')
+        print("請輸入要修改的固定收支的名稱:")
 
     @staticmethod
     def hint_update_option():
-        print("請選擇要修改的項目(1 類別, 2 收支方式, 3 金額, 4 時間, 5 備註, 6 返回): ",end='')
+        print("請選擇要修改的項目(1 類別, 2 收支方式, 3 金額, 4 時間, 5 備註, 6 返回):")
 
     @classmethod
     def update_category(cls, name):
@@ -234,12 +229,16 @@ class FixedIEPage(Accessor):
 
         query = cls.table.update().where(cls.table.c.name == name).values(category=new_category.name)
         rowsAffected = cls.conn.execute(query).rowcount
-        print("名稱為 \"%s\" 的固定收支類別已成功更新為 %s" % (name, new_category.name))
-        return True
+        successful = (rowsAffected == 1)
+        if not successful:
+            return False
+        else:
+            print("名稱為 \"%s\" 的固定收支類別已成功更新為 %s" % (name, new_category.name))
+            return True
 
     @staticmethod
     def hint_update_category():
-        print("修改記錄類別為(1 食物, 2 飲料, 3 其他): ",end='')
+        print("修改記錄類別為(1 食物, 2 飲料, 3 其他):")
 
     @classmethod
     def update_payment(cls, name):
@@ -256,12 +255,16 @@ class FixedIEPage(Accessor):
 
         query = cls.table.update().where(cls.table.c.name == name).values(payment=new_payment.name)
         rowsAffected = cls.conn.execute(query).rowcount
-        print("名稱為 \"%s\" 的固定收支方式已成功為 %s" % (name, new_payment.name))
-        return True
+        successful = (rowsAffected == 1)
+        if not successful:
+            return False
+        else:
+            print("名稱為 \"%s\" 的固定收支方式已成功為 %s" % (name, new_payment.name))
+            return True
 
     @staticmethod
     def hint_update_payment():
-        print("修改收支方式為(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他): ",end='')
+        print("修改收支方式為(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他):")
 
     @classmethod
     def update_amount(cls, name):
@@ -281,17 +284,20 @@ class FixedIEPage(Accessor):
 
         query = cls.table.update().where(cls.table.c.name == name).values(amount=new_amount)
         rowsAffected = cls.conn.execute(query).rowcount
-
-        print("名稱為 \"%s\" 的固定收支金額已成功更新為 %.2f" % (name, new_amount))
-        return True
+        successful = (rowsAffected == 1)
+        if not successful:
+            return False
+        else:
+            print("名稱為 \"%s\" 的固定收支金額已成功更新為 %.2f" % (name, new_amount))
+            return True
 
     @staticmethod
     def hint_update_amount():
-        print("修改金額為: ",end='')
+        print("修改金額為:")
 
     @staticmethod
     def hint_update_format_amount():
-        print("請輸入大於0的數字: ",end='')
+        print("請輸入大於0的數字:")
 
     @classmethod
     def update_day(cls, name):
@@ -311,12 +317,16 @@ class FixedIEPage(Accessor):
 
         query = cls.table.update().where(cls.table.c.name == name).values(day=new_day)
         rowsAffected = cls.conn.execute(query).rowcount
-        print("名稱為 \"%s\" 的固定收支時間已成功更新為每月 %d 號" % (name, new_day))
-        return True
+        successful = (rowsAffected == 1)
+        if not successful:
+            return False
+        else:
+            print("名稱為 \"%s\" 的固定收支時間已成功更新為每月 %d 號" % (name, new_day))
+            return True
 
     @staticmethod
     def hint_update_day():
-        print("修改每月收支日為(1-31): ",end='')
+        print("修改每月收支日為(1-31):")
 
     @classmethod
     def update_note(cls, name):
@@ -328,12 +338,16 @@ class FixedIEPage(Accessor):
 
         query = cls.table.update().where(cls.table.c.name == name).values(note=new_note)
         rowsAffected = cls.conn.execute(query).rowcount
-        print("名稱為 \"%s\" 的固定收支備註已成功更新為%s" % (name, new_note))
-        return True
+        successful = (rowsAffected == 1)
+        if not successful:
+            return False
+        else:
+            print("名稱為 \"%s\" 的固定收支備註已成功更新為%s" % (name, new_note))
+            return True
 
     @staticmethod
     def hint_update_note():
-        print("修改備註為: ",end='')
+        print("修改備註為:")
 
     @classmethod
     def delete(cls):
@@ -350,7 +364,7 @@ class FixedIEPage(Accessor):
 
     @staticmethod
     def hint_delete_name():
-        print("請輸入要刪除的固定收支的名稱: ",end='')
+        print("請輸入要刪除的固定收支的名稱:")
 
     @classmethod
     def start(cls):

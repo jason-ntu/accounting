@@ -20,22 +20,22 @@ class TestFixedIEPage(MockDB):
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_hints(self, _stdout):
-        hints_argc1 = [(FixedIEPage.hint_create_name, FixedIEType.INCOME,  "請輸入新的固定收入名稱: "),
-                       (FixedIEPage.hint_create_name, FixedIEType.EXPENSE, "請輸入新的固定支出名稱: ")]
-        hints_argc0 = [(FixedIEPage.hint_create_amount, "金額: "),
-                       (FixedIEPage.hint_create_type, "類型(1 固定收入, 2 固定支出): "),
-                       (FixedIEPage.hint_create_category, "記錄類別(1 食物, 2 飲料, 3 其他): "),
-                       (FixedIEPage.hint_create_payment, "收支方式(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他): "),
-                       (FixedIEPage.hint_create_note, "請輸入備註: "),
-                       (FixedIEPage.hint_select_update_name, "請輸入要修改的固定收支的名稱: "),
-                       (FixedIEPage.hint_update_option, "請選擇要修改的項目(1 類別, 2 收支方式, 3 金額, 4 時間, 5 備註, 6 返回): "),
-                       (FixedIEPage.hint_update_category, "修改記錄類別為(1 食物, 2 飲料, 3 其他): "),
-                       (FixedIEPage.hint_update_payment, "修改收支方式為(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他): "),
-                       (FixedIEPage.hint_update_amount, "修改金額為: "),
-                       (FixedIEPage.hint_update_format_amount, "請輸入大於0的數字: "),
-                       (FixedIEPage.hint_update_day, "修改每月收支日為(1-31): "),
-                       (FixedIEPage.hint_update_note, "修改備註為: "),
-                       (FixedIEPage.hint_delete_name, "請輸入要刪除的固定收支的名稱: ")
+        hints_argc1 = [(FixedIEPage.hint_create_name, FixedIEType.INCOME,  "請輸入新的固定收入名稱:\n"),
+                       (FixedIEPage.hint_create_name, FixedIEType.EXPENSE, "請輸入新的固定支出名稱:\n")]
+        hints_argc0 = [(FixedIEPage.hint_create_amount, "金額:\n"),
+                       (FixedIEPage.hint_create_type, "類型(1 固定收入, 2 固定支出):\n"),
+                       (FixedIEPage.hint_create_category, "記錄類別(1 食物, 2 飲料, 3 其他):\n"),
+                       (FixedIEPage.hint_create_payment, "收支方式(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他):\n"),
+                       (FixedIEPage.hint_create_note, "請輸入備註:\n"),
+                       (FixedIEPage.hint_select_update_name, "請輸入要修改的固定收支的名稱:\n"),
+                       (FixedIEPage.hint_update_option, "請選擇要修改的項目(1 類別, 2 收支方式, 3 金額, 4 時間, 5 備註, 6 返回):\n"),
+                       (FixedIEPage.hint_update_category, "修改記錄類別為(1 食物, 2 飲料, 3 其他):\n"),
+                       (FixedIEPage.hint_update_payment, "修改收支方式為(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他):\n"),
+                       (FixedIEPage.hint_update_amount, "修改金額為:\n"),
+                       (FixedIEPage.hint_update_format_amount, "請輸入大於0的數字:\n"),
+                       (FixedIEPage.hint_update_day, "修改每月收支日為(1-31):\n"),
+                       (FixedIEPage.hint_update_note, "修改備註為:\n"),
+                       (FixedIEPage.hint_delete_name, "請輸入要刪除的固定收支的名稱:\n")
                        ]
         for hint in hints_argc1:
             hint[0](hint[1])

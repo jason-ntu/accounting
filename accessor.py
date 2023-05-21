@@ -13,12 +13,21 @@ class Accessor:
     table_name = ""
 
     @classmethod
-    def setUp_connection_and_table(cls):
+    def setUp_connection_and_table(cls, tables=[]):
         engine = sql.create_engine(cfg.dev['url'])
         cls.conn = engine.connect()
         metadata = sql.MetaData()
-        cls.table = sql.Table(cls.table_name, metadata,
+        # use cls.table to access the default table
+        if len(tables) == 0:
+            cls.table = sql.Table(cls.table_name, metadata,
                               mysql_autoload=True, autoload_with=engine)
+            return
+        # use cls.tables to access user-defined tables
+        cls.tables = []
+        for table in tables:
+            cls.tables.append(sql.Table(table, metadata,
+                            mysql_autoload=True, autoload_with=engine))
+
 
     @classmethod
     def tearDown_connection(cls, operation=ExecutionStatus.COMMIT):

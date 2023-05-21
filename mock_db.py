@@ -79,7 +79,9 @@ class MockDB(TestCase):
                         sql.Column(
                             'day', sql.Integer(), nullable=False),
                         sql.Column(
-                            'note', sql.String(30), nullable=True)
+                            'note', sql.String(30), nullable=True),
+                        sql.Column(
+                            'flag', sql.Boolean(), default=False, nullable=False)
         )
 
         record = sql.Table('Record', metadata,
@@ -112,8 +114,8 @@ class MockDB(TestCase):
         conn.execute(income.insert().values(default_incomes))
 
         default_fixedIE = [
-            {'IE': FixedIEType.INCOME.name, 'name': "獎學金", 'category': CategoryOption.OTHER.name, 'payment': PaymentOption.OTHER.name, 'amount': 10000, 'day': 15, 'note': ''},
-            {'IE': FixedIEType.EXPENSE.name, 'name': "房租", 'category': CategoryOption.OTHER.name, 'payment': PaymentOption.OTHER.name, 'amount': 6000, 'day': 20, 'note': 'sos'}
+            {'IE': FixedIEType.INCOME.name, 'name': "獎學金", 'category': CategoryOption.OTHER.name, 'payment': PaymentOption.OTHER.name, 'amount': 10000, 'day': 15, 'note': '', 'flag': True},
+            {'IE': FixedIEType.EXPENSE.name, 'name': "房租", 'category': CategoryOption.OTHER.name, 'payment': PaymentOption.OTHER.name, 'amount': 6000, 'day': 20, 'note': 'sos', 'flag': False}
         ]
         conn.execute(fixedIE.insert().values(default_fixedIE))
 
