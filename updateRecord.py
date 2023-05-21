@@ -23,8 +23,6 @@ class ItemOption(IntEnum):
 
 class UpdateRecordPage(RecordPage):
 
-    # paymentList = ["CASH", "DEBIT_CARD", "CREDIT_CARD", "ELECTRONIC", "OTHER"]
-    paymentList = []
     IEList = ["INCOME", "EXPENSE"]
 
     @staticmethod
@@ -74,10 +72,10 @@ class UpdateRecordPage(RecordPage):
         print("請輸入想更改的紀錄ID:")
     
     @classmethod
-    def chooseItem(clf):
+    def chooseItem(cls):
         while True:
             try:
-                clf.hintChooseItem()
+                cls.hintChooseItem()
                 option = ItemOption(int(input()))
                 break
             except ValueError:
@@ -85,10 +83,10 @@ class UpdateRecordPage(RecordPage):
         return option
     
     @classmethod
-    def checkIDInteger(clf):
+    def checkIDInteger(cls):
         while True:
             try:
-                clf.hintGetID()
+                cls.hintGetID()
                 ID = int(input())
                 break
             except ValueError:
@@ -96,162 +94,162 @@ class UpdateRecordPage(RecordPage):
         return ID
     
     @classmethod
-    def updateCategory(clf, ID):
-        clf.categoryList = CategoryPage.getList()
-        clf.showCategory()
-        clf.hintNewCategory()
+    def updateCategory(cls, ID):
+        cls.categoryList = CategoryPage.getList()
+        cls.showCategory()
+        cls.hintNewCategory()
         while True:
             try:
                 choice = int(input())
-                if choice not in range(1, len(clf.categoryList)+1):
+                if choice not in range(1, len(cls.categoryList)+1):
                     raise ValueError
-                newCategory = clf.categoryList[choice-1]
+                newCategory = cls.categoryList[choice-1]
                 break
             except ValueError:
-                clf.hintRetryCategory()
-        clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(category=newCategory)
-        resultProxy = clf.conn.execute(query)
+                cls.hintRetryCategory()
+        cls.setUp_connection_and_table()
+        query = sql.update(cls.table).where(cls.table.c.id == ID).values(category=newCategory)
+        resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
-            clf.tearDown_connection(es.ROLLBACK)
+            cls.tearDown_connection(es.ROLLBACK)
             return
-        clf.tearDown_connection(es.COMMIT)
+        cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-    def updatePayment(clf, ID):
-        clf.paymentList = PaymentPage.getList()
-        clf.showPayment()
-        clf.hintNewPayment()
+    def updatePayment(cls, ID):
+        cls.paymentList = PaymentPage.getList()
+        cls.showPayment()
+        cls.hintNewPayment()
         while True:
             try:
                 choice  = int(input())
-                if choice not in range(1, len(clf.paymentList)+1):
+                if choice not in range(1, len(cls.paymentList)+1):
                     raise ValueError
-                newPayment = clf.paymentList[choice-1]
+                newPayment = cls.paymentList[choice-1]
                 break
             except ValueError:
-                clf.hintRetryPayment()
-        clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(payment=newPayment['name'])
-        resultProxy = clf.conn.execute(query)
+                cls.hintRetryPayment()
+        cls.setUp_connection_and_table()
+        query = sql.update(cls.table).where(cls.table.c.id == ID).values(payment=newPayment['name'])
+        resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
-            clf.tearDown_connection(es.ROLLBACK)
+            cls.tearDown_connection(es.ROLLBACK)
             return
-        clf.tearDown_connection(es.COMMIT)
+        cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-    def updateAmount(clf, ID):
-        clf.hintNewAmount()
+    def updateAmount(cls, ID):
+        cls.hintNewAmount()
         while True:
             try:
                 newAmount = int(input())
                 break
             except ValueError:
-                clf.hintIntegerErorMsg()
-        clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(amount=newAmount)
-        resultProxy = clf.conn.execute(query)
+                cls.hintIntegerErorMsg()
+        cls.setUp_connection_and_table()
+        query = sql.update(cls.table).where(cls.table.c.id == ID).values(amount=newAmount)
+        resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
-            clf.tearDown_connection(es.ROLLBACK)
+            cls.tearDown_connection(es.ROLLBACK)
             return
-        clf.tearDown_connection(es.COMMIT)
+        cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-    def updateLocation(clf, ID):
-        clf.locationList = LocationPage.getList()
-        clf.showLocation()
-        clf.hintNewLocation()
+    def updateLocation(cls, ID):
+        cls.locationList = LocationPage.getList()
+        cls.showLocation()
+        cls.hintNewLocation()
         while True:
             try:
                 choice = int(input())
-                if choice not in range(1, len(clf.locationList)+1):
+                if choice not in range(1, len(cls.locationList)+1):
                     raise ValueError
-                newLocation = clf.locationList[choice-1]
+                newLocation = cls.locationList[choice-1]
                 break
             except ValueError:
-                clf.hintRetryLocation()
-        clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(location=newLocation)
-        resultProxy = clf.conn.execute(query)
+                cls.hintRetryLocation()
+        cls.setUp_connection_and_table()
+        query = sql.update(cls.table).where(cls.table.c.id == ID).values(location=newLocation)
+        resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
-            clf.tearDown_connection(es.ROLLBACK)
+            cls.tearDown_connection(es.ROLLBACK)
             return
-        clf.tearDown_connection(es.COMMIT)
+        cls.tearDown_connection(es.COMMIT)
     
     @classmethod
-    def updateIE(clf, ID):
-        clf.hintNewIE()
+    def updateIE(cls, ID):
+        cls.hintNewIE()
         while True:
             try:
                 newIE = int(input())
-                if newIE <= len(clf.IEList):
+                if newIE <= len(cls.IEList):
                     break
                 else: 
                     raise ValueError()
             except ValueError:
-                clf.hintNewIE()
-        clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(IE=clf.IEList[newIE-1])
-        resultProxy = clf.conn.execute(query)
+                cls.hintNewIE()
+        cls.setUp_connection_and_table()
+        query = sql.update(cls.table).where(cls.table.c.id == ID).values(IE=cls.IEList[newIE-1])
+        resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
-            clf.tearDown_connection(es.ROLLBACK)
+            cls.tearDown_connection(es.ROLLBACK)
             return
-        clf.tearDown_connection(es.COMMIT)
+        cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-    def updateConsumptionDate(clf, ID):
-        clf.hintNewTime()
+    def updateConsumptionDate(cls, ID):
+        cls.hintNewTime()
         while True:
             try:
                 newTime = input()
                 datetime.strptime(newTime, '%Y-%m-%d').date()
                 break
             except ValueError:
-                clf.hintNewTime()
+                cls.hintNewTime()
 
-        clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(consumptionDate=newTime)
-        resultProxy = clf.conn.execute(query)
+        cls.setUp_connection_and_table()
+        query = sql.update(cls.table).where(cls.table.c.id == ID).values(consumptionDate=newTime)
+        resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
-            clf.tearDown_connection(es.ROLLBACK)
+            cls.tearDown_connection(es.ROLLBACK)
             return
-        clf.tearDown_connection(es.COMMIT)
+        cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-    def updateDeductionDate(clf, ID):
-        clf.hintNewTime()
+    def updateDeductionDate(cls, ID):
+        cls.hintNewTime()
         while True:
             try:
                 newTime = input()
                 datetime.strptime(newTime, '%Y-%m-%d').date()
                 break
             except ValueError:
-                clf.hintNewTime()
-        clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(deductionDate=newTime)
-        resultProxy = clf.conn.execute(query)
+                cls.hintNewTime()
+        cls.setUp_connection_and_table()
+        query = sql.update(cls.table).where(cls.table.c.id == ID).values(deductionDate=newTime)
+        resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
-            clf.tearDown_connection(es.ROLLBACK)
+            cls.tearDown_connection(es.ROLLBACK)
             return
-        clf.tearDown_connection(es.COMMIT)
+        cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-    def updateInvoice(clf, ID):
-        clf.hintNewInvoice()
+    def updateInvoice(cls, ID):
+        cls.hintNewInvoice()
         newInvoice = input()
         while newInvoice != "":
             try:
@@ -262,62 +260,62 @@ class UpdateRecordPage(RecordPage):
                 else:
                     raise ValueError()
             except ValueError:
-                clf.hintNewInvoice()
+                cls.hintNewInvoice()
                 newInvoice = input()
-        clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(invoice=newInvoice)
-        resultProxy = clf.conn.execute(query)
+        cls.setUp_connection_and_table()
+        query = sql.update(cls.table).where(cls.table.c.id == ID).values(invoice=newInvoice)
+        resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
-            clf.tearDown_connection(es.ROLLBACK)
+            cls.tearDown_connection(es.ROLLBACK)
             return
-        clf.tearDown_connection(es.COMMIT)
+        cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-    def updateNote(clf, ID):
-        clf.hintNewNote()
+    def updateNote(cls, ID):
+        cls.hintNewNote()
         newNote = input()
-        clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(note=newNote)
-        resultProxy = clf.conn.execute(query)
+        cls.setUp_connection_and_table()
+        query = sql.update(cls.table).where(cls.table.c.id == ID).values(note=newNote)
+        resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
-            clf.tearDown_connection(es.ROLLBACK)
+            cls.tearDown_connection(es.ROLLBACK)
             return
-        clf.tearDown_connection(es.COMMIT)
+        cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-    def updateDB(clf, ID, option):
+    def updateDB(cls, ID, option):
         if option is ItemOption.IE:
-            clf.updateIE(ID)
+            cls.updateIE(ID)
         elif option is ItemOption.CATEGORY:
-            clf.updateCategory(ID)
+            cls.updateCategory(ID)
         elif option is ItemOption.PAYMENT:
-            clf.updatePayment(ID)
+            cls.updatePayment(ID)
         elif option is ItemOption.AMOUNT:
-            clf.updateAmount(ID)
+            cls.updateAmount(ID)
         elif option is ItemOption.LOCATION:
-            clf.updateLocation(ID)
+            cls.updateLocation(ID)
         elif option is ItemOption.CONSUMPTIONTIME:
-            clf.updateConsumptionDate(ID)
+            cls.updateConsumptionDate(ID)
         elif option is ItemOption.DEDUCTIONTIME:
-            clf.updateDeductionDate(ID)
+            cls.updateDeductionDate(ID)
         elif option is ItemOption.INVOICE:
-            clf.updateInvoice(ID)
+            cls.updateInvoice(ID)
         else: 
-            clf.updateNote(ID)
+            cls.updateNote(ID)
         
 
     @classmethod
-    def updateByID(clf):  # pragma: no cover
-        ID = clf.checkIDInteger()
-        option = clf.chooseItem()
-        clf.updateDB(ID, option)
+    def updateByID(cls):  # pragma: no cover
+        ID = cls.checkIDInteger()
+        option = cls.chooseItem()
+        cls.updateDB(ID, option)
 
     @classmethod
-    def start(clf):
+    def start(cls):
         while True:
             readRecordPage = ReadRecordPage()
             readRecordPage.show()
@@ -325,7 +323,7 @@ class UpdateRecordPage(RecordPage):
             if option is ReadRecordOption.BACK:
                 return
             readRecordPage.execute(option)
-            clf.updateByID()
+            cls.updateByID()
 
 if __name__ == '__main__':  # pragma: no cover
     updateRecordPage = UpdateRecordPage()

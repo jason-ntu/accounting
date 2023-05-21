@@ -37,63 +37,63 @@ class CreateRecordPage(RecordPage):
         return option
 
     @classmethod
-    def execute(clf, option):
+    def execute(cls, option):
         if option is CreateRecordOption.INCOME:
-            clf.IE = FixedIEType.INCOME.name
+            cls.IE = FixedIEType.INCOME.name
         else :
-            clf.IE = FixedIEType.EXPENSE.name
-        clf.createRecord()
+            cls.IE = FixedIEType.EXPENSE.name
+        cls.createRecord()
 
     @classmethod
-    def createRecord(clf):
-        clf.categoryList = CategoryPage.getList()
-        clf.showCategory()
-        clf.hintGetCategory()
+    def createRecord(cls):
+        cls.categoryList = CategoryPage.getList()
+        cls.showCategory()
+        cls.hintGetCategory()
         while True:
             try:
                 choice = int(input())
-                if choice not in range(1, len(clf.categoryList)+1):
+                if choice not in range(1, len(cls.categoryList)+1):
                     raise ValueError
-                category = clf.categoryList[choice-1]
+                category = cls.categoryList[choice-1]
                 break
             except ValueError:
-                clf.hintRetryCategory()
+                cls.hintRetryCategory()
 
-        clf.paymentList = PaymentPage.getList()
-        clf.showPayment()
-        clf.hintGetPayment()
+        cls.paymentList = PaymentPage.getList()
+        cls.showPayment()
+        cls.hintGetPayment()
         while True:
             try:
                 choice = int(input())
-                if choice not in range(1, len(clf.paymentList)+1):
+                if choice not in range(1, len(cls.paymentList)+1):
                     raise ValueError
-                payment = clf.paymentList[choice-1]
+                payment = cls.paymentList[choice-1]
                 break
             except ValueError:
-                clf.hintRetryPayment()
+                cls.hintRetryPayment()
 
-        clf.hintGetAmount()
+        cls.hintGetAmount()
         while True:
             try:
                 amount = float(input())
                 break
             except ValueError:
-                clf.hintIntegerErorMsg()
+                cls.hintIntegerErorMsg()
 
-        clf.locationList = LocationPage.getList()
-        clf.showLocation()
-        clf.hintGetLocation()
+        cls.locationList = LocationPage.getList()
+        cls.showLocation()
+        cls.hintGetLocation()
         while True:
             try:
                 choice = int(input())
-                if choice not in range(1, len(clf.locationList)+1):
+                if choice not in range(1, len(cls.locationList)+1):
                     raise ValueError
-                location = clf.locationList[choice-1]
+                location = cls.locationList[choice-1]
                 break
             except ValueError:
-                clf.hintRetryLocation()
+                cls.hintRetryLocation()
 
-        clf.hintGetConsumptionDate()
+        cls.hintGetConsumptionDate()
         while True:
             try:
                 spendingTime = input()
@@ -103,10 +103,10 @@ class CreateRecordPage(RecordPage):
                 datetime.strptime(spendingTime, '%Y-%m-%d').date()
                 break
             except ValueError:
-                clf.hintGetConsumptionDate()
+                cls.hintGetConsumptionDate()
 
         if payment['category'] == PaymentCategory.CREDIT_CARD.name:
-            clf.hintGetDeductionDate()
+            cls.hintGetDeductionDate()
             while True:
                 try:
                     deducteTime = input()
@@ -116,13 +116,13 @@ class CreateRecordPage(RecordPage):
                     datetime.strptime(deducteTime, '%Y-%m-%d').date()
                     break
                 except ValueError:
-                    clf.hintGetDeductionDate()
+                    cls.hintGetDeductionDate()
         else: deducteTime = spendingTime
 
-        clf.hintGetNote()
+        cls.hintGetNote()
         note = input()
 
-        clf.hintGetInvoice()
+        cls.hintGetInvoice()
         invoiceNumber = input()
         while invoiceNumber != "":
             try:
@@ -133,22 +133,22 @@ class CreateRecordPage(RecordPage):
                 else:
                     raise ValueError()
             except ValueError:
-                clf.hintGetInvoice()
+                cls.hintGetInvoice()
                 invoiceNumber = input()
 
-        clf.setUp_connection_and_table()
-        query = clf.table.insert().values(IE=clf.IE,
+        cls.setUp_connection_and_table()
+        query = cls.table.insert().values(IE=cls.IE,
                                           category=category,
                                           amount=amount, payment=payment['name'],
                                           location=location, consumptionDate=spendingTime,
                                           deductionDate=deducteTime, invoice=invoiceNumber, note=note)
-        resultProxy = clf.conn.execute(query)
+        resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("新增資料失敗")
-            clf.tearDown_connection(es.ROLLBACK)
+            cls.tearDown_connection(es.ROLLBACK)
             return
-        clf.tearDown_connection(es.COMMIT)
+        cls.tearDown_connection(es.COMMIT)
         
     @staticmethod
     def hintGetCategory():
@@ -187,13 +187,13 @@ class CreateRecordPage(RecordPage):
         print("請輸入發票末八碼數字:")
 
     @classmethod
-    def start(clf):
+    def start(cls):
         while True:
-            clf.show()
-            option = clf.choose()
+            cls.show()
+            option = cls.choose()
             if option is CreateRecordOption.BACK:
                 return
-            clf.execute(option)
+            cls.execute(option)
 
 if __name__ == '__main__':  # pragma: no cover
     createRecordPage = CreateRecordPage()

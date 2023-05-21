@@ -12,10 +12,10 @@ class DeleteRecordPage(RecordPage):
         print("請輸入想刪除的紀錄ID:")
             
     @classmethod
-    def checkIDInteger(clf):
+    def checkIDInteger(cls):
         while True:
             try:
-                clf.hintGetID()
+                cls.hintGetID()
                 ID = int(input())
                 break
             except ValueError:
@@ -23,20 +23,20 @@ class DeleteRecordPage(RecordPage):
         return ID
 
     @classmethod
-    def deleteByID(clf):
-        ID = clf.checkIDInteger()
-        clf.setUp_connection_and_table()
-        query = sql.delete(clf.table).where(clf.table.c.id == ID)
-        resultProxy = clf.conn.execute(query)
+    def deleteByID(cls):
+        ID = cls.checkIDInteger()
+        cls.setUp_connection_and_table()
+        query = sql.delete(cls.table).where(cls.table.c.id == ID)
+        resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
-            clf.tearDown_connection(es.ROLLBACK)
+            cls.tearDown_connection(es.ROLLBACK)
             return
-        clf.tearDown_connection(es.COMMIT)
+        cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-    def start(clf):
+    def start(cls):
         while True:
             readRecordPage = ReadRecordPage()
             readRecordPage.show()
@@ -44,7 +44,7 @@ class DeleteRecordPage(RecordPage):
             if option is ReadRecordOption.BACK:
                 return
             readRecordPage.execute(option)
-            clf.deleteByID()
+            cls.deleteByID()
 
 if __name__ == '__main__':  # pragma: no cover
     deleteRecordPage = DeleteRecordPage()

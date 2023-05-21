@@ -54,12 +54,12 @@ class ReadRecordPage(RecordPage):
             cls.viewOther()
     
     @classmethod
-    def viewToday(clf):  
+    def viewToday(cls):  
         Date = datetime.today().date()
-        clf.setUp_connection_and_table()
-        query = sql.select(clf.table).where(clf.table.c.consumptionDate == Date)
-        results = clf.conn.execute(query).fetchall()
-        clf.tearDown_connection(es.NONE)
+        cls.setUp_connection_and_table()
+        query = sql.select(cls.table).where(cls.table.c.consumptionDate == Date)
+        results = cls.conn.execute(query).fetchall()
+        cls.tearDown_connection(es.NONE)
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
@@ -69,14 +69,14 @@ class ReadRecordPage(RecordPage):
 
 
     @classmethod
-    def viewWeek(clf):  
+    def viewWeek(cls):  
         Date = datetime.today().date()
         startDate = Date - timedelta(days=Date.weekday())
         endDate = startDate + timedelta(days=6)
-        clf.setUp_connection_and_table()
-        query = sql.select(clf.table).where(and_(clf.table.c.consumptionDate >= startDate, clf.table.c.consumptionDate <= endDate))
-        results = clf.conn.execute(query).fetchall()
-        clf.tearDown_connection(es.NONE)
+        cls.setUp_connection_and_table()
+        query = sql.select(cls.table).where(and_(cls.table.c.consumptionDate >= startDate, cls.table.c.consumptionDate <= endDate))
+        results = cls.conn.execute(query).fetchall()
+        cls.tearDown_connection(es.NONE)
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
@@ -86,15 +86,15 @@ class ReadRecordPage(RecordPage):
 
 
     @classmethod
-    def viewMonth(clf): 
+    def viewMonth(cls): 
         Date = datetime.today().date()
         startDate = datetime(Date.year, Date.month, 1).date()
         nextMonth = Date.replace(day=28) + timedelta(days=4)
         endDate = nextMonth - timedelta(days=nextMonth.day)
-        clf.setUp_connection_and_table()
-        query = sql.select(clf.table).where(and_(clf.table.c.consumptionDate >= startDate, clf.table.c.consumptionDate <= endDate))
-        results = clf.conn.execute(query).fetchall()
-        clf.tearDown_connection(es.NONE)
+        cls.setUp_connection_and_table()
+        query = sql.select(cls.table).where(and_(cls.table.c.consumptionDate >= startDate, cls.table.c.consumptionDate <= endDate))
+        results = cls.conn.execute(query).fetchall()
+        cls.tearDown_connection(es.NONE)
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
@@ -103,8 +103,8 @@ class ReadRecordPage(RecordPage):
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
     @classmethod
-    def viewOther(clf):  
-        clf.hintGetStartDate()
+    def viewOther(cls):  
+        cls.hintGetStartDate()
 
         while True:
             try:
@@ -115,9 +115,9 @@ class ReadRecordPage(RecordPage):
                 datetime.strptime(startDate, '%Y-%m-%d').date()
                 break
             except ValueError:
-                clf.hintGetStartDate()
+                cls.hintGetStartDate()
 
-        clf.hintGetEndDate()
+        cls.hintGetEndDate()
 
         while True:
             try:
@@ -128,12 +128,12 @@ class ReadRecordPage(RecordPage):
                 datetime.strptime(endDate, '%Y-%m-%d').date()
                 break
             except ValueError:
-                clf.hintGetEndDate()
+                cls.hintGetEndDate()
                 
-        clf.setUp_connection_and_table()
-        query = sql.select(clf.table).where(and_(clf.table.c.consumptionDate >= startDate, clf.table.c.consumptionDate <= endDate))
-        results = clf.conn.execute(query).fetchall()
-        clf.tearDown_connection(es.NONE)
+        cls.setUp_connection_and_table()
+        query = sql.select(cls.table).where(and_(cls.table.c.consumptionDate >= startDate, cls.table.c.consumptionDate <= endDate))
+        results = cls.conn.execute(query).fetchall()
+        cls.tearDown_connection(es.NONE)
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
@@ -143,13 +143,13 @@ class ReadRecordPage(RecordPage):
 
 
     @classmethod
-    def start(clf):
+    def start(cls):
         while True:
-            clf.show()
-            option = clf.choose()
+            cls.show()
+            option = cls.choose()
             if option is ReadRecordOption.BACK:
                 return
-            clf.execute(option)
+            cls.execute(option)
 
 if __name__ == '__main__':  # pragma: no cover
     readRecordPage = ReadRecordPage()
