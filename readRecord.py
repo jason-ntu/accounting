@@ -105,9 +105,31 @@ class ReadRecordPage(RecordPage):
     @classmethod
     def viewOther(clf):  
         clf.hintGetStartDate()
-        startDate = str(input())
+
+        while True:
+            try:
+                startDate = input()
+                if (startDate == ""):
+                    startDate = datetime.today().date()
+                    break
+                datetime.strptime(startDate, '%Y-%m-%d').date()
+                break
+            except ValueError:
+                clf.hintGetStartDate()
+
         clf.hintGetEndDate()
-        endDate = str(input())
+
+        while True:
+            try:
+                endDate = input()
+                if (endDate == ""):
+                    endDate = datetime.today().date()
+                    break
+                datetime.strptime(endDate, '%Y-%m-%d').date()
+                break
+            except ValueError:
+                clf.hintGetEndDate()
+                
         clf.setUp_connection_and_table()
         query = sql.select(clf.table).where(and_(clf.table.c.consumptionDate >= startDate, clf.table.c.consumptionDate <= endDate))
         results = clf.conn.execute(query).fetchall()
