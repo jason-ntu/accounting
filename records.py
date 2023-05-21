@@ -127,6 +127,10 @@ class RecordPage(Accessor):
     @classmethod
     def hintRetryLocation(cls):
         print("請輸入 1 到 %d 之間的數字:" % len(cls.locationList))
+    
+    @staticmethod
+    def hintNumberErorMsg():
+        print("請輸入數字")
 
 if __name__ == '__main__': # pragma: no cover
     RecordPage.start()

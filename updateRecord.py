@@ -64,10 +64,6 @@ class UpdateRecordPage(RecordPage):
         print("請輸入新的備註:")
     
     @staticmethod
-    def hintIntegerErorMsg():
-        print("輸入的數字須為整數:")
-    
-    @staticmethod
     def hintGetID():
         print("請輸入想更改的紀錄ID:")
     
@@ -108,22 +104,7 @@ class UpdateRecordPage(RecordPage):
 
     @classmethod
     def updatePayment(cls, ID):
-<<<<<<< HEAD
-        cls.paymentList = PaymentPage.getList()
-        cls.showPayment()
-        cls.hintNewPayment()
-        while True:
-            try:
-                choice  = int(input())
-                if choice not in range(1, len(cls.paymentList)+1):
-                    raise ValueError
-                newPayment = cls.paymentList[choice-1]
-                break
-            except ValueError:
-                cls.hintRetryPayment()
-=======
         newPayment = cls.askPayment()
->>>>>>> 970ecc0 (payment)
         cls.setUp_connection_and_table()
         query = sql.update(cls.table).where(cls.table.c.id == ID).values(payment=newPayment['name'])
         resultProxy = cls.conn.execute(query)
@@ -135,19 +116,14 @@ class UpdateRecordPage(RecordPage):
         cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-<<<<<<< HEAD
     def updateAmount(cls, ID):
-        cls.hintNewAmount()
-=======
-    def updateAmount(clf, ID):
-        clf.hintGetAmount()
->>>>>>> 970ecc0 (payment)
+        cls.hintGetAmount()
         while True:
             try:
-                newAmount = int(input())
+                newAmount = float(input())
                 break
             except ValueError:
-                cls.hintIntegerErorMsg()
+                cls.hintNumberErorMsg()
         cls.setUp_connection_and_table()
         query = sql.update(cls.table).where(cls.table.c.id == ID).values(amount=newAmount)
         resultProxy = cls.conn.execute(query)
@@ -184,11 +160,7 @@ class UpdateRecordPage(RecordPage):
     
     @classmethod
     def updateIE(cls, ID):
-<<<<<<< HEAD
-        cls.hintNewIE()
-=======
         cls.hintGetIE()
->>>>>>> 970ecc0 (payment)
         while True:
             try:
                 newIE = int(input())
@@ -197,11 +169,7 @@ class UpdateRecordPage(RecordPage):
                 else: 
                     raise ValueError()
             except ValueError:
-<<<<<<< HEAD
-                cls.hintNewIE()
-=======
                 cls.hintGetIE()
->>>>>>> 970ecc0 (payment)
         cls.setUp_connection_and_table()
         query = sql.update(cls.table).where(cls.table.c.id == ID).values(IE=cls.IEList[newIE-1])
         resultProxy = cls.conn.execute(query)
@@ -214,22 +182,14 @@ class UpdateRecordPage(RecordPage):
 
     @classmethod
     def updateConsumptionDate(cls, ID):
-<<<<<<< HEAD
-        cls.hintNewTime()
-=======
         cls.hintGetTime()
->>>>>>> 970ecc0 (payment)
         while True:
             try:
                 newTime = input()
                 datetime.strptime(newTime, '%Y-%m-%d').date()
                 break
             except ValueError:
-<<<<<<< HEAD
-                cls.hintNewTime()
-=======
                 cls.hintGetTime()
->>>>>>> 970ecc0 (payment)
 
         cls.setUp_connection_and_table()
         query = sql.update(cls.table).where(cls.table.c.id == ID).values(consumptionDate=newTime)
@@ -242,30 +202,18 @@ class UpdateRecordPage(RecordPage):
         cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-<<<<<<< HEAD
     def updateDeductionDate(cls, ID):
-        cls.hintNewTime()
-=======
-    def updateDeductionDate(clf, ID):
-        clf.hintGetTime()
->>>>>>> 970ecc0 (payment)
+        cls.hintGetTime()
         while True:
             try:
                 newTime = input()
                 datetime.strptime(newTime, '%Y-%m-%d').date()
                 break
             except ValueError:
-<<<<<<< HEAD
-                cls.hintNewTime()
+                cls.hintGetTime()
         cls.setUp_connection_and_table()
         query = sql.update(cls.table).where(cls.table.c.id == ID).values(deductionDate=newTime)
         resultProxy = cls.conn.execute(query)
-=======
-                clf.hintGetTime()
-        clf.setUp_connection_and_table()
-        query = sql.update(clf.table).where(clf.table.c.id == ID).values(deductionDate=newTime)
-        resultProxy = clf.conn.execute(query)
->>>>>>> 970ecc0 (payment)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
@@ -274,13 +222,8 @@ class UpdateRecordPage(RecordPage):
         cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-<<<<<<< HEAD
     def updateInvoice(cls, ID):
-        cls.hintNewInvoice()
-=======
-    def updateInvoice(clf, ID):
-        clf.hintGetInvoice()
->>>>>>> 970ecc0 (payment)
+        cls.hintGetInvoice()
         newInvoice = input()
         while newInvoice != "":
             try:
@@ -291,11 +234,7 @@ class UpdateRecordPage(RecordPage):
                 else:
                     raise ValueError()
             except ValueError:
-<<<<<<< HEAD
-                cls.hintNewInvoice()
-=======
-                clf.hintGetInvoice()
->>>>>>> 970ecc0 (payment)
+                cls.hintGetInvoice()
                 newInvoice = input()
         cls.setUp_connection_and_table()
         query = sql.update(cls.table).where(cls.table.c.id == ID).values(invoice=newInvoice)
@@ -308,13 +247,8 @@ class UpdateRecordPage(RecordPage):
         cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-<<<<<<< HEAD
     def updateNote(cls, ID):
-        cls.hintNewNote()
-=======
-    def updateNote(clf, ID):
-        clf.hintGetNote()
->>>>>>> 970ecc0 (payment)
+        cls.hintGetNote()
         newNote = input()
         cls.setUp_connection_and_table()
         query = sql.update(cls.table).where(cls.table.c.id == ID).values(note=newNote)

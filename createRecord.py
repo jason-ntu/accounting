@@ -55,7 +55,7 @@ class CreateRecordPage(RecordPage):
                 amount = float(input())
                 break
             except ValueError:
-                cls.hintIntegerErorMsg()
+                cls.hintNumberErorMsg()
 
         cls.locationList = LocationPage.getList()
         cls.showLocation()
@@ -152,10 +152,13 @@ class CreateRecordPage(RecordPage):
         print("請輸入扣款日期(yyyy-mm-dd):")
 
     @staticmethod
+<<<<<<< HEAD
     def hintIntegerErorMsg():
         print("請輸入數字:")
 
     @staticmethod
+=======
+>>>>>>> 5e7bdab (err msg)
     def hintGetNote():
         print("請輸入備註:")
 
