@@ -26,11 +26,11 @@ class ReadRecordPage(RecordPage):
     
     @staticmethod
     def hintGetStartDate():
-        print("請輸入 開始 時間(yyyy-mm-dd): ")
+        print("請輸入 開始 時間(yyyy-mm-dd):")
     
     @staticmethod
     def hintGetEndDate():
-        print("請輸入 結束 時間(yyyy-mm-dd): ")
+        print("請輸入 結束 時間(yyyy-mm-dd):")
 
     @staticmethod
     def choose():

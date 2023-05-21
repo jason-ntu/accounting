@@ -23,55 +23,55 @@ class ItemOption(IntEnum):
 
 class UpdateRecordPage(RecordPage):
 
-    # IDerrorMsg = "輸入的ID須為整數"
-    # errorMsg = "請輸入 1 到 9 之間的數字: "
-    paymentList = ["CASH", "DEBIT_CARD", "CREDIT_CARD", "ELECTRONIC", "OTHER"]
+    # paymentList = ["CASH", "DEBIT_CARD", "CREDIT_CARD", "ELECTRONIC", "OTHER"]
+    paymentList = []
     IEList = ["INCOME", "EXPENSE"]
 
     @staticmethod
     def hintChooseItem():
-        print("請輸入要更改的項目")
         print("1 收入支出 2 類別 3 收支方式 4 金額 5 地點 6 消費時間 7 扣款時間 8 發票號碼 9 備註")
+        print("請輸入要更改的項目:")
 
     @staticmethod
     def hintNewIE():
-        print("請選擇 1 收入 2 支出")
+        print("1 收入 2 支出")
+        print("請選擇新的收入/支出:")
 
     @staticmethod
     def hintNewCategory():
-        print("請輸入新的紀錄類型")
+        print("請輸入新的紀錄類型:")
 
     @staticmethod
     def hintNewPayment():
-        print("請輸入新的收支方式")
+        print("請輸入新的收支方式:")
 
     @staticmethod
     def hintNewAmount():
-        print("請輸入新的金額")
+        print("請輸入新的金額:")
 
     @staticmethod
     def hintNewLocation():
-        print("請輸入新的地點")
+        print("請輸入新的地點:")
     
     @staticmethod
     def hintNewTime():
-        print("請輸入新的日期(yyyy-mm-dd)")
+        print("請輸入新的日期(yyyy-mm-dd):")
     
     @staticmethod
     def hintNewInvoice():
-        print("請輸入新的發票號碼(發票末8碼數字)")
+        print("請輸入新的發票號碼(發票末8碼數字):")
     
     @staticmethod
     def hintNewNote():
-        print("請輸入新的備註")
+        print("請輸入新的備註:")
     
     @staticmethod
     def hintIntegerErorMsg():
-        print("輸入的數字須為整數")
+        print("輸入的數字須為整數:")
     
     @staticmethod
     def hintGetID():
-        print("請輸入想更改的紀錄ID: ")
+        print("請輸入想更改的紀錄ID:")
     
     @classmethod
     def chooseItem(clf):
@@ -81,7 +81,7 @@ class UpdateRecordPage(RecordPage):
                 option = ItemOption(int(input()))
                 break
             except ValueError:
-                print("請輸入 1 到 9 之間的數字: ")
+                print("請輸入 1 到 9 之間的數字:")
         return option
     
     @classmethod

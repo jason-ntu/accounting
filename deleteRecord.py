@@ -9,7 +9,7 @@ class DeleteRecordPage(RecordPage):
 
     @staticmethod
     def hintGetID():
-        print("請輸入想刪除的紀錄ID: ")
+        print("請輸入想刪除的紀錄ID:")
             
     @classmethod
     def checkIDInteger(clf):
