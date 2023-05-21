@@ -1,9 +1,7 @@
 from enum import IntEnum, auto
 import sqlalchemy as sql
-from accessor import Accessor, ExecutionStatus as es
+from accessor import ExecutionStatus as es
 from records import RecordPage
-from payment import PaymentCategory
-from datetime import datetime
 
 class FixedIEOption(IntEnum):
     CREATE = auto()
@@ -88,15 +86,6 @@ class FixedIEPage(RecordPage):
         day = cls.askDay()
         note = cls.askNote()
 
-        # print(IE.name)
-        # print(name)
-        # print(category)
-        # print(payment)
-        # print(amount)
-        # print(location)
-        # print(day)
-        # print(note)
-        
         query = cls.table.insert().values(IE=IE.name, name=name,
                                           category=category, payment=payment['name'],
                                           amount=amount, location=location,
@@ -205,8 +194,6 @@ class FixedIEPage(RecordPage):
 
     @classmethod
     def update_category(cls, name):
-        result = cls.conn.execute(cls.table.select().where(cls.table.c.name == name)).fetchone()
-        original_category = result[2]
         new_category = cls.askCategory()
         query = cls.table.update().where(cls.table.c.name == name).values(category=new_category)
         rowsAffected = cls.conn.execute(query).rowcount
@@ -223,8 +210,6 @@ class FixedIEPage(RecordPage):
 
     @classmethod
     def update_payment(cls, name):
-        result = cls.conn.execute(cls.table.select().where(cls.table.c.name == name)).fetchone()
-        original_payment = result[3]
         new_payment = cls.askPayment()
         query = cls.table.update().where(cls.table.c.name == name).values(payment=new_payment['name'])
         rowsAffected = cls.conn.execute(query).rowcount
@@ -241,7 +226,6 @@ class FixedIEPage(RecordPage):
 
     @classmethod
     def update_amount(cls, name):
-        result = cls.conn.execute(cls.table.select().where(cls.table.c.name == name)).fetchone()
         new_amount = cls.askAmount()
         query = cls.table.update().where(cls.table.c.name == name).values(amount=new_amount)
         rowsAffected = cls.conn.execute(query).rowcount
@@ -258,7 +242,6 @@ class FixedIEPage(RecordPage):
 
     @classmethod
     def update_location(cls, name):
-        result = cls.conn.execute(cls.table.select().where(cls.table.c.name == name)).fetchone()
         new_location = cls.askLocation()
         query = cls.table.update().where(cls.table.c.name == name).values(location=new_location)
         rowsAffected = cls.conn.execute(query).rowcount
@@ -275,8 +258,6 @@ class FixedIEPage(RecordPage):
 
     @classmethod
     def update_day(cls, name):
-        result = cls.conn.execute(cls.table.select().where(cls.table.c.name == name)).fetchone()
-        original_day = result[5]
         cls.hint_update_day()
         new_day = cls.askDay()
         query = cls.table.update().where(cls.table.c.name == name).values(day=new_day)
@@ -294,8 +275,6 @@ class FixedIEPage(RecordPage):
 
     @classmethod
     def update_note(cls, name):
-        result = cls.conn.execute(cls.table.select().where(cls.table.c.name == name)).fetchone()
-        original_note = result[6]
         new_note = cls.askNote()
         query = cls.table.update().where(cls.table.c.name == name).values(note=new_note)
         rowsAffected = cls.conn.execute(query).rowcount
