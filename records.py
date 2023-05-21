@@ -95,6 +95,22 @@ class RecordPage(Accessor):
         print("請輸入 1 到 %d 之間的數字:" % len(cls.categoryList))
     
     @classmethod
+    def askPayment(cls):
+        cls.paymentList = PaymentPage.getList()
+        cls.showPayment()
+        cls.hintGetPayment()
+        while True:
+            try:
+                choice = int(input())
+                if choice not in range(1, len(cls.paymentList)+1):
+                    raise ValueError
+                payment = cls.paymentList[choice-1]
+                break
+            except ValueError:
+                cls.hintRetryPayment()
+        return payment
+
+    @classmethod
     def showPayment(cls):
         for i in range(len(cls.paymentList)):
             print("%d %s(%s)" % (i+1, cls.paymentList[i]['name'], cls.paymentList[i]['category']))
