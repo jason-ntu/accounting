@@ -97,6 +97,9 @@ class CreateRecordPage(RecordPage):
         while True:
             try:
                 spendingTime = input()
+                if (spendingTime == ""):
+                    spendingTime = datetime.today().date()
+                    break
                 datetime.strptime(spendingTime, '%Y-%m-%d').date()
                 break
             except ValueError:
@@ -107,6 +110,9 @@ class CreateRecordPage(RecordPage):
             while True:
                 try:
                     deducteTime = input()
+                    if (deducteTime == ""):
+                        deducteTime = datetime.today().date()
+                        break
                     datetime.strptime(deducteTime, '%Y-%m-%d').date()
                     break
                 except ValueError:
@@ -146,39 +152,39 @@ class CreateRecordPage(RecordPage):
         
     @staticmethod
     def hintGetCategory():
-        print("請輸入紀錄類型")
+        print("請輸入紀錄類型:")
 
     @staticmethod
     def hintGetPayment():
-        print("請輸入收支方式")
+        print("請輸入收支方式:")
     
     @staticmethod
     def hintGetAmount():
-        print("請輸入金額")
+        print("請輸入金額:")
 
     @staticmethod
     def hintGetLocation():
-        print("請輸入消費地點")
+        print("請輸入消費地點:")
 
     @staticmethod
     def hintGetConsumptionDate():
-        print("請輸入消費日期(yyyy-mm-dd)")
+        print("請輸入消費日期(yyyy-mm-dd):")
 
     @staticmethod
     def hintGetDeductionDate():
-        print("請輸入扣款日期(yyyy-mm-dd)")
+        print("請輸入扣款日期(yyyy-mm-dd):")
 
     @staticmethod
     def hintIntegerErorMsg():
-        print("請輸入數字")
+        print("請輸入數字:")
 
     @staticmethod
     def hintGetNote():
-        print("請輸入備註")
+        print("請輸入備註:")
 
     @staticmethod
     def hintGetInvoice():
-        print("請輸入發票末八碼數字")
+        print("請輸入發票末八碼數字:")
 
     @classmethod
     def start(clf):
