@@ -152,5 +152,4 @@ class ReadRecordPage(RecordPage):
             cls.execute(option)
 
 if __name__ == '__main__':  # pragma: no cover
-    readRecordPage = ReadRecordPage()
-    readRecordPage.start()
+    ReadRecordPage.start()

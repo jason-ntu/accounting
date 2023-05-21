@@ -47,6 +47,7 @@ class CreateRecordPage(RecordPage):
     @classmethod
     def createRecord(cls):
         category = cls.askCategory()
+        
         payment = cls.askPayment()
 
         cls.hintGetAmount()
@@ -57,19 +58,8 @@ class CreateRecordPage(RecordPage):
             except ValueError:
                 cls.hintNumberErorMsg()
 
-        cls.locationList = LocationPage.getList()
-        cls.showLocation()
-        cls.hintGetLocation()
-        while True:
-            try:
-                choice = int(input())
-                if choice not in range(1, len(cls.locationList)+1):
-                    raise ValueError
-                location = cls.locationList[choice-1]
-                break
-            except ValueError:
-                cls.hintRetryLocation()
-
+        location = cls.askLocation()
+        
         cls.hintGetConsumptionDate()
         while True:
             try:
@@ -152,13 +142,6 @@ class CreateRecordPage(RecordPage):
         print("請輸入扣款日期(yyyy-mm-dd):")
 
     @staticmethod
-<<<<<<< HEAD
-    def hintIntegerErorMsg():
-        print("請輸入數字:")
-
-    @staticmethod
-=======
->>>>>>> 5e7bdab (err msg)
     def hintGetNote():
         print("請輸入備註:")
 
@@ -176,5 +159,4 @@ class CreateRecordPage(RecordPage):
             cls.execute(option)
 
 if __name__ == '__main__':  # pragma: no cover
-    createRecordPage = CreateRecordPage()
-    createRecordPage.start()
+    CreateRecordPage.start()

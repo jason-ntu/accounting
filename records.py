@@ -120,6 +120,22 @@ class RecordPage(Accessor):
         print("請輸入 1 到 %d 之間的數字:" % len(cls.paymentList))
     
     @classmethod
+    def askLocation(cls):
+        cls.locationList = LocationPage.getList()
+        cls.showLocation()
+        cls.hintGetLocation()
+        while True:
+            try:
+                choice = int(input())
+                if choice not in range(1, len(cls.locationList)+1):
+                    raise ValueError
+                location = cls.locationList[choice-1]
+                break
+            except ValueError:
+                cls.hintRetryLocation()
+        return location
+
+    @classmethod
     def showLocation(cls):
         for i in range(len(cls.locationList)):
             print("%d %s" % (i+1, cls.locationList[i]))

@@ -136,18 +136,7 @@ class UpdateRecordPage(RecordPage):
 
     @classmethod
     def updateLocation(cls, ID):
-        cls.locationList = LocationPage.getList()
-        cls.showLocation()
-        cls.hintNewLocation()
-        while True:
-            try:
-                choice = int(input())
-                if choice not in range(1, len(cls.locationList)+1):
-                    raise ValueError
-                newLocation = cls.locationList[choice-1]
-                break
-            except ValueError:
-                cls.hintRetryLocation()
+        newLocation = cls.askLocation()
         cls.setUp_connection_and_table()
         query = sql.update(cls.table).where(cls.table.c.id == ID).values(location=newLocation)
         resultProxy = cls.conn.execute(query)
@@ -300,5 +289,4 @@ class UpdateRecordPage(RecordPage):
             cls.updateByID()
 
 if __name__ == '__main__':  # pragma: no cover
-    updateRecordPage = UpdateRecordPage()
-    updateRecordPage.start()
+    UpdateRecordPage.start()
