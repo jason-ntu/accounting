@@ -117,13 +117,7 @@ class UpdateRecordPage(RecordPage):
 
     @classmethod
     def updateAmount(cls, ID):
-        cls.hintGetAmount()
-        while True:
-            try:
-                newAmount = float(input())
-                break
-            except ValueError:
-                cls.hintNumberErorMsg()
+        newAmount = cls.askAmount()
         cls.setUp_connection_and_table()
         query = sql.update(cls.table).where(cls.table.c.id == ID).values(amount=newAmount)
         resultProxy = cls.conn.execute(query)

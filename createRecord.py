@@ -50,13 +50,7 @@ class CreateRecordPage(RecordPage):
         
         payment = cls.askPayment()
 
-        cls.hintGetAmount()
-        while True:
-            try:
-                amount = float(input())
-                break
-            except ValueError:
-                cls.hintNumberErorMsg()
+        amount = cls.askAmount()
 
         location = cls.askLocation()
         
