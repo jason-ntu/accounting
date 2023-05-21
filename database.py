@@ -22,6 +22,13 @@ def initialize(config):
     conn = engine.connect()
     metadata = sql.MetaData()
 
+    end_time = sql.Table('EndTime', metadata,
+                          sql.Column(
+                            'id', sql.Integer(), nullable=False,primary_key=True),
+                          sql.Column(
+                            'time', sql.DateTime(), nullable=False)
+                        )
+
     budget = sql.Table('Budget', metadata,
                         sql.Column(
                             'id', sql.Integer(), nullable=False, primary_key=True),
@@ -67,15 +74,17 @@ def initialize(config):
                         sql.Column(
                             'IE', sql.Enum(FixedIEType), nullable=False),
                         sql.Column(
-                            'category', sql.String(30), nullable=False), #new
+                            'category', sql.String(30), nullable=False),
                         sql.Column(
-                            'payment', sql.String(30), nullable=False), #new
+                            'payment', sql.String(30), nullable=False),
                         sql.Column(
                             'amount', sql.Float(), nullable=False),
                         sql.Column(
                             'day', sql.Integer(), nullable=False),
                         sql.Column(
-                            'note', sql.String(30), nullable=True)
+                            'note', sql.String(30), nullable=True),
+                        sql.Column(
+                            'flag', sql.Boolean(), default=False, nullable=False)
                         )
 
     record = sql.Table('Record', metadata,
