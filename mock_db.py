@@ -83,13 +83,27 @@ class MockDB(TestCase):
         )
 
         record = sql.Table('Record', metadata,
-                        sql.Column('id', sql.Integer(), nullable=False, primary_key=True),
-                        sql.Column('category', sql.String(30), nullable=False),
-                        sql.Column('payment', sql.String(30), nullable=False),
-                        sql.Column('amount', sql.Integer(), nullable=False),
-                        sql.Column('location', sql.String(30), nullable=False),
-                        sql.Column('time', sql.Date(), default=datetime.today(), nullable=False)
-        )
+                        sql.Column(
+                            'id', sql.Integer(), nullable=False, primary_key=True),
+                        sql.Column(
+                            'IE', sql.Enum(FixedIEType), nullable=False),
+                        sql.Column(
+                            'category', sql.String(30), nullable=False),
+                        sql.Column(
+                            'payment', sql.String(30), nullable=False),
+                        sql.Column(
+                            'amount', sql.Float(), nullable=False),
+                        sql.Column(
+                            'location', sql.String(30), nullable=False),
+                        sql.Column(
+                            'consumptionDate', sql.Date(), default=datetime.today(), nullable=False),
+                        sql.Column(
+                            'deductionDate', sql.Date(), default=datetime.today(), nullable=False),
+                        sql.Column(
+                            'invoice', sql.String(30), nullable=True),
+                        sql.Column(
+                            'note', sql.String(30), nullable=True)
+                        )
 
         metadata.create_all(engine)
 
@@ -138,11 +152,9 @@ class MockDB(TestCase):
         conn.execute(location.insert().values(default_locations))
 
         default_records = [
-            {'category': "FOOD", 'payment': "現金", 'amount': 50, 'location': "7-11", 'time': '2023-05-01'},
-            {'category': "BEVERAGE", 'payment': "現金", 'amount': 101, 'location': "comebuy", 'time': '2023-01-01'},
-            {'category': "FOOD", 'payment': "現金", 'amount': 87, 'location': "全家", 'time': '2023-02-18'},
-            {'category': "FOOD", 'payment': "信用卡", 'amount': 321, 'location': "subway", 'time': '2023-04-03'},
-            {'category': "BEVERAGE", 'payment': "電子支付", 'amount': 70, 'location': "milksha", 'time': '2023-02-02'}
+            {'IE': "EXPENSE",'category': "食物", 'payment': "現金", 'amount': 50, 'location': "便利商店", 'consumptionDate': '2023-05-01', 'deductionDate': '2023-05-01', 'invoice': "12345678", 'note': "milk"},
+            {'IE': "EXPENSE",'category': "住宿", 'payment': "Line Pay", 'amount': 2500, 'location': "其它", 'consumptionDate': datetime.today().date(), 'deductionDate': datetime.today().date(), 'invoice': "", 'note': "taipei"},
+            {'IE': "INCOME",'category': "其它", 'payment': "中華郵政", 'amount': 10000, 'location': "其它", 'consumptionDate': '2023-05-22', 'deductionDate': '2023-05-23', 'invoice': "19970901", 'note': ""}
         ]
         conn.execute(record.insert().values(default_records))
 
