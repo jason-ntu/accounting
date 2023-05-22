@@ -84,6 +84,7 @@ class TestReadRecord(MockDB):
         self.assertEqual(output_lines[1], "4 EXPENSE  類別: 飲料  金額: 100.0  收支方式: Line Pay  地點: 飲料店  消費時間: 2023-05-19  扣款時間: 2023-05-19  發票號碼:   備註: 麻古-芝芝芒果")
         
     @patch("sys.stdout", new_callable=io.StringIO)
+    @freeze_time("2023-05-18")
     def test_viewMonth(self, _stdout):
         with self.mock_db_config:
             ReadRecordPage.setUp_connection_and_table()
@@ -99,6 +100,7 @@ class TestReadRecord(MockDB):
 
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch("builtins.input", side_effect=["2023-05-01", "2023-05-18"])
+    @freeze_time("2023-05-18")
     def test_viewOther(self, _input, _stdout):
         with self.mock_db_config:
             ReadRecordPage.setUp_connection_and_table()
