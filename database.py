@@ -3,7 +3,7 @@ import mysqlConfig as cfg
 import sqlalchemy as sql
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from payment import PaymentCategory
-from fixedIE import FixedIEType, CategoryOption, PaymentOption
+from fixedIE import FixedIEType
 from datetime import datetime
 
 
@@ -21,6 +21,13 @@ def initialize(config):
     engine = sql.create_engine(config['url'])
     conn = engine.connect()
     metadata = sql.MetaData()
+
+    end_time = sql.Table('EndTime', metadata,
+                          sql.Column(
+                            'id', sql.Integer(), nullable=False,primary_key=True),
+                          sql.Column(
+                            'time', sql.DateTime(), nullable=False)
+                        )
 
     budget = sql.Table('Budget', metadata,
                         sql.Column(
@@ -67,15 +74,19 @@ def initialize(config):
                         sql.Column(
                             'IE', sql.Enum(FixedIEType), nullable=False),
                         sql.Column(
-                            'category', sql.String(30), nullable=False), #new
+                            'category', sql.String(30), nullable=False),
                         sql.Column(
-                            'payment', sql.String(30), nullable=False), #new
+                            'payment', sql.String(30), nullable=False),
                         sql.Column(
                             'amount', sql.Float(), nullable=False),
                         sql.Column(
+                            'location', sql.String(30), nullable=False),
+                        sql.Column(
                             'day', sql.Integer(), nullable=False),
                         sql.Column(
-                            'note', sql.String(30), nullable=True)
+                            'note', sql.String(30), nullable=True),
+                        sql.Column(
+                            'flag', sql.Boolean(), default=False, nullable=False)
                         )
 
     record = sql.Table('Record', metadata,
@@ -92,9 +103,9 @@ def initialize(config):
                         sql.Column(
                             'location', sql.String(30), nullable=False),
                         sql.Column(
-                            'consumptionDate', sql.Date(), default=datetime.today(), nullable=False),
+                            'purchaseDate', sql.Date(), default=datetime.today(), nullable=False),
                         sql.Column(
-                            'deductionDate', sql.Date(), default=datetime.today(), nullable=False),
+                            'debitDate', sql.Date(), default=datetime.today(), nullable=False),
                         sql.Column(
                             'invoice', sql.String(30), nullable=True),
                         sql.Column(

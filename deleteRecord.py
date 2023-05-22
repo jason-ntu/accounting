@@ -1,7 +1,5 @@
-from enum import IntEnum, auto
-from datetime import datetime
 import sqlalchemy as sql
-from accessor import Accessor, ExecutionStatus as es
+from accessor import ExecutionStatus as es
 from readRecord import ReadRecordPage, ReadRecordOption
 from records import RecordPage
 
@@ -47,5 +45,4 @@ class DeleteRecordPage(RecordPage):
             cls.deleteByID()
 
 if __name__ == '__main__':  # pragma: no cover
-    deleteRecordPage = DeleteRecordPage()
-    deleteRecordPage.start()
+    DeleteRecordPage.start()

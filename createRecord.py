@@ -1,13 +1,9 @@
 from enum import IntEnum, auto
-from accessor import Accessor, ExecutionStatus as es
+from accessor import ExecutionStatus as es
 import sqlalchemy as sql
 import sys
-from datetime import datetime
-import re
 from fixedIE import FixedIEType
-from category import CategoryPage
-from payment import PaymentPage, PaymentCategory
-from location import LocationPage
+from payment import PaymentCategory
 from records import RecordPage
 
 
@@ -17,8 +13,6 @@ class CreateRecordOption(IntEnum):
     BACK = auto()
 
 class CreateRecordPage(RecordPage):
-
-    IE = ""
 
     @staticmethod
     def show():
@@ -46,102 +40,22 @@ class CreateRecordPage(RecordPage):
 
     @classmethod
     def createRecord(cls):
-        cls.categoryList = CategoryPage.getList()
-        cls.showCategory()
-        cls.hintGetCategory()
-        while True:
-            try:
-                choice = int(input())
-                if choice not in range(1, len(cls.categoryList)+1):
-                    raise ValueError
-                category = cls.categoryList[choice-1]
-                break
-            except ValueError:
-                cls.hintRetryCategory()
-
-        cls.paymentList = PaymentPage.getList()
-        cls.showPayment()
-        cls.hintGetPayment()
-        while True:
-            try:
-                choice = int(input())
-                if choice not in range(1, len(cls.paymentList)+1):
-                    raise ValueError
-                payment = cls.paymentList[choice-1]
-                break
-            except ValueError:
-                cls.hintRetryPayment()
-
-        cls.hintGetAmount()
-        while True:
-            try:
-                amount = float(input())
-                break
-            except ValueError:
-                cls.hintIntegerErorMsg()
-
-        cls.locationList = LocationPage.getList()
-        cls.showLocation()
-        cls.hintGetLocation()
-        while True:
-            try:
-                choice = int(input())
-                if choice not in range(1, len(cls.locationList)+1):
-                    raise ValueError
-                location = cls.locationList[choice-1]
-                break
-            except ValueError:
-                cls.hintRetryLocation()
-
-        cls.hintGetConsumptionDate()
-        while True:
-            try:
-                spendingTime = input()
-                if (spendingTime == ""):
-                    spendingTime = datetime.today().date()
-                    break
-                datetime.strptime(spendingTime, '%Y-%m-%d').date()
-                break
-            except ValueError:
-                cls.hintGetConsumptionDate()
-
+        category = cls.askCategory()
+        payment = cls.askPayment()
+        amount = cls.askAmount()
+        location = cls.askLocation()
+        purchaseDate = cls.askPurchaseDate()
+        debitDate = purchaseDate
         if payment['category'] == PaymentCategory.CREDIT_CARD.name:
-            cls.hintGetDeductionDate()
-            while True:
-                try:
-                    deducteTime = input()
-                    if (deducteTime == ""):
-                        deducteTime = datetime.today().date()
-                        break
-                    datetime.strptime(deducteTime, '%Y-%m-%d').date()
-                    break
-                except ValueError:
-                    cls.hintGetDeductionDate()
-        else: deducteTime = spendingTime
-
-        cls.hintGetNote()
-        note = input()
-
-        cls.hintGetInvoice()
-        invoiceNumber = input()
-        while invoiceNumber != "":
-            try:
-                pattern = r'\d{8}$'
-                match = re.match(pattern, invoiceNumber)
-                if match:
-                    break
-                else:
-                    raise ValueError()
-            except ValueError:
-                cls.hintGetInvoice()
-                invoiceNumber = input()
+            debitDate = cls.askDebitDate()
+        invoice = cls.askInvoice()
+        note = cls.askNote()
 
         cls.setUp_connection_and_table()
-        query = cls.table.insert().values(IE=cls.IE,
-                                          category=category,
+        query = cls.table.insert().values(IE=cls.IE,category=category,
                                           amount=amount, payment=payment['name'],
-                                          location=location, consumptionDate=spendingTime,
-                                          deductionDate=deducteTime, invoice=invoiceNumber, note=note)
+                                          location=location, purchaseDate=purchaseDate,
+                                          debitDate=debitDate, invoice=invoice, note=note)
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
@@ -167,16 +81,12 @@ class CreateRecordPage(RecordPage):
         print("請輸入消費地點:")
 
     @staticmethod
-    def hintGetConsumptionDate():
+    def hintGetPurchaseDate():
         print("請輸入消費日期(yyyy-mm-dd):")
 
     @staticmethod
-    def hintGetDeductionDate():
+    def hintGetDebitDate():
         print("請輸入扣款日期(yyyy-mm-dd):")
-
-    @staticmethod
-    def hintIntegerErorMsg():
-        print("請輸入數字:")
 
     @staticmethod
     def hintGetNote():
@@ -196,5 +106,4 @@ class CreateRecordPage(RecordPage):
             cls.execute(option)
 
 if __name__ == '__main__':  # pragma: no cover
-    createRecordPage = CreateRecordPage()
-    createRecordPage.start()
+    CreateRecordPage.start()

@@ -1,6 +1,6 @@
 from enum import IntEnum, auto
 from datetime import datetime, timedelta
-from accessor import Accessor, ExecutionStatus as es
+from accessor import ExecutionStatus as es
 import sqlalchemy as sql
 from sqlalchemy import and_
 from records import RecordPage
@@ -57,14 +57,14 @@ class ReadRecordPage(RecordPage):
     def viewToday(cls):  
         Date = datetime.today().date()
         cls.setUp_connection_and_table()
-        query = sql.select(cls.table).where(cls.table.c.consumptionDate == Date)
+        query = sql.select(cls.table).where(cls.table.c.purchaseDate == Date)
         results = cls.conn.execute(query).fetchall()
         cls.tearDown_connection(es.NONE)
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
                   dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['location'], 
-                  " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
+                  " 消費時間:", dictRow['purchaseDate'], " 扣款時間:", dictRow['debitDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
 
@@ -74,14 +74,14 @@ class ReadRecordPage(RecordPage):
         startDate = Date - timedelta(days=Date.weekday())
         endDate = startDate + timedelta(days=6)
         cls.setUp_connection_and_table()
-        query = sql.select(cls.table).where(and_(cls.table.c.consumptionDate >= startDate, cls.table.c.consumptionDate <= endDate))
+        query = sql.select(cls.table).where(and_(cls.table.c.purchaseDate >= startDate, cls.table.c.purchaseDate <= endDate))
         results = cls.conn.execute(query).fetchall()
         cls.tearDown_connection(es.NONE)
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
                   dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['location'], 
-                  " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
+                  " 消費時間:", dictRow['purchaseDate'], " 扣款時間:", dictRow['debitDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
 
@@ -92,14 +92,14 @@ class ReadRecordPage(RecordPage):
         nextMonth = Date.replace(day=28) + timedelta(days=4)
         endDate = nextMonth - timedelta(days=nextMonth.day)
         cls.setUp_connection_and_table()
-        query = sql.select(cls.table).where(and_(cls.table.c.consumptionDate >= startDate, cls.table.c.consumptionDate <= endDate))
+        query = sql.select(cls.table).where(and_(cls.table.c.purchaseDate >= startDate, cls.table.c.purchaseDate <= endDate))
         results = cls.conn.execute(query).fetchall()
         cls.tearDown_connection(es.NONE)
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
                   dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['location'], 
-                  " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
+                  " 消費時間:", dictRow['purchaseDate'], " 扣款時間:", dictRow['debitDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
     @classmethod
@@ -129,14 +129,14 @@ class ReadRecordPage(RecordPage):
                 cls.hintGetEndDate()
                 
         cls.setUp_connection_and_table()
-        query = sql.select(cls.table).where(and_(cls.table.c.consumptionDate >= startDate, cls.table.c.consumptionDate <= endDate))
+        query = sql.select(cls.table).where(and_(cls.table.c.purchaseDate >= startDate, cls.table.c.purchaseDate <= endDate))
         results = cls.conn.execute(query).fetchall()
         cls.tearDown_connection(es.NONE)
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
                   dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['location'], 
-                  " 消費時間:", dictRow['consumptionDate'], " 扣款時間:", dictRow['deductionDate'],
+                  " 消費時間:", dictRow['purchaseDate'], " 扣款時間:", dictRow['debitDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
 
@@ -150,5 +150,4 @@ class ReadRecordPage(RecordPage):
             cls.execute(option)
 
 if __name__ == '__main__':  # pragma: no cover
-    readRecordPage = ReadRecordPage()
-    readRecordPage.start()
+    ReadRecordPage.start()

@@ -4,7 +4,7 @@ import sqlalchemy as sql
 from mock import patch
 import const
 from payment import PaymentCategory
-from fixedIE import FixedIEType, CategoryOption, PaymentOption
+from fixedIE import FixedIEType
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from datetime import datetime
 from freezegun import freeze_time
@@ -77,9 +77,13 @@ class MockDB(TestCase):
                         sql.Column(
                             'amount', sql.Float(), nullable=False),
                         sql.Column(
+                            'location', sql.String(30), nullable=False),
+                        sql.Column(
                             'day', sql.Integer(), nullable=False),
                         sql.Column(
-                            'note', sql.String(30), nullable=True)
+                            'note', sql.String(30), nullable=True),
+                        sql.Column(
+                            'flag', sql.Boolean(), default=False, nullable=False)
         )
 
         record = sql.Table('Record', metadata,
@@ -126,8 +130,8 @@ class MockDB(TestCase):
         conn.execute(income.insert().values(default_incomes))
 
         default_fixedIE = [
-            {'IE': FixedIEType.INCOME.name, 'name': "獎學金", 'category': CategoryOption.OTHER.name, 'payment': PaymentOption.OTHER.name, 'amount': 10000, 'day': 15, 'note': ''},
-            {'IE': FixedIEType.EXPENSE.name, 'name': "房租", 'category': CategoryOption.OTHER.name, 'payment': PaymentOption.OTHER.name, 'amount': 6000, 'day': 20, 'note': 'sos'}
+            {'IE': FixedIEType.INCOME.name, 'name': "獎學金", 'category': "其它", 'payment': "其它", 'amount': 10000, 'location': "其它", 'day': 15, 'note': '', 'flag': True},
+            {'IE': FixedIEType.EXPENSE.name, 'name': "房租", 'category': "其它", 'payment': "其它", 'amount': 6000, 'location': "其它", 'day': 20, 'note': 'sos', 'flag': False}
         ]
         conn.execute(fixedIE.insert().values(default_fixedIE))
 

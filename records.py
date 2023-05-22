@@ -1,5 +1,10 @@
 from enum import IntEnum, auto
-from accessor import Accessor, ExecutionStatus as es
+from accessor import Accessor
+from category import CategoryPage
+from payment import PaymentPage
+from location import LocationPage
+from datetime import datetime
+import re
 
 # 消費紀錄 Records
 # > 新增消費紀錄
@@ -17,6 +22,7 @@ class RecordOption(IntEnum):
 class RecordPage(Accessor):
 
     table_name = "Record"
+    IEList = ["INCOME", "EXPENSE"]
     categoryList = []
     paymentList = []
     locationList = []
@@ -66,6 +72,36 @@ class RecordPage(Accessor):
         #     raise ValueError(cls.errorMsg)
 
     @classmethod
+    def askIE(cls):
+        cls.hintGetIE()
+        while True:
+            try:
+                IE = int(input())
+                if IE <= len(cls.IEList):
+                    break
+                else: 
+                    raise ValueError()
+            except ValueError:
+                cls.hintGetIE()
+        return IE
+
+    @classmethod
+    def askCategory(cls):
+        cls.categoryList = CategoryPage.getList()
+        cls.showCategory()
+        cls.hintGetCategory()
+        while True:
+            try:
+                choice = int(input())
+                if choice not in range(1, len(cls.categoryList)+1):
+                    raise ValueError
+                category = cls.categoryList[choice-1]
+                break
+            except ValueError:
+                cls.hintRetryCategory()
+        return category
+
+    @classmethod
     def showCategory(cls):
         for i in range(len(cls.categoryList)):
             print("%d %s" % (i+1, cls.categoryList[i]))
@@ -74,6 +110,22 @@ class RecordPage(Accessor):
     def hintRetryCategory(cls):
         print("請輸入 1 到 %d 之間的數字:" % len(cls.categoryList))
     
+    @classmethod
+    def askPayment(cls):
+        cls.paymentList = PaymentPage.getList()
+        cls.showPayment()
+        cls.hintGetPayment()
+        while True:
+            try:
+                choice = int(input())
+                if choice not in range(1, len(cls.paymentList)+1):
+                    raise ValueError
+                payment = cls.paymentList[choice-1]
+                break
+            except ValueError:
+                cls.hintRetryPayment()
+        return payment
+
     @classmethod
     def showPayment(cls):
         for i in range(len(cls.paymentList)):
@@ -84,6 +136,40 @@ class RecordPage(Accessor):
         print("請輸入 1 到 %d 之間的數字:" % len(cls.paymentList))
     
     @classmethod
+    def askAmount(cls):
+        cls.hintGetAmount()
+        while True:
+            try:
+                amount = float(input())
+                if amount <= 0:
+                    raise ValueError
+                else:
+                    break
+            except ValueError:
+                cls.hintNumberErorMsg()
+        return amount
+
+    @staticmethod
+    def hintRetryAmount():
+        print("請輸入大於0的數字:")
+
+    @classmethod
+    def askLocation(cls):
+        cls.locationList = LocationPage.getList()
+        cls.showLocation()
+        cls.hintGetLocation()
+        while True:
+            try:
+                choice = int(input())
+                if choice not in range(1, len(cls.locationList)+1):
+                    raise ValueError
+                location = cls.locationList[choice-1]
+                break
+            except ValueError:
+                cls.hintRetryLocation()
+        return location
+
+    @classmethod
     def showLocation(cls):
         for i in range(len(cls.locationList)):
             print("%d %s" % (i+1, cls.locationList[i]))
@@ -91,6 +177,64 @@ class RecordPage(Accessor):
     @classmethod
     def hintRetryLocation(cls):
         print("請輸入 1 到 %d 之間的數字:" % len(cls.locationList))
+    
+    @staticmethod
+    def hintNumberErorMsg():
+        print("請輸入數字")
+
+    @classmethod
+    def askPurchaseDate(cls):
+        cls.hintGetPurchaseDate()
+        while True:
+            try:
+                date = cls.askDate()
+                break
+            except ValueError:
+                cls.hintGetPurchaseDate()
+        return date
+    
+    @classmethod
+    def askDebitDate(cls):
+        cls.hintGetDebitDate()
+        while True:
+            try:
+                date = cls.askDate()
+                break
+            except ValueError:
+                cls.hintGetDebitDate()
+        return date
+    
+    @classmethod
+    def askDate(cls):
+        date = input()
+        if (date == ""):
+            date = datetime.today().date()
+        else:
+            datetime.strptime(date, '%Y-%m-%d').date()
+        return date
+
+    @classmethod
+    def askInvoice(cls):
+        cls.hintGetInvoice()
+        invoice = input()
+        while invoice != "":
+            try:
+                pattern = r'\d{8}$'
+                match = re.match(pattern, invoice)
+                if match:
+                    break
+                else:
+                    raise ValueError()
+            except ValueError:
+                cls.hintGetInvoice()
+                invoice = input()
+        return invoice
+
+    @classmethod
+    def askNote(cls):
+        cls.hintGetNote()
+        note = input()
+        return note
 
 if __name__ == '__main__': # pragma: no cover
     RecordPage.start()
