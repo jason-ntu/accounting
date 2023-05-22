@@ -158,7 +158,8 @@ class MockDB(TestCase):
         default_records = [
             {'IE': "EXPENSE",'category': "食物", 'payment': "現金", 'amount': 50, 'location': "便利商店", 'purchaseDate': '2023-05-01', 'debitDate': '2023-05-01', 'invoice': "12345678", 'note': "milk"},
             {'IE': "EXPENSE",'category': "住宿", 'payment': "Line Pay", 'amount': 2500, 'location': "其它", 'purchaseDate': datetime.today().date(), 'debitDate': datetime.today().date(), 'invoice': "", 'note': "taipei"},
-            {'IE': "INCOME",'category': "其它", 'payment': "中華郵政", 'amount': 10000, 'location': "其它", 'purchaseDate': '2023-05-22', 'debitDate': '2023-05-23', 'invoice': "19970901", 'note': ""}
+            {'IE': "INCOME",'category': "其它", 'payment': "中華郵政", 'amount': 10000, 'location': "其它", 'purchaseDate': '2023-05-22', 'debitDate': '2023-05-23', 'invoice': "19970901", 'note': ""},
+            {'IE': "EXPENSE",'category': "飲料", 'payment': "Line Pay", 'amount': 100, 'location': "飲料店", 'purchaseDate': '2023-05-19', 'debitDate': '2023-05-19', 'invoice': "", 'note': "麻古-芝芝芒果"}
         ]
         conn.execute(record.insert().values(default_records))
 
