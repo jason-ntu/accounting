@@ -105,7 +105,6 @@ class ReadRecordPage(RecordPage):
     @classmethod
     def viewOther(cls):  
         cls.hintGetStartDate()
-
         while True:
             try:
                 startDate = input()
@@ -118,7 +117,6 @@ class ReadRecordPage(RecordPage):
                 cls.hintGetStartDate()
 
         cls.hintGetEndDate()
-
         while True:
             try:
                 endDate = input()
