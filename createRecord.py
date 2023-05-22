@@ -3,7 +3,7 @@ from accessor import ExecutionStatus as es
 import sqlalchemy as sql
 import sys
 from fixedIE import FixedIEType
-from payment import PaymentCategory
+from account import AccountCategory
 from records import RecordPage
 
 
@@ -41,19 +41,19 @@ class CreateRecordPage(RecordPage):
     @classmethod
     def createRecord(cls):
         category = cls.askCategory()
-        payment = cls.askPayment()
+        account = cls.askAccount()
         amount = cls.askAmount()
         location = cls.askLocation()
         purchaseDate = cls.askPurchaseDate()
         debitDate = purchaseDate
-        if payment['category'] == PaymentCategory.CREDIT_CARD.name:
+        if account['category'] == AccountCategory.CREDIT_CARD.name:
             debitDate = cls.askDebitDate()
         invoice = cls.askInvoice()
         note = cls.askNote()
 
         cls.setUp_connection_and_table()
         query = cls.table.insert().values(IE=cls.IE,category=category,
-                                          amount=amount, payment=payment['name'],
+                                          amount=amount, account=account['name'],
                                           location=location, purchaseDate=purchaseDate,
                                           debitDate=debitDate, invoice=invoice, note=note)
         resultProxy = cls.conn.execute(query)
@@ -69,8 +69,8 @@ class CreateRecordPage(RecordPage):
         print("請輸入紀錄類型:")
 
     @staticmethod
-    def hintGetPayment():
-        print("請輸入收支方式:")
+    def hintGetAccount():
+        print("請輸入帳戶:")
     
     @staticmethod
     def hintGetAmount():

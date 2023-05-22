@@ -68,7 +68,7 @@ class TestReadRecord(MockDB):
             ReadRecordPage.tearDown_connection(es.NONE)
         output_lines = _stdout.getvalue().strip().split('\n')
         self.assertEqual(len(output_lines), 1)
-        self.assertEqual(output_lines[0], "2 EXPENSE  類別: 住宿  金額: 2500.0  收支方式: Line Pay  地點: 其它  消費時間: 2023-05-18  扣款時間: 2023-05-18  發票號碼:   備註: taipei")
+        self.assertEqual(output_lines[0], "2 EXPENSE  類別: 住宿  金額: 2500.0  帳戶: Line Pay  地點: 其它  消費時間: 2023-05-18  扣款時間: 2023-05-18  發票號碼:   備註: taipei")
 
         
     @patch("sys.stdout", new_callable=io.StringIO)
@@ -80,8 +80,8 @@ class TestReadRecord(MockDB):
             ReadRecordPage.tearDown_connection(es.NONE)
         output_lines = _stdout.getvalue().strip().split('\n')
         self.assertEqual(len(output_lines), 2)
-        self.assertEqual(output_lines[0], "2 EXPENSE  類別: 住宿  金額: 2500.0  收支方式: Line Pay  地點: 其它  消費時間: 2023-05-18  扣款時間: 2023-05-18  發票號碼:   備註: taipei")
-        self.assertEqual(output_lines[1], "4 EXPENSE  類別: 飲料  金額: 100.0  收支方式: Line Pay  地點: 飲料店  消費時間: 2023-05-19  扣款時間: 2023-05-19  發票號碼:   備註: 麻古-芝芝芒果")
+        self.assertEqual(output_lines[0], "2 EXPENSE  類別: 住宿  金額: 2500.0  帳戶: Line Pay  地點: 其它  消費時間: 2023-05-18  扣款時間: 2023-05-18  發票號碼:   備註: taipei")
+        self.assertEqual(output_lines[1], "4 EXPENSE  類別: 飲料  金額: 100.0  帳戶: Line Pay  地點: 飲料店  消費時間: 2023-05-19  扣款時間: 2023-05-19  發票號碼:   備註: 麻古-芝芝芒果")
         
     @patch("sys.stdout", new_callable=io.StringIO)
     @freeze_time("2023-05-18")
@@ -92,10 +92,10 @@ class TestReadRecord(MockDB):
             ReadRecordPage.tearDown_connection(es.NONE)
         output_lines = _stdout.getvalue().strip().split('\n')
         self.assertEqual(len(output_lines), 4)
-        self.assertEqual(output_lines[0], "1 EXPENSE  類別: 食物  金額: 50.0  收支方式: 現金  地點: 便利商店  消費時間: 2023-05-01  扣款時間: 2023-05-01  發票號碼: 12345678  備註: milk")
-        self.assertEqual(output_lines[1], "2 EXPENSE  類別: 住宿  金額: 2500.0  收支方式: Line Pay  地點: 其它  消費時間: 2023-05-18  扣款時間: 2023-05-18  發票號碼:   備註: taipei")
-        self.assertEqual(output_lines[2], "3 INCOME  類別: 其它  金額: 10000.0  收支方式: 中華郵政  地點: 其它  消費時間: 2023-05-22  扣款時間: 2023-05-23  發票號碼: 19970901  備註: ")
-        self.assertEqual(output_lines[3], "4 EXPENSE  類別: 飲料  金額: 100.0  收支方式: Line Pay  地點: 飲料店  消費時間: 2023-05-19  扣款時間: 2023-05-19  發票號碼:   備註: 麻古-芝芝芒果")
+        self.assertEqual(output_lines[0], "1 EXPENSE  類別: 食物  金額: 50.0  帳戶: 現金  地點: 便利商店  消費時間: 2023-05-01  扣款時間: 2023-05-01  發票號碼: 12345678  備註: milk")
+        self.assertEqual(output_lines[1], "2 EXPENSE  類別: 住宿  金額: 2500.0  帳戶: Line Pay  地點: 其它  消費時間: 2023-05-18  扣款時間: 2023-05-18  發票號碼:   備註: taipei")
+        self.assertEqual(output_lines[2], "3 INCOME  類別: 其它  金額: 10000.0  帳戶: 中華郵政  地點: 其它  消費時間: 2023-05-22  扣款時間: 2023-05-23  發票號碼: 19970901  備註: ")
+        self.assertEqual(output_lines[3], "4 EXPENSE  類別: 飲料  金額: 100.0  帳戶: Line Pay  地點: 飲料店  消費時間: 2023-05-19  扣款時間: 2023-05-19  發票號碼:   備註: 麻古-芝芝芒果")
 
 
     @patch("sys.stdout", new_callable=io.StringIO)
@@ -110,8 +110,8 @@ class TestReadRecord(MockDB):
         self.assertEqual(len(output_lines), 4)
         self.assertEqual(output_lines[0], "請輸入 開始 時間(yyyy-mm-dd):")
         self.assertEqual(output_lines[1], "請輸入 結束 時間(yyyy-mm-dd):")
-        self.assertEqual(output_lines[2], "1 EXPENSE  類別: 食物  金額: 50.0  收支方式: 現金  地點: 便利商店  消費時間: 2023-05-01  扣款時間: 2023-05-01  發票號碼: 12345678  備註: milk")
-        self.assertEqual(output_lines[3], "2 EXPENSE  類別: 住宿  金額: 2500.0  收支方式: Line Pay  地點: 其它  消費時間: 2023-05-18  扣款時間: 2023-05-18  發票號碼:   備註: taipei")
+        self.assertEqual(output_lines[2], "1 EXPENSE  類別: 食物  金額: 50.0  帳戶: 現金  地點: 便利商店  消費時間: 2023-05-01  扣款時間: 2023-05-01  發票號碼: 12345678  備註: milk")
+        self.assertEqual(output_lines[3], "2 EXPENSE  類別: 住宿  金額: 2500.0  帳戶: Line Pay  地點: 其它  消費時間: 2023-05-18  扣款時間: 2023-05-18  發票號碼:   備註: taipei")
 
     @patch.object(ReadRecordPage, "execute")
     @patch.object(ReadRecordPage, "choose",

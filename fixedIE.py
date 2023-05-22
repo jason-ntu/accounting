@@ -12,7 +12,7 @@ class FixedIEOption(IntEnum):
 
 class FixedIEUpdateOption(IntEnum):
     CATEGORY = auto()
-    PAYMENT = auto()
+    ACCOUNT = auto()
     AMOUNT = auto()
     LOCATION = auto()
     DAY = auto()
@@ -79,7 +79,7 @@ class FixedIEPage(RecordPage):
         name = input()
 
         category = cls.askCategory()
-        payment = cls.askPayment()
+        account = cls.askAccount()
         amount = cls.askAmount()
         location = cls.askLocation()
         cls.hint_create_day()
@@ -87,7 +87,7 @@ class FixedIEPage(RecordPage):
         note = cls.askNote()
 
         query = cls.table.insert().values(IE=IE.name, name=name,
-                                          category=category, payment=payment['name'],
+                                          category=category, account=account['name'],
                                           amount=amount, location=location,
                                           day=day, note=note, flag=False)
         rowsAffected = cls.conn.execute(query).rowcount
@@ -109,10 +109,6 @@ class FixedIEPage(RecordPage):
         print("請輸入 1 到 31 之間的數字:")
 
     @staticmethod
-    def hintGetIE():
-        print("類型(1 固定收入, 2 固定支出):")
-
-    @staticmethod
     def hint_create_name(IE):
         if IE == FixedIEType.INCOME:
             print("請輸入新的固定收入名稱:")
@@ -120,28 +116,12 @@ class FixedIEPage(RecordPage):
             print("請輸入新的固定支出名稱:")
 
     @staticmethod
-    def hint_create_amount():
-        print("金額:")
-
-    @staticmethod
-    def hint_create_category():
-        print("記錄類別(1 食物, 2 飲料, 3 其他):")
-
-    @staticmethod
-    def hint_create_payment():
-        print("收支方式(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他):")
-
-    @staticmethod
     def hint_create_day():
         print("請輸入每月收支日(1-31):")
 
-    @staticmethod
-    def hint_create_note():
-        print("請輸入備註:")
-
     @classmethod
     def read(cls):
-        query = sql.select(cls.table.c['IE', 'name', 'category', 'payment', 'amount', 'location', 'day', 'note'])
+        query = sql.select(cls.table.c['IE', 'name', 'category', 'account', 'amount', 'location', 'day', 'note'])
         results = cls.conn.execute(query).fetchall()
         cls.format_print(results)
 
@@ -149,7 +129,7 @@ class FixedIEPage(RecordPage):
     def format_print(results):
         for row in results:
             dictRow = row._asdict()
-            print("%s 名稱\"%s\" 類別%s 收支方式%s 金額%s 地點%s 每月%s號 備註:%s" %(dictRow['IE'], dictRow['name'], dictRow['category'], dictRow['payment'], dictRow['amount'], dictRow['location'], dictRow['day'], dictRow['note']))
+            print("%s 名稱\"%s\" 類別%s 帳戶%s 金額%s 地點%s 每月%s號 備註:%s" %(dictRow['IE'], dictRow['name'], dictRow['category'], dictRow['account'], dictRow['amount'], dictRow['location'], dictRow['day'], dictRow['note']))
 
     @classmethod
     def update(cls):
@@ -171,8 +151,8 @@ class FixedIEPage(RecordPage):
 
             if option == FixedIEUpdateOption.CATEGORY:
                 return cls.update_category(name)
-            elif option == FixedIEUpdateOption.PAYMENT:
-                return cls.update_payment(name)
+            elif option == FixedIEUpdateOption.ACCOUNT:
+                return cls.update_account(name)
             elif option == FixedIEUpdateOption.AMOUNT:
                 return cls.update_amount(name)
             elif option == FixedIEUpdateOption.LOCATION:
@@ -190,7 +170,7 @@ class FixedIEPage(RecordPage):
 
     @staticmethod
     def hint_update_option():
-        print("請選擇要修改的項目(1 類別, 2 收支方式, 3 金額, 4 地點, 5 時間, 6 備註, 7 返回):")
+        print("請選擇要修改的項目(1 類別, 2 帳戶, 3 金額, 4 地點, 5 時間, 6 備註, 7 返回):")
 
     @classmethod
     def update_category(cls, name):
@@ -209,20 +189,20 @@ class FixedIEPage(RecordPage):
         print("請輸入紀錄類型:")
 
     @classmethod
-    def update_payment(cls, name):
-        new_payment = cls.askPayment()
-        query = cls.table.update().where(cls.table.c.name == name).values(payment=new_payment['name'])
+    def update_account(cls, name):
+        new_account = cls.askAccount()
+        query = cls.table.update().where(cls.table.c.name == name).values(account=new_account['name'])
         rowsAffected = cls.conn.execute(query).rowcount
         successful = (rowsAffected == 1)
         if not successful:
             return False
         else:
-            print("名稱為 \"%s\" 的固定收支方式已成功為 %s" % (name, new_payment['name']))
+            print("名稱為 \"%s\" 的固定帳戶已成功為 %s" % (name, new_account['name']))
             return True
 
     @staticmethod
-    def hintGetPayment():
-        print("請輸入收支方式:")
+    def hintGetAccount():
+        print("請輸入帳戶:")
 
     @classmethod
     def update_amount(cls, name):

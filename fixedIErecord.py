@@ -12,7 +12,7 @@ class fixedIERecord(Accessor):
     @classmethod
     def readFixedIE(cls):
         cls.setUp_connection_and_table(["FixedIE"])
-        query = sql.select(cls.tables[0].c['IE', 'name', 'category', 'payment', 'amount', 'location' ,'day', 'note', 'flag'])
+        query = sql.select(cls.tables[0].c['IE', 'name', 'category', 'account', 'amount', 'location' ,'day', 'note', 'flag'])
         results = cls.conn.execute(query).fetchall()
         cls.tearDown_connection(es.NONE)
         return results
@@ -22,7 +22,7 @@ class fixedIERecord(Accessor):
         cls.setUp_connection_and_table(["Record"])
         query = cls.tables[0].insert().values(IE = dictRow['IE'],
                                               category = dictRow['category'],
-                                              payment = dictRow['payment'],
+                                              account = dictRow['account'],
                                               amount = dictRow['amount'],
                                               location = dictRow['location'],
                                               purchaseDate = date,

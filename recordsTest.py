@@ -5,7 +5,7 @@ from mock_db import MockDB
 from accessor import ExecutionStatus as es
 import const
 
-class TestPaymentPage(MockDB):
+class TestAccountPage(MockDB):
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_show(self, _stdout):

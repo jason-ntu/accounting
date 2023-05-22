@@ -11,7 +11,7 @@ class ReportOption(IntEnum):
 
 class ReportByOption(IntEnum):
     category = auto()
-    payment = auto()
+    account = auto()
 
 class ReportPage(Accessor):
 
