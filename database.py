@@ -88,7 +88,7 @@ def initialize(config):
                         sql.Column(
                             'payment', sql.String(30), nullable=False),
                         sql.Column(
-                            'amount', sql.Integer(), nullable=False),
+                            'amount', sql.Float(), nullable=False),
                         sql.Column(
                             'location', sql.String(30), nullable=False),
                         sql.Column(
