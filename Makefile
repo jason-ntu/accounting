@@ -1,4 +1,4 @@
-TEST_FILE_NAME := settingTest.py budgetTest.py paymentTest.py menuTest.py incomeTest.py categoryTest.py locationTest.py recordsTest.py reportTest.py fixedIETest.py
+TEST_FILE_NAME := settingTest.py budgetTest.py paymentTest.py menuTest.py incomeTest.py categoryTest.py locationTest.py readRecordTest.py reportTest.py fixedIETest.py
 
 RUN_FILE_NAME := fixedIE.py
 CACHE := .coverage htmlcov coverage_html_report
