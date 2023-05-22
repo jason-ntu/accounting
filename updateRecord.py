@@ -8,7 +8,7 @@ from records import RecordPage
 class ItemOption(IntEnum):
     IE = auto()
     CATEGORY = auto()
-    PAYMENT = auto()
+    ACCOUNT = auto()
     AMOUNT = auto()
     LOCATION = auto()
     CONSUMPTIONTIME = auto()
@@ -20,7 +20,7 @@ class UpdateRecordPage(RecordPage):
 
     @staticmethod
     def hintChooseItem():
-        print("1 收入支出 2 類別 3 收支方式 4 金額 5 地點 6 消費時間 7 扣款時間 8 發票號碼 9 備註")
+        print("1 收入支出 2 類別 3 帳戶 4 金額 5 地點 6 消費時間 7 扣款時間 8 發票號碼 9 備註")
         print("請輸入要更改的項目:")
 
     @staticmethod
@@ -33,8 +33,8 @@ class UpdateRecordPage(RecordPage):
         print("請輸入新的紀錄類型:")
 
     @staticmethod
-    def hintGetPayment():
-        print("請輸入新的收支方式:")
+    def hintGetAccount():
+        print("請輸入新的帳戶:")
 
     @staticmethod
     def hintGetAmount():
@@ -100,10 +100,10 @@ class UpdateRecordPage(RecordPage):
         cls.tearDown_connection(es.COMMIT)
 
     @classmethod
-    def updatePayment(cls, ID):
-        newPayment = cls.askPayment()
+    def updateAccount(cls, ID):
+        newAccount = cls.askAccount()
         cls.setUp_connection_and_table()
-        query = sql.update(cls.table).where(cls.table.c.id == ID).values(payment=newPayment['name'])
+        query = sql.update(cls.table).where(cls.table.c.id == ID).values(account=newAccount['name'])
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
@@ -209,8 +209,8 @@ class UpdateRecordPage(RecordPage):
             cls.updateIE(ID)
         elif option is ItemOption.CATEGORY:
             cls.updateCategory(ID)
-        elif option is ItemOption.PAYMENT:
-            cls.updatePayment(ID)
+        elif option is ItemOption.ACCOUNT:
+            cls.updateAccount(ID)
         elif option is ItemOption.AMOUNT:
             cls.updateAmount(ID)
         elif option is ItemOption.LOCATION:

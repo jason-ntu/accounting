@@ -109,7 +109,7 @@ class TestReport(MockDB):
         with self.mock_db_config:
             ReportPage.setUp_connection_and_table()
             result1 = ReportPage.Report('2023-01-01', '2023-04-30', ReportByOption.category)
-            result2 = ReportPage.Report('2023-01-01', '2023-04-30', ReportByOption.payment)
+            result2 = ReportPage.Report('2023-01-01', '2023-04-30', ReportByOption.account)
             ReportPage.tearDown_connection(es.NONE)
         self.assertEqual(result1, True)
         self.assertEqual(result2, True)

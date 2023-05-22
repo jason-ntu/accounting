@@ -2,7 +2,7 @@ import const
 import mysqlConfig as cfg
 import sqlalchemy as sql
 from sqlalchemy_utils import database_exists, create_database, drop_database
-from payment import PaymentCategory
+from account import AccountCategory
 from fixedIE import FixedIEType
 from datetime import datetime
 
@@ -36,7 +36,7 @@ def initialize(config):
                             'amount', sql.Float(), default=0, nullable=False)
                        )
 
-    payment = sql.Table('Payment', metadata,
+    account = sql.Table('Account', metadata,
                         sql.Column(
                             'id', sql.Integer(), nullable=False, primary_key=True),
                         sql.Column(
@@ -44,7 +44,7 @@ def initialize(config):
                         sql.Column(
                             'balance', sql.Float(), default=0, nullable=False),
                         sql.Column(
-                            'category', sql.Enum(PaymentCategory), default=PaymentCategory.CASH, nullable=False)
+                            'category', sql.Enum(AccountCategory), default=AccountCategory.CASH, nullable=False)
                         )
 
     income = sql.Table('Income', metadata,
@@ -76,7 +76,7 @@ def initialize(config):
                         sql.Column(
                             'category', sql.String(30), nullable=False),
                         sql.Column(
-                            'payment', sql.String(30), nullable=False),
+                            'account', sql.String(30), nullable=False),
                         sql.Column(
                             'amount', sql.Float(), nullable=False),
                         sql.Column(
@@ -97,7 +97,7 @@ def initialize(config):
                         sql.Column(
                             'category', sql.String(30), nullable=False),
                         sql.Column(
-                            'payment', sql.String(30), nullable=False),
+                            'account', sql.String(30), nullable=False),
                         sql.Column(
                             'amount', sql.Float(), nullable=False),
                         sql.Column(
@@ -116,19 +116,19 @@ def initialize(config):
 
     conn.execute(budget.insert().values(id=1, amount=0))
 
-    default_payments = [
+    default_accounts = [
         {'name': "錢包", 'balance': 0,
-         'category': PaymentCategory.CASH.name},
+         'category': AccountCategory.CASH.name},
         {'name': "儲蓄卡", 'balance': 25000,
-         'category': PaymentCategory.DEBIT_CARD.name},
+         'category': AccountCategory.DEBIT_CARD.name},
         {'name': "信用卡", 'balance': 3000,
-         'category': PaymentCategory.CREDIT_CARD.name},
+         'category': AccountCategory.CREDIT_CARD.name},
         {'name': "Line Pay", 'balance': 100,
-         'category': PaymentCategory.ELECTRONIC.name},
+         'category': AccountCategory.ELECTRONIC.name},
         {'name': "Metamask", 'balance': 100,
-         'category': PaymentCategory.OTHER.name},
+         'category': AccountCategory.OTHER.name},
     ]
-    conn.execute(payment.insert().values(default_payments))
+    conn.execute(account.insert().values(default_accounts))
 
     default_categories = [
         {'name': "食物"},

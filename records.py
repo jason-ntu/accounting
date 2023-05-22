@@ -1,7 +1,7 @@
 from enum import IntEnum, auto
 from accessor import Accessor
 from category import CategoryPage
-from payment import PaymentPage
+from account import AccountPage
 from location import LocationPage
 from datetime import datetime
 import re
@@ -24,7 +24,7 @@ class RecordPage(Accessor):
     table_name = "Record"
     IEList = ["INCOME", "EXPENSE"]
     categoryList = []
-    paymentList = []
+    accountList = []
     locationList = []
     
     @staticmethod
@@ -111,29 +111,29 @@ class RecordPage(Accessor):
         print("請輸入 1 到 %d 之間的數字:" % len(cls.categoryList))
     
     @classmethod
-    def askPayment(cls):
-        cls.paymentList = PaymentPage.getList()
-        cls.showPayment()
-        cls.hintGetPayment()
+    def askAccount(cls):
+        cls.accountList = AccountPage.getList()
+        cls.showAccount()
+        cls.hintGetAccount()
         while True:
             try:
                 choice = int(input())
-                if choice not in range(1, len(cls.paymentList)+1):
+                if choice not in range(1, len(cls.accountList)+1):
                     raise ValueError
-                payment = cls.paymentList[choice-1]
+                account = cls.accountList[choice-1]
                 break
             except ValueError:
-                cls.hintRetryPayment()
-        return payment
+                cls.hintRetryAccount()
+        return account
 
     @classmethod
-    def showPayment(cls):
-        for i in range(len(cls.paymentList)):
-            print("%d %s(%s)" % (i+1, cls.paymentList[i]['name'], cls.paymentList[i]['category']))
+    def showAccount(cls):
+        for i in range(len(cls.accountList)):
+            print("%d %s(%s)" % (i+1, cls.accountList[i]['name'], cls.accountList[i]['category']))
 
     @classmethod
-    def hintRetryPayment(cls):
-        print("請輸入 1 到 %d 之間的數字:" % len(cls.paymentList))
+    def hintRetryAccount(cls):
+        print("請輸入 1 到 %d 之間的數字:" % len(cls.accountList))
     
     @classmethod
     def askAmount(cls):

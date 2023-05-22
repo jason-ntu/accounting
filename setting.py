@@ -3,7 +3,7 @@ from accessor import Accessor
 from budget import BudgetPage
 from fixedIE import FixedIEPage
 from category import CategoryPage
-from payment import PaymentPage
+from account import AccountPage
 from location import LocationPage
 
 
@@ -45,7 +45,7 @@ class SettingPage():
         elif option is SettingOption.CATEGORY:
             CategoryPage.start()
         elif option is SettingOption.BALANCE:
-            PaymentPage.start()
+            AccountPage.start()
         else:
             LocationPage.start()
 

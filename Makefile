@@ -1,4 +1,4 @@
-TEST_FILE_NAME := budgetTest.py categoryTest.py deleteRecordTest.py fixedIETest.py locationTest.py menuTest.py paymentTest.py readRecordTest.py reportTest.py settingTest.py
+TEST_FILE_NAME := budgetTest.py categoryTest.py deleteRecordTest.py fixedIETest.py locationTest.py menuTest.py accountTest.py readRecordTest.py reportTest.py settingTest.py
 # createRecordTest.py updateRecordTest.py exportTest.py fixedIErecordTest.py recordsTest.py invoiceTest.py
 
 RUN_FILE_NAME := setting.py
