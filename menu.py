@@ -1,14 +1,16 @@
-from enum import IntEnum, auto, Enum
+from enum import IntEnum, auto
 from records import RecordPage
 from report import ReportPage
-#from export import ExportPage
+from export import ExportPage
 from setting import SettingPage
+from invoice import InvoicePage
 
 class MenuOption(IntEnum):
     RECORD = auto()
     REPORT = auto()
     EXPORT = auto()
     SETTING = auto()
+    INVOICE = auto()
     CLOSE = auto()
 
 class MenuText():
@@ -16,6 +18,7 @@ class MenuText():
     REPORT = ('%d: 查看報表' % MenuOption.REPORT)
     EXPORT = ('%d: 匯出資料' % MenuOption.EXPORT)
     SETTING = ('%d: 基本設定' % MenuOption.SETTING)
+    INVOICE = ('%d: 自動對獎' % MenuOption.INVOICE)
     CLOSE = ('%d: 關閉程式' % MenuOption.CLOSE)
     TITLE = '========== 記帳簿［首頁］ =========='
     SUBTITLE = '［首頁］'
@@ -39,6 +42,7 @@ class MenuPage:
         print(MenuText.REPORT)
         print(MenuText.EXPORT)
         print(MenuText.SETTING)
+        print(MenuText.INVOICE)
         print(MenuText.CLOSE)
         print(MenuText.TITLE)
 
@@ -59,8 +63,9 @@ class MenuPage:
         elif option == MenuOption.REPORT:
             next = ReportPage()
         elif option == MenuOption.EXPORT:
-            pass
-            #next = ExportPage()
+            next = ExportPage()
+        elif option == MenuOption.INVOICE:
+            next = InvoicePage()
         else:
             next = SettingPage()
         
