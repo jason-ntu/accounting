@@ -1,8 +1,8 @@
 TEST_FILE_NAME := settingTest.py budgetTest.py paymentTest.py menuTest.py \
  					incomeTest.py categoryTest.py locationTest.py readRecordTest.py \
-					reportTest.py fixedIETest.py deleteRecordTest.py
+					reportTest.py fixedIETest.py deleteRecordTest.py recordsTest.py
 
-RUN_FILE_NAME := fixedIE.py
+RUN_FILE_NAME := menu.py
 CACHE := .coverage htmlcov coverage_html_report
 
 .PHONY: all clean
