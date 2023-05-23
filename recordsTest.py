@@ -10,10 +10,10 @@ from readRecord import ReadRecordPage
 from updateRecord import UpdateRecordPage
 from deleteRecord import DeleteRecordPage
 from category import CategoryPage
-from payment import PaymentPage
+from account import AccountPage
 from location import LocationPage
 
-class TestRecordPage(MockDB):
+class TestAccountPage(MockDB):
 
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch('builtins.input', side_effect=['0', '6', 'T', '1', '2', '3', '4', '5'])
@@ -79,17 +79,17 @@ class TestRecordPage(MockDB):
         self.assertEqual(_hintRetryCategory.call_count, 3)
         self.assertEqual(_input.call_count, 4)
 
-    @patch.object(RecordPage, 'hintRetryPayment')
-    @patch.object(PaymentPage, 'getList', return_value=[["錢包", "儲蓄卡", "信用卡", "Line Pay", "Metamask"]])
-    @patch.object(RecordPage, 'hintGetPayment')
-    @patch.object(RecordPage, 'showPayment')
+    @patch.object(RecordPage, 'hintRetryAccount')
+    @patch.object(AccountPage, 'getList', return_value=[["錢包", "儲蓄卡", "信用卡", "Line Pay", "Metamask"]])
+    @patch.object(RecordPage, 'hintGetAccount')
+    @patch.object(RecordPage, 'showAccount')
     @patch('builtins.input', side_effect=['0', 'T', '6', '1'])
-    def test_askPayment(self, _input, _showPayment, _hintGetPayment, _getList, _hintRetryPayment):
-        RecordPage.askPayment()
+    def test_askAccount(self, _input, _showAccount, _hintGetAccount, _getList, _hintRetryAccount):
+        RecordPage.askAccount()
         self.assertEqual(_getList.call_count, 1)
-        self.assertEqual(_showPayment.call_count, 1)
-        self.assertEqual(_hintGetPayment.call_count, 1)
-        self.assertEqual(_hintRetryPayment.call_count, 3)
+        self.assertEqual(_showAccount.call_count, 1)
+        self.assertEqual(_hintGetAccount.call_count, 1)
+        self.assertEqual(_hintRetryAccount.call_count, 3)
         self.assertEqual(_input.call_count, 4)
     
     @patch.object(RecordPage, 'hintNumberErorMsg')
@@ -158,11 +158,11 @@ class TestRecordPage(MockDB):
     def test_hints(self, _stdout):
         hints = [(RecordPage.hintGetCategory, "請輸入紀錄類型:\n"),
                 (RecordPage.hintRetryCategory, "請輸入 1 到 1 之間的數字:\n"),
-                 (RecordPage.hintRetryPayment, "請輸入 1 到 1 之間的數字:\n"),
+                 (RecordPage.hintRetryAccount, "請輸入 1 到 1 之間的數字:\n"),
                  (RecordPage.hintRetryAmount, "請輸入大於0的數字:\n"),
                  (RecordPage.hintRetryLocation, "請輸入 1 到 1 之間的數字:\n"),
                  (RecordPage.hintNumberErorMsg, "請輸入數字:\n"),
-                 (RecordPage.hintGetPayment, "請輸入收支方式:\n"),
+                 (RecordPage.hintGetAccount, "請輸入帳戶:\n"),
                  (RecordPage.hintGetAmount, "請輸入金額:\n"),
                  (RecordPage.hintGetLocation, "請輸入消費地點:\n"),
                  (RecordPage.hintGetPurchaseDate, "請輸入消費日期(yyyy-mm-dd):\n"),

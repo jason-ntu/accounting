@@ -3,53 +3,42 @@ import sqlalchemy as sql
 from accessor import Accessor, ExecutionStatus as es
 import const
 
-class PaymentOption(IntEnum):
+class AccountOption(IntEnum):
     CREATE = auto()
     READ = auto()
     UPDATE = auto()
     DELETE = auto()
     BACK = auto()
 
-class PaymentUpdateOption(IntEnum):
+class AccountUpdateOption(IntEnum):
     NAME = auto()
     BALANCE = auto()
     CATEGORY = auto()
 
-class PaymentUpdateOption(IntEnum):
-    NAME = auto()
-    BALANCE = auto()
-    CATEGORY = auto()
-
-
-class PaymentCategory(IntEnum):
+class AccountCategory(IntEnum):
     CASH = auto()
     DEBIT_CARD = auto()
     CREDIT_CARD = auto()
     ELECTRONIC = auto()
     OTHER = auto()
 
-class Payment:
-    name: str
-    balance: int
-    category: PaymentCategory
+class AccountPage(Accessor):
 
-class PaymentPage(Accessor):
-
-    table_name = "Payment"
+    table_name = "Account"
 
     @staticmethod
     def show():
-        print("%d: 新增支付方式" % PaymentOption.CREATE)
-        print("%d: 查看支付方式" % PaymentOption.READ)
-        print("%d: 修改支付方式" % PaymentOption.UPDATE)
-        print("%d: 刪除支付方式" % PaymentOption.DELETE)
-        print("%d: 回到上一頁" % PaymentOption.BACK)
+        print("%d: 新增支付方式" % AccountOption.CREATE)
+        print("%d: 查看支付方式" % AccountOption.READ)
+        print("%d: 修改支付方式" % AccountOption.UPDATE)
+        print("%d: 刪除支付方式" % AccountOption.DELETE)
+        print("%d: 回到上一頁" % AccountOption.BACK)
 
     @staticmethod
     def choose():
         while True:
             try:
-                option = PaymentOption(int(input()))
+                option = AccountOption(int(input()))
                 break
             except ValueError:
                 print("請輸入 1 到 5 之間的數字:")
@@ -58,13 +47,13 @@ class PaymentPage(Accessor):
     @classmethod
     def execute(cls, option):
         cls.setUp_connection_and_table()
-        if option is PaymentOption.CREATE:
+        if option is AccountOption.CREATE:
             successful = cls.create()
-        elif option is PaymentOption.READ:
+        elif option is AccountOption.READ:
             cls.read()
             cls.tearDown_connection(es.NONE)
             return
-        elif option is PaymentOption.UPDATE:
+        elif option is AccountOption.UPDATE:
             successful = cls.update()
         else:
             successful = cls.delete()
@@ -88,7 +77,7 @@ class PaymentPage(Accessor):
         cls.hint_create_category()
         while True: 
             try:
-                category = PaymentCategory(int(input()))
+                category = AccountCategory(int(input()))
                 break
             except ValueError:
                 print("請輸入 1 到 5 之間的數字:")
@@ -126,15 +115,15 @@ class PaymentPage(Accessor):
         cls.hint_update_option()
         while True:
             try:
-                option = PaymentUpdateOption(int(input()))
+                option = AccountUpdateOption(int(input()))
                 break
             except ValueError:
                 print("請輸入 1 到 3 之間的數字:")
-        if option is PaymentUpdateOption.NAME:
+        if option is AccountUpdateOption.NAME:
             cls.hint_update_new_name()
             newName = input()
             query = cls.table.update().values(name=newName).where(cls.table.c.name == name)
-        elif option is PaymentUpdateOption.BALANCE:
+        elif option is AccountUpdateOption.BALANCE:
             cls.hint_update_new_balance()
             while True:
                 try:
@@ -147,7 +136,7 @@ class PaymentPage(Accessor):
             cls.hint_update_new_category()
             while True:
                 try:
-                    newCategory = PaymentCategory(int(input()))
+                    newCategory = AccountCategory(int(input()))
                     break
                 except ValueError:
                     print("請輸入 1 到 5 之間的數字:")
@@ -201,7 +190,7 @@ class PaymentPage(Accessor):
         while True:
             cls.show()
             option = cls.choose()
-            if option is PaymentOption.BACK:
+            if option is AccountOption.BACK:
                 return
             cls.execute(option)
 
@@ -211,11 +200,11 @@ class PaymentPage(Accessor):
         query = sql.select(cls.table.c['name', 'category'])
         results = cls.conn.execute(query).fetchall()
         cls.tearDown_connection(es.NONE)
-        paymentList = []
+        accountList = []
         for row in results:
             dictRow = row._asdict()
-            paymentList.append(dictRow)
-        return paymentList
+            accountList.append(dictRow)
+        return accountList
 
 if __name__ == "__main__":  # pragma: no cover
-    PaymentPage.start()
+    AccountPage.start()

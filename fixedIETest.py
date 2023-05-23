@@ -22,19 +22,14 @@ class TestFixedIEPage(MockDB):
     def test_hints(self, _stdout):
         hints_argc1 = [(FixedIEPage.hint_create_name, FixedIEType.INCOME,  "請輸入新的固定收入名稱:\n"),
                        (FixedIEPage.hint_create_name, FixedIEType.EXPENSE, "請輸入新的固定支出名稱:\n")]
-        hints_argc0 = [(FixedIEPage.hint_create_amount, "金額:\n"),
-                       (FixedIEPage.hint_create_category, "記錄類別(1 食物, 2 飲料, 3 其他):\n"),
-                       (FixedIEPage.hint_create_payment, "收支方式(1 現金, 2 借記卡, 3 信用卡, 4 電子支付, 5 其他):\n"),
-                       (FixedIEPage.hint_create_day, "請輸入每月收支日(1-31):\n"),
-                       (FixedIEPage.hint_create_note, "請輸入備註:\n"),
+        hints_argc0 = [(FixedIEPage.hint_create_day, "請輸入每月收支日(1-31):\n"),
                        (FixedIEPage.hint_select_update_name, "請輸入要修改的固定收支的名稱:\n"),
-                       (FixedIEPage.hint_update_option, "請選擇要修改的項目(1 類別, 2 收支方式, 3 金額, 4 地點, 5 時間, 6 備註, 7 返回):\n"),
+                       (FixedIEPage.hint_update_option, "請選擇要修改的項目(1 類別, 2 帳戶, 3 金額, 4 地點, 5 時間, 6 備註, 7 返回):\n"),
                        (FixedIEPage.hint_update_day, "修改每月收支日為(1-31):\n"),
                        (FixedIEPage.hint_delete_name, "請輸入要刪除的固定收支的名稱:\n"),
                        (FixedIEPage.hintDayErorMsg, "請輸入 1 到 31 之間的數字:\n"),
-                       (FixedIEPage.hintGetIE, "類型(1 固定收入, 2 固定支出):\n"),
                        (FixedIEPage.hintGetCategory, "請輸入紀錄類型:\n"),
-                       (FixedIEPage.hintGetPayment, "請輸入收支方式:\n"),
+                       (FixedIEPage.hintGetAccount, "請輸入帳戶:\n"),
                        (FixedIEPage.hintGetAmount, "請輸入金額:\n"),
                        (FixedIEPage.hintGetLocation, "請輸入地點:\n"),
                        (FixedIEPage.hintGetNote, "請輸入備註:\n")
@@ -93,12 +88,12 @@ class TestFixedIEPage(MockDB):
     @patch('builtins.input', side_effect=[ 3, 1, "獎學金", 0 ,2 , 0, 5, "一萬", 10000, 80, 25 , '', 2, "房租", 2, 5, 8000, 5, 'sos'])
     @patch.object(FixedIEPage, 'hint_create_note')
     @patch.object(FixedIEPage, 'hint_create_day')
-    @patch.object(FixedIEPage, 'hint_create_payment')
+    @patch.object(FixedIEPage, 'hint_create_account')
     @patch.object(FixedIEPage, 'hint_create_category')
     @patch.object(FixedIEPage, 'hint_create_amount')
     @patch.object(FixedIEPage, 'hint_create_name')
     @patch.object(FixedIEPage, 'hint_create_type')
-    def test_create(self, _hint_create_type, _hint_create_name, _hint_create_amount, _hint_create_category, _hint_create_payment, _hint_create_day, _hint_create_note, _input, _stdout):
+    def test_create(self, _hint_create_type, _hint_create_name, _hint_create_amount, _hint_create_category, _hint_create_account, _hint_create_day, _hint_create_note, _input, _stdout):
         with self.mock_db_config:
             FixedIEPage.setUp_connection_and_table()
             FixedIEPage.create()
@@ -108,7 +103,7 @@ class TestFixedIEPage(MockDB):
         self.assertEqual(_hint_create_name.call_count, 2)
         self.assertEqual(_hint_create_amount.call_count, 2)
         self.assertEqual(_hint_create_category.call_count, 2)
-        self.assertEqual(_hint_create_payment.call_count, 2)
+        self.assertEqual(_hint_create_account.call_count, 2)
         self.assertEqual(_input.call_count, 19)
         output_lines = _stdout.getvalue().strip().split('\n')
         self.assertEqual(output_lines[0], "請輸入 1 到 2 之間的數字:")
@@ -124,8 +119,8 @@ class TestFixedIEPage(MockDB):
             FixedIEPage.read()
             FixedIEPage.tearDown_connection(es.NONE)
         output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(output_lines[0], "INCOME 名稱\"獎學金\" 類別OTHER 收支方式OTHER 金額10000.0 每月15號 備註:")
-        self.assertEqual(output_lines[1], "EXPENSE 名稱\"房租\" 類別OTHER 收支方式OTHER 金額6000.0 每月20號 備註:sos")
+        self.assertEqual(output_lines[0], "INCOME 名稱\"獎學金\" 類別OTHER 帳戶OTHER 金額10000.0 每月15號 備註:")
+        self.assertEqual(output_lines[1], "EXPENSE 名稱\"房租\" 類別OTHER 帳戶OTHER 金額6000.0 每月20號 備註:sos")
 
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch('builtins.input', side_effect=["獎學金", 0, 3, "房租", 4, "unknown", "房租", 6])
@@ -162,7 +157,7 @@ class TestFixedIEPage(MockDB):
     def test_update_catrgory(self):
         pass
 
-    def test_update_payment(self):
+    def test_update_account(self):
         pass
 
 

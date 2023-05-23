@@ -1,7 +1,7 @@
 import io
 from unittest import TestCase
 from unittest.mock import patch
-from createRecord import CreateRecordPage, CreateRecordOption, PaymentOption
+from createRecord import CreateRecordPage, CreateRecordOption
 from mock_db import MockDB
 from accessor import ExecutionStatus as es
 import const
@@ -33,16 +33,16 @@ class TestCreateRecord(MockDB):
     
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch('builtins.input', side_effect=['0', 'T', '1', '2', '3', '4', '5'])
-    def test_choosePayment(self, _input,  _stdout):
-        self.assertEqual(CreateRecordPage.choosePayment(), "CASH")
+    def test_chooseAccount(self, _input,  _stdout):
+        self.assertEqual(CreateRecordPage.chooseAccount(), "CASH")
         self.assertEqual(_input.call_count, 3)
-        self.assertEqual(CreateRecordPage.choosePayment(), "DEBIT_CARD")
+        self.assertEqual(CreateRecordPage.chooseAccount(), "DEBIT_CARD")
         self.assertEqual(_input.call_count, 4)
-        self.assertEqual(CreateRecordPage.choosePayment(), "CREDIT_CARD")
+        self.assertEqual(CreateRecordPage.chooseAccount(), "CREDIT_CARD")
         self.assertEqual(_input.call_count, 5)
-        self.assertEqual(CreateRecordPage.choosePayment(), "ELECTRONIC")
+        self.assertEqual(CreateRecordPage.chooseAccount(), "ELECTRONIC")
         self.assertEqual(_input.call_count, 6)
-        self.assertEqual(CreateRecordPage.choosePayment(), "OTHER")
+        self.assertEqual(CreateRecordPage.chooseAccount(), "OTHER")
         self.assertEqual(_input.call_count, 7)
         output_lines = _stdout.getvalue().strip().split('\n')
         self.assertEqual(output_lines[0], "支付方式 1 現金 2 借記卡 3 信用卡 4 電子支付 5 其他: ")
@@ -61,16 +61,16 @@ class TestCreateRecord(MockDB):
     # 除了read之外如何確定有真的insert？
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch('builtins.input', side_effect=[8, 1, 100, "全家", '2023-05-21'])
-    @patch.object(CreateRecordPage, "hintPaymentMsg")
+    @patch.object(CreateRecordPage, "hintAccountMsg")
     @patch.object(CreateRecordPage, "hintGetAmount")
     @patch.object(CreateRecordPage, "hintGetLocation")
     @patch.object(CreateRecordPage, "hintGetTime")
-    def test_createRecord(self, _hintGetTime, _hintGetLocation, _hintGetAmount, _hintPaymentMsg, _input, _stdout):
+    def test_createRecord(self, _hintGetTime, _hintGetLocation, _hintGetAmount, _hintAccountMsg, _input, _stdout):
         with self.mock_db_config:
             CreateRecordPage.setUp_connection_and_table()
             CreateRecordPage.createRecord()
             CreateRecordPage.tearDown_connection(es.NONE)
-        self.assertEqual(_hintPaymentMsg.call_count, 2)
+        self.assertEqual(_hintAccountMsg.call_count, 2)
         self.assertEqual(_hintGetAmount.call_count, 1)
         self.assertEqual(_hintGetLocation.call_count, 1)
         self.assertEqual(_hintGetTime.call_count, 1)

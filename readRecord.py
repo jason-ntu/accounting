@@ -63,7 +63,7 @@ class ReadRecordPage(RecordPage):
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
-                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['location'], 
+                  dictRow['amount']," 帳戶:", dictRow['account']," 地點:", dictRow['location'], 
                   " 消費時間:", dictRow['purchaseDate'], " 扣款時間:", dictRow['debitDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
@@ -80,7 +80,7 @@ class ReadRecordPage(RecordPage):
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
-                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['location'], 
+                  dictRow['amount']," 帳戶:", dictRow['account']," 地點:", dictRow['location'], 
                   " 消費時間:", dictRow['purchaseDate'], " 扣款時間:", dictRow['debitDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
@@ -98,7 +98,7 @@ class ReadRecordPage(RecordPage):
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
-                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['location'], 
+                  dictRow['amount']," 帳戶:", dictRow['account']," 地點:", dictRow['location'], 
                   " 消費時間:", dictRow['purchaseDate'], " 扣款時間:", dictRow['debitDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 
@@ -135,7 +135,7 @@ class ReadRecordPage(RecordPage):
         for row in results:
             dictRow = row._asdict() 
             print(dictRow['id'], dictRow['IE']," 類別:", dictRow['category']," 金額:", 
-                  dictRow['amount']," 收支方式:", dictRow['payment']," 地點:", dictRow['location'], 
+                  dictRow['amount']," 帳戶:", dictRow['account']," 地點:", dictRow['location'], 
                   " 消費時間:", dictRow['purchaseDate'], " 扣款時間:", dictRow['debitDate'],
                   " 發票號碼:", dictRow['invoice'], " 備註:", dictRow['note'])
 

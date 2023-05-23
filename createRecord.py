@@ -3,7 +3,7 @@ from accessor import ExecutionStatus as es
 import sqlalchemy as sql
 import sys
 from fixedIE import FixedIEType
-from payment import PaymentCategory
+from account import AccountCategory
 from records import RecordPage
 
 
@@ -41,19 +41,19 @@ class CreateRecordPage(RecordPage):
     @classmethod
     def createRecord(cls):
         category = cls.askCategory()
-        payment = cls.askPayment()
+        account = cls.askAccount()
         amount = cls.askAmount()
         location = cls.askLocation()
         purchaseDate = cls.askPurchaseDate()
         debitDate = purchaseDate
-        if payment['category'] == PaymentCategory.CREDIT_CARD.name:
+        if account['category'] == AccountCategory.CREDIT_CARD.name:
             debitDate = cls.askDebitDate()
         invoice = cls.askInvoice()
         note = cls.askNote()
 
         cls.setUp_connection_and_table()
         query = cls.table.insert().values(IE=cls.IE,category=category,
-                                          amount=amount, payment=payment['name'],
+                                          amount=amount, account=account['name'],
                                           location=location, purchaseDate=purchaseDate,
                                           debitDate=debitDate, invoice=invoice, note=note)
         resultProxy = cls.conn.execute(query)
@@ -63,38 +63,6 @@ class CreateRecordPage(RecordPage):
             cls.tearDown_connection(es.ROLLBACK)
             return
         cls.tearDown_connection(es.COMMIT)
-        
-    # @staticmethod
-    # def hintGetCategory():
-    #     print("請輸入紀錄類型:")
-
-    # @staticmethod
-    # def hintGetPayment():
-    #     print("請輸入收支方式:")
-    
-    # @staticmethod
-    # def hintGetAmount():
-    #     print("請輸入金額:")
-
-    # @staticmethod
-    # def hintGetLocation():
-    #     print("請輸入消費地點:")
-
-    # @staticmethod
-    # def hintGetPurchaseDate():
-    #     print("請輸入消費日期(yyyy-mm-dd):")
-
-    # @staticmethod
-    # def hintGetDebitDate():
-    #     print("請輸入扣款日期(yyyy-mm-dd):")
-
-    # @staticmethod
-    # def hintGetNote():
-    #     print("請輸入備註:")
-
-    # @staticmethod
-    # def hintGetInvoice():
-    #     print("請輸入發票末八碼數字:")
 
     @classmethod
     def start(cls):

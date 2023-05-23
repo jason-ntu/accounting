@@ -1,8 +1,8 @@
-TEST_FILE_NAME := settingTest.py budgetTest.py paymentTest.py menuTest.py \
- 					incomeTest.py categoryTest.py locationTest.py readRecordTest.py \
-					reportTest.py fixedIETest.py deleteRecordTest.py recordsTest.py
+TEST_FILE_NAME := budgetTest.py categoryTest.py deleteRecordTest.py fixedIETest.py locationTest.py \
+				 accountTest.py readRecordTest.py reportTest.py settingTest.py recordsTest.py
+# createRecordTest.py updateRecordTest.py exportTest.py fixedIErecordTest.py invoiceTest.py menuTest.py 
 
-RUN_FILE_NAME := menu.py
+RUN_FILE_NAME := setting.py
 CACHE := .coverage htmlcov coverage_html_report
 
 .PHONY: all clean

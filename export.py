@@ -86,10 +86,10 @@ class ExportPage(Accessor):
         workbook = Workbook()
         worksheet = workbook.active
 
-        worksheet.append(["category", "payment", "amount", "location", "time"])
+        worksheet.append(["category", "account", "amount", "location", "time"])
 
         for row in results:
-            worksheet.append([row.category, row.payment, row.amount, row.location, row.time])
+            worksheet.append([row.category, row.account, row.amount, row.location, row.time])
 
         workbook.save(filename + ".xlsx")
 
