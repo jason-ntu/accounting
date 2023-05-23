@@ -88,7 +88,7 @@ class fixedIERecord(Accessor):
         now_time = datetime.today()
 
         results = cls.readFixedIE()
-        #print("自動記錄固定收支...")
+        print("自動記錄固定收支...")
 
         month_difference = now_time.month - last_end_time.month
 
