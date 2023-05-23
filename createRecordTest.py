@@ -10,7 +10,6 @@ from records import RecordOption, RecordPage
 
 class TestCreateRecord(MockDB):
 
-    
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_show(self, _stdout):
         CreateRecordPage.show()
