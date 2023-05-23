@@ -7,11 +7,9 @@ from report import ReportPage
 from export import ExportPage
 from invoice import InvoicePage
 from setting import SettingPage
-from fixedIE import FixedIEPage
-from mock_db import MockDB
-from accessor import ExecutionStatus as es
 
-class TestMenuPage(MockDB):
+
+class TestMenuPage(TestCase):
 
     def setUp(self):
         self.menuPage = MenuPage()
@@ -20,11 +18,6 @@ class TestMenuPage(MockDB):
     @patch.object(MenuPage, 'choose', side_effect = [MenuOption.RECORD, MenuOption.REPORT, MenuOption.EXPORT, MenuOption.INVOICE, MenuOption.SETTING, MenuOption.CLOSE])
     @patch.object(MenuPage, 'show')
     def test_start(self, m_show, m_choose, m_execute):
-        with self.mock_db_config:
-            FixedIEPage.setUp_connection_and_table()
-            FixedIEPage.tearDown_connection(es.NONE)
-            RecordPage.setUp_connection_and_table()
-            RecordPage.tearDown_connection(es.NONE)
         self.menuPage.start()
         self.assertEqual(m_show.call_count, 6)
         self.assertEqual(m_choose.call_count, 6)
