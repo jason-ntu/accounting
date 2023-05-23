@@ -6,12 +6,6 @@ from location import LocationPage
 from datetime import datetime
 import re
 
-# 消費紀錄 Records
-# > 新增消費紀錄
-# > 檢視消費紀錄 
-# > 修改消費紀錄
-# > 刪除消費紀錄
-
 class RecordOption(IntEnum):
     CREATE = auto()
     READ = auto()
@@ -65,25 +59,9 @@ class RecordPage(Accessor):
         elif option is RecordOption.UPDATE:
             from updateRecord import UpdateRecordPage
             UpdateRecordPage.start()
-        elif option is RecordOption.DELETE:
+        else: 
             from deleteRecord import DeleteRecordPage
             DeleteRecordPage.start()
-        # else:
-        #     raise ValueError(cls.errorMsg)
-
-    @classmethod
-    def askIE(cls):
-        cls.hintGetIE()
-        while True:
-            try:
-                IE = int(input())
-                if IE <= len(cls.IEList):
-                    break
-                else: 
-                    raise ValueError()
-            except ValueError:
-                cls.hintGetIE()
-        return IE
 
     @classmethod
     def askCategory(cls):
@@ -102,7 +80,7 @@ class RecordPage(Accessor):
         return category
 
     @classmethod
-    def showCategory(cls):
+    def showCategory(cls): # pragma: no cover
         for i in range(len(cls.categoryList)):
             print("%d %s" % (i+1, cls.categoryList[i]))
     
@@ -127,7 +105,7 @@ class RecordPage(Accessor):
         return account
 
     @classmethod
-    def showAccount(cls):
+    def showAccount(cls): # pragma: no cover
         for i in range(len(cls.accountList)):
             print("%d %s(%s)" % (i+1, cls.accountList[i]['name'], cls.accountList[i]['category']))
 
@@ -170,49 +148,42 @@ class RecordPage(Accessor):
         return location
 
     @classmethod
-    def showLocation(cls):
+    def showLocation(cls): # pragma: no cover
         for i in range(len(cls.locationList)):
             print("%d %s" % (i+1, cls.locationList[i]))
-
-    @classmethod
-    def hintRetryLocation(cls):
-        print("請輸入 1 到 %d 之間的數字:" % len(cls.locationList))
     
-    @staticmethod
-    def hintNumberErorMsg():
-        print("請輸入數字")
-
     @classmethod
     def askPurchaseDate(cls):
         cls.hintGetPurchaseDate()
         while True:
             try:
-                date = cls.askDate()
-                break
+                Date = input()
+                if Date == "":
+                    Date = datetime.today().date()
+                    break
+                else:
+                    datetime.strptime(Date, '%Y-%m-%d').date()
+                    break
             except ValueError:
                 cls.hintGetPurchaseDate()
-        return date
-    
+        return Date
+
     @classmethod
     def askDebitDate(cls):
         cls.hintGetDebitDate()
         while True:
             try:
-                date = cls.askDate()
-                break
+                Date = input()
+                if Date == "":
+                    Date = datetime.today().date()
+                    break
+                else:
+                    datetime.strptime(Date, '%Y-%m-%d').date()
+                    break
             except ValueError:
                 cls.hintGetDebitDate()
-        return date
+        return Date
     
-    @classmethod
-    def askDate(cls):
-        date = input()
-        if (date == ""):
-            date = datetime.today().date()
-        else:
-            datetime.strptime(date, '%Y-%m-%d').date()
-        return date
-
     @classmethod
     def askInvoice(cls):
         cls.hintGetInvoice()
@@ -235,6 +206,46 @@ class RecordPage(Accessor):
         cls.hintGetNote()
         note = input()
         return note
+    
+    @classmethod
+    def hintRetryLocation(cls):
+        print("請輸入 1 到 %d 之間的數字:" % len(cls.locationList))
+    
+    @staticmethod
+    def hintNumberErorMsg():
+        print("請輸入數字:")
+    
+    @staticmethod
+    def hintGetCategory():
+        print("請輸入紀錄類型:")
+    
+    @staticmethod
+    def hintGetAmount():
+        print("請輸入金額:")
+
+    @staticmethod
+    def hintGetLocation():
+        print("請輸入消費地點:")
+
+    @staticmethod
+    def hintGetPurchaseDate():
+        print("請輸入消費日期(yyyy-mm-dd):")
+
+    @staticmethod
+    def hintGetDebitDate():
+        print("請輸入扣款日期(yyyy-mm-dd):")
+
+    @staticmethod
+    def hintGetNote():
+        print("請輸入備註:")
+
+    @staticmethod
+    def hintGetInvoice():
+        print("請輸入發票末八碼數字:")
+    
+    @staticmethod
+    def hintGetAccount():
+        print("請輸入帳戶:")
 
 if __name__ == '__main__': # pragma: no cover
     RecordPage.start()

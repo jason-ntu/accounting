@@ -63,38 +63,6 @@ class CreateRecordPage(RecordPage):
             cls.tearDown_connection(es.ROLLBACK)
             return
         cls.tearDown_connection(es.COMMIT)
-        
-    @staticmethod
-    def hintGetCategory():
-        print("請輸入紀錄類型:")
-
-    @staticmethod
-    def hintGetAccount():
-        print("請輸入帳戶:")
-    
-    @staticmethod
-    def hintGetAmount():
-        print("請輸入金額:")
-
-    @staticmethod
-    def hintGetLocation():
-        print("請輸入消費地點:")
-
-    @staticmethod
-    def hintGetPurchaseDate():
-        print("請輸入消費日期(yyyy-mm-dd):")
-
-    @staticmethod
-    def hintGetDebitDate():
-        print("請輸入扣款日期(yyyy-mm-dd):")
-
-    @staticmethod
-    def hintGetNote():
-        print("請輸入備註:")
-
-    @staticmethod
-    def hintGetInvoice():
-        print("請輸入發票末八碼數字:")
 
     @classmethod
     def start(cls):

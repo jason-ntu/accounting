@@ -99,19 +99,23 @@ class TestReadRecord(MockDB):
 
 
     @patch("sys.stdout", new_callable=io.StringIO)
-    @patch("builtins.input", side_effect=["2023-05-01", "2023-05-18"])
+    @patch.object(ReadRecordPage, "hintGetEndDate")
+    @patch.object(ReadRecordPage, "hintGetStartDate")
+    @patch("builtins.input", side_effect=["2023-05-01", "2023-05-18", "2023-0123", "", "22A8", ""])
     @freeze_time("2023-05-18")
-    def test_viewOther(self, _input, _stdout):
+    def test_viewOther(self, _input, _hintGetStartDate, _hintGetEndDate, _stdout):
         with self.mock_db_config:
             ReadRecordPage.setUp_connection_and_table()
             ReadRecordPage.viewOther()
+            ReadRecordPage.viewOther()
             ReadRecordPage.tearDown_connection(es.NONE)
+        self.assertEqual(_hintGetStartDate.call_count, 3)
+        self.assertEqual(_hintGetEndDate.call_count, 3)
         output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(len(output_lines), 4)
-        self.assertEqual(output_lines[0], "請輸入 開始 時間(yyyy-mm-dd):")
-        self.assertEqual(output_lines[1], "請輸入 結束 時間(yyyy-mm-dd):")
-        self.assertEqual(output_lines[2], "1 EXPENSE  類別: 食物  金額: 50.0  帳戶: 現金  地點: 便利商店  消費時間: 2023-05-01  扣款時間: 2023-05-01  發票號碼: 12345678  備註: milk")
-        self.assertEqual(output_lines[3], "2 EXPENSE  類別: 住宿  金額: 2500.0  帳戶: Line Pay  地點: 其它  消費時間: 2023-05-18  扣款時間: 2023-05-18  發票號碼:   備註: taipei")
+        self.assertEqual(len(output_lines), 3)
+        self.assertEqual(output_lines[0], "1 EXPENSE  類別: 食物  金額: 50.0  帳戶: 現金  地點: 便利商店  消費時間: 2023-05-01  扣款時間: 2023-05-01  發票號碼: 12345678  備註: milk")
+        self.assertEqual(output_lines[1], "2 EXPENSE  類別: 住宿  金額: 2500.0  帳戶: Line Pay  地點: 其它  消費時間: 2023-05-18  扣款時間: 2023-05-18  發票號碼:   備註: taipei")
+        self.assertEqual(output_lines[2], "2 EXPENSE  類別: 住宿  金額: 2500.0  帳戶: Line Pay  地點: 其它  消費時間: 2023-05-18  扣款時間: 2023-05-18  發票號碼:   備註: taipei")
 
     @patch.object(ReadRecordPage, "execute")
     @patch.object(ReadRecordPage, "choose",
