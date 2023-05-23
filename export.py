@@ -15,7 +15,6 @@ class ExportPage(Accessor):
 
     @staticmethod
     def show():
-        print("[匯出]")
         print("%d: 選擇欲匯出的區間" % ExportOption.CHOOSE)
         print("%d: 回到上一頁" % ExportOption.BACK)
 
@@ -80,16 +79,16 @@ class ExportPage(Accessor):
 
     @classmethod
     def exportFile(cls, startDate, endDate, filename):
-        query = sql.select(cls.table).where(and_(cls.table.c.time >= startDate, cls.table.c.time <= endDate))
+        query = sql.select(cls.table).where(and_(cls.table.c.purchaseDate >= startDate, cls.table.c.debitDate <= endDate))
         results = cls.conn.execute(query).fetchall()
 
         workbook = Workbook()
         worksheet = workbook.active
 
-        worksheet.append(["category", "account", "amount", "location", "time"])
+        worksheet.append(["IE", "category", "account", "amount", "location", "purchaseDate", "debitDate", "invoice", "note"])
 
         for row in results:
-            worksheet.append([row.category, row.account, row.amount, row.location, row.time])
+            worksheet.append([row.IE, row.category, row.account, row.amount, row.location, row.purchaseDate, row.debitDate, row.invoice, row.note])
 
         workbook.save(filename + ".xlsx")
 

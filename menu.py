@@ -4,6 +4,7 @@ from report import ReportPage
 from export import ExportPage
 from setting import SettingPage
 from invoice import InvoicePage
+from fixedIErecord import fixedIERecord
 
 class MenuOption(IntEnum):
     RECORD = auto()
@@ -28,6 +29,7 @@ class MenuText():
 class MenuPage:
     #進入點
     def start(self):
+        fixedIERecord.start()
         while True:
             self.show()
             option = self.choose()
@@ -55,7 +57,7 @@ class MenuPage:
                 except ValueError:
                     print(MenuText.HINT)
             return option
-    
+
     #前往下一頁
     def execute(self, option):
         if option == MenuOption.RECORD:
@@ -68,7 +70,7 @@ class MenuPage:
             next = InvoicePage()
         else:
             next = SettingPage()
-        
+
         next.start()
 
 
