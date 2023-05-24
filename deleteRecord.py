@@ -24,6 +24,14 @@ class DeleteRecordPage(RecordPage):
     def deleteByID(cls):
         ID = cls.checkIDInteger()
         cls.setUp_connection_and_table()
+
+        query = sql.select(cls.table).where(cls.table.c.id == ID)
+        results = cls.conn.execute(query).fetchall()
+        dictRow = results[0]._asdict() 
+        originIE = dictRow['IE']
+        originAccount = dictRow['account']
+        originAmount = dictRow['amount'] 
+
         query = sql.delete(cls.table).where(cls.table.c.id == ID)
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
@@ -32,6 +40,7 @@ class DeleteRecordPage(RecordPage):
             cls.tearDown_connection(es.ROLLBACK)
             return
         cls.tearDown_connection(es.COMMIT)
+        cls.updateAccountAmount(originIE, originAccount, -originAmount)
 
     @classmethod
     def start(cls):

@@ -63,6 +63,7 @@ class CreateRecordPage(RecordPage):
             cls.tearDown_connection(es.ROLLBACK)
             return
         cls.tearDown_connection(es.COMMIT)
+        cls.updateAccountAmount(cls.IE, account['name'], amount)
 
     @classmethod
     def start(cls):
