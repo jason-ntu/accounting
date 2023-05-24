@@ -55,7 +55,9 @@ def initialize(config):
                         sql.Column(
                             'id', sql.Integer(), nullable=False, primary_key=True),
                         sql.Column(
-                            'name', sql.String(50), nullable=False)
+                            'name', sql.String(50), nullable=False),
+                        sql.Column(
+                            'IE', sql.Enum(FixedIEType), nullable=False)
                         )
 
     location = sql.Table('Location', metadata,
@@ -131,12 +133,18 @@ def initialize(config):
     conn.execute(account.insert().values(default_accounts))
 
     default_categories = [
-        {'name': "食物"},
-        {'name': "飲料"},
-        {'name': "衣服"},
-        {'name': "住宿"},
-        {'name': "交通"},
-        {'name': "其它"}
+        {'name': "食物", 'IE': FixedIEType.INCOME.name},
+        {'name': "飲料", 'IE': FixedIEType.INCOME.name},
+        {'name': "衣服", 'IE': FixedIEType.INCOME.name},
+        {'name': "住宿", 'IE': FixedIEType.INCOME.name},
+        {'name': "交通", 'IE': FixedIEType.INCOME.name},
+        {'name': "其它", 'IE': FixedIEType.INCOME.name},
+        {'name': "薪資", 'IE': FixedIEType.EXPENSE.name},
+        {'name': "獎金", 'IE': FixedIEType.EXPENSE.name},
+        {'name': "投資", 'IE': FixedIEType.EXPENSE.name},
+        {'name': "保險", 'IE': FixedIEType.EXPENSE.name},
+        {'name': "利息", 'IE': FixedIEType.EXPENSE.name},
+        {'name': "其它", 'IE': FixedIEType.EXPENSE.name}
     ]
     conn.execute(category.insert().values(default_categories))
 

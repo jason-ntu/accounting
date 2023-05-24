@@ -65,7 +65,7 @@ class RecordPage(Accessor):
 
     @classmethod
     def askCategory(cls):
-        cls.categoryList = CategoryPage.getList()
+        cls.categoryList = CategoryPage.getList(cls.IE)
         cls.showCategory()
         cls.hintGetCategory()
         while True:
@@ -95,8 +95,8 @@ class RecordPage(Accessor):
 
     @classmethod
     def showCategory(cls): # pragma: no cover
-        for i in range(len(cls.categoryList)):
-            print("%d %s" % (i+1, cls.categoryList[i]))
+        for i, category in enumerate(cls.categoryList, 1):
+            print(f"{i} {category}")
     
     @classmethod
     def hintRetryCategory(cls):
@@ -120,8 +120,8 @@ class RecordPage(Accessor):
 
     @classmethod
     def showAccount(cls): # pragma: no cover
-        for i in range(len(cls.accountList)):
-            print("%d %s(%s)" % (i+1, cls.accountList[i]['name'], cls.accountList[i]['category']))
+        for i, account in enumerate(cls.accountList, 1):
+            print(f"{i} {account['name']}({account['category']})")
 
     @classmethod
     def hintRetryAccount(cls):
@@ -163,8 +163,8 @@ class RecordPage(Accessor):
 
     @classmethod
     def showLocation(cls): # pragma: no cover
-        for i in range(len(cls.locationList)):
-            print("%d %s" % (i+1, cls.locationList[i]))
+        for i, location in enumerate(cls.locationList, 1):
+            print(f"{i} {location}")
     
     @classmethod
     def askPurchaseDate(cls):
