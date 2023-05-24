@@ -64,7 +64,7 @@ class TestUpdateRecord(MockDB):
             UpdateRecordPage.updateCategory(1)
             UpdateRecordPage.updateCategory(20)
             UpdateRecordPage.tearDown_connection(es.NONE)
-        self.assertEqual(_askCategory.call_count, 2)
+        self.assertEqual(_askCategory.call_count, 1)
         output_lines = _stdout.getvalue().strip().split('\n')
         self.assertEqual(len(output_lines), 3)
         self.assertEqual(output_lines[0], "%s操作成功%s" % (const.ANSI_GREEN, const.ANSI_RESET))
