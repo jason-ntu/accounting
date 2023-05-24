@@ -3,6 +3,7 @@ import sqlalchemy as sql
 from accessor import ExecutionStatus as es
 from sqlalchemy import and_
 from readRecord import ReadRecordPage, ReadRecordOption
+from fixedIE import FixedIEType
 from records import RecordPage
 
 class ItemOption(IntEnum):
@@ -83,11 +84,17 @@ class UpdateRecordPage(RecordPage):
     
     @classmethod
     def updateCategory(cls, ID):
-        newCategory = cls.askCategory()
         cls.setUp_connection_and_table()
-        query = sql.update(cls.table).where(cls.table.c.id == ID).values(category=newCategory)
-        resultProxy = cls.conn.execute(query)
-        successful = (resultProxy.rowcount == 1)
+        query = sql.select(cls.table.c['IE']).where(cls.table.c.id == ID)
+        results = cls.conn.execute(query).first()
+        if results is None:
+            successful = False
+        else:
+            cls.IE = results[0]
+            newCategory = cls.askCategory()
+            query = sql.update(cls.table).where(cls.table.c.id == ID).values(category=newCategory)
+            resultProxy = cls.conn.execute(query)
+            successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
             cls.tearDown_connection(es.ROLLBACK)

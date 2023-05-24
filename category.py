@@ -137,9 +137,9 @@ class CategoryPage(Accessor):
             cls.execute(option)
     
     @classmethod
-    def getList(cls):
+    def getList(cls, IE):
         cls.setUp_connection_and_table()
-        query = sql.select(cls.table.c.name)
+        query = sql.select(cls.table.c['name']).where(cls.table.c.IE == IE)
         results = cls.conn.execute(query).fetchall()
         cls.tearDown_connection(es.NONE)
         categoryList = []
