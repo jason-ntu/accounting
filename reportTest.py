@@ -14,9 +14,8 @@ class TestReport(MockDB):
     def test_show(self, _stdout):
         ReportPage.show()
         output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(output_lines[0], "[報表]")
-        self.assertEqual(output_lines[1], "%d: 選擇欲查詢的區間" % ReportOption.CHOOSE)
-        self.assertEqual(output_lines[2], "%d: 回到上一頁" % ReportOption.BACK)
+        self.assertEqual(output_lines[0], "%d: 選擇欲查詢的區間" % ReportOption.CHOOSE)
+        self.assertEqual(output_lines[1], "%d: 回到上一頁" % ReportOption.BACK)
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_hints(self, _stdout):
@@ -40,15 +39,25 @@ class TestReport(MockDB):
         self.assertEqual(_input.call_count, 5)
 
     @patch("sys.stdout", new_callable=io.StringIO)
-    @patch.object(ReportPage, 'chooseInterval', return_value=True)
+    @patch.object(ReportPage, 'chooseInterval')
     def test_execute(self, _chooseInterval, _stdout):
         with self.mock_db_config:
+            _chooseInterval.return_value = False
             ReportPage.execute(ReportOption.CHOOSE)
             self.assertEqual(_chooseInterval.call_count, 1)
-            ReportPage.execute(ReportOption.BACK)
+
+            _chooseInterval.return_value = True
+            ReportPage.execute(ReportOption.CHOOSE)
             self.assertEqual(_chooseInterval.call_count, 2)
+
+            ReportPage.execute(ReportOption.BACK)
+            self.assertEqual(_chooseInterval.call_count, 3)
         output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(output_lines[0], "%s操作成功%s" %
+        self.assertEqual(output_lines[0], "%s操作失敗%s" %
+                         (const.ANSI_RED, const.ANSI_RESET))
+        self.assertEqual(output_lines[1], "%s操作成功%s" %
+                         (const.ANSI_GREEN, const.ANSI_RESET))
+        self.assertEqual(output_lines[2], "%s操作成功%s" %
                          (const.ANSI_GREEN, const.ANSI_RESET))
 
     @patch('sys.stdout', new_callable=io.StringIO)
@@ -86,11 +95,16 @@ class TestReport(MockDB):
         self.assertEqual(output_lines[3], "Error: 時間區間至少一天")
 
     @patch('sys.stdout', new_callable=io.StringIO)
-    @patch('builtins.input', side_effect=[])
+    @patch('builtins.input', side_effect=[0,1,2])
     @patch.object(ReportPage, 'hint_choose_report_IE')
-    @patch.object(ReportPage, 'Report')
-    def test_chooseReportIE(self, _Report, _hint_choose_report_IE, _input, _stdout):
-        pass
+    @patch.object(ReportPage, 'chooseReportType')
+    def test_chooseReportIE(self, _chooseReportType, _hint_choose_report_IE, _input, _stdout):
+        result = ReportPage.chooseReportIE('2023-01-01', '2023-04-30')
+        self.assertEqual(result, False)
+        result = ReportPage.chooseReportIE('2023-01-01', '2023-04-30')
+        result = ReportPage.chooseReportIE('2023-01-01', '2023-04-30')
+        self.assertEqual(_chooseReportType.call_count, 2)
+        self.assertEqual(_hint_choose_report_IE.call_count, 3)
 
     @patch('sys.stdout', new_callable=io.StringIO)
     @patch('builtins.input', side_effect=[0, 1, 2])
@@ -103,25 +117,30 @@ class TestReport(MockDB):
         result = ReportPage.chooseReportType('2023-01-01', '2023-04-30', FixedIEType.EXPENSE)
         self.assertEqual(_Report.call_count, 2)
         self.assertEqual(_hint_choose_report_type.call_count, 3)
-    """
+
     @patch('sys.stdout', new_callable=io.StringIO)
     def test_Report(self, _stdout):
         with self.mock_db_config:
             ReportPage.setUp_connection_and_table()
-            result1 = ReportPage.Report('2023-01-01', '2023-04-30', ReportByOption.category)
-            result2 = ReportPage.Report('2023-01-01', '2023-04-30', ReportByOption.account)
+            result1 = ReportPage.Report('2023-01-01', '2023-03-30', FixedIEType.INCOME, ReportByOption.category)
+            result1 = ReportPage.Report('2023-01-01', '2023-03-30', FixedIEType.EXPENSE, ReportByOption.category)
+            result2 = ReportPage.Report('2023-05-01', '2023-05-19', FixedIEType.EXPENSE, ReportByOption.account)
+            result2 = ReportPage.Report('2023-05-01', '2023-05-23', FixedIEType.INCOME, ReportByOption.account)
             ReportPage.tearDown_connection(es.NONE)
         self.assertEqual(result1, True)
         self.assertEqual(result2, True)
         output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(output_lines[0], "\"BEVERAGE\" 金額總和:171.0 百分比:30%")
-        self.assertEqual(output_lines[1], "\"FOOD\" 金額總和:408.0 百分比:70%")
-        self.assertEqual(output_lines[2], "金額總和:579.0 百分比:100%")
-        self.assertEqual(output_lines[3], "\"現金\" 金額總和:188.0 百分比:32%")
-        self.assertEqual(output_lines[4], "\"信用卡\" 金額總和:321.0 百分比:55%")
-        self.assertEqual(output_lines[5], "\"電子支付\" 金額總和:70.0 百分比:13%")
-        self.assertEqual(output_lines[6], "金額總和:579.0 百分比:100%")
-    """
+        self.assertEqual(output_lines[0], "此區間無報表可以顯示")
+        self.assertEqual(output_lines[1], "\"飲料\" 總金額:101.0 百分比:17%")
+        self.assertEqual(output_lines[2], "\"食物\" 總金額:157.0 百分比:27%")
+        self.assertEqual(output_lines[3], "\"衣服\" 總金額:321.0 百分比:56%")
+        self.assertEqual(output_lines[4], "支出總金額:579.0 百分比:100%")
+        self.assertEqual(output_lines[5], "\"現金\" 總金額:50.0 百分比:2%")
+        self.assertEqual(output_lines[6], "\"Line Pay\" 總金額:2600.0 百分比:98%")
+        self.assertEqual(output_lines[7], "支出總金額:2650.0 百分比:100%")
+        self.assertEqual(output_lines[8], "\"中華郵政\" 總金額:10000.0 百分比:100%")
+        self.assertEqual(output_lines[9], "收入總金額:10000.0 百分比:100%")
+
     @patch.object(ReportPage, 'execute')
     @patch.object(ReportPage, 'choose', side_effect=[ReportOption.CHOOSE, ReportOption.BACK])
     @patch.object(ReportPage, 'show')

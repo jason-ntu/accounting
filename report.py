@@ -19,7 +19,6 @@ class ReportPage(Accessor):
 
     @staticmethod
     def show():
-        print("[報表]")
         print("%d: 選擇欲查詢的區間" % ReportOption.CHOOSE)
         print("%d: 回到上一頁" % ReportOption.BACK)
 
@@ -143,7 +142,7 @@ class ReportPage(Accessor):
 
             if IE == FixedIEType.INCOME:
                 print(f"收入總金額:{total_amount} 百分比:{sum(percentages)}%")
-            elif IE == FixedIEType.EXPENSE:
+            else:
                 print(f"支出總金額:{total_amount} 百分比:{sum(percentages)}%")
         else:
             print("此區間無報表可以顯示")

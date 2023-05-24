@@ -29,7 +29,6 @@ class FixedIEPage(RecordPage):
 
     @staticmethod
     def show():
-        print("[固定收支設定]")
         print("%d: 新增固定收支" % FixedIEOption.CREATE)
         print("%d: 查看固定收支" % FixedIEOption.READ)
         print("%d: 修改固定收支" % FixedIEOption.UPDATE)
@@ -92,7 +91,7 @@ class FixedIEPage(RecordPage):
                                           day=day, note=note, flag=False)
         rowsAffected = cls.conn.execute(query).rowcount
         return rowsAffected == 1
-    
+
     @classmethod
     def askDay(cls):
         while True:
@@ -103,7 +102,7 @@ class FixedIEPage(RecordPage):
                 raise ValueError
             except ValueError:
                 cls.hintDayErorMsg()
-        
+
     @staticmethod
     def hintDayErorMsg():
         print("請輸入 1 到 31 之間的數字:")
@@ -183,7 +182,7 @@ class FixedIEPage(RecordPage):
         else:
             print("名稱為 \"%s\" 的固定收支類別已成功更新為 %s" % (name, new_category))
             return True
-    
+
     @staticmethod
     def hintGetCategory():
         print("請輸入紀錄類型:")
