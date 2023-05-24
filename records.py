@@ -20,6 +20,7 @@ class RecordPage(Accessor):
     categoryList = []
     accountList = []
     locationList = []
+    IE = ""
     
     @staticmethod
     def choose():
