@@ -13,6 +13,8 @@ class CreateRecordOption(IntEnum):
     BACK = auto()
 
 class CreateRecordPage(RecordPage):
+    
+    IE = ""
 
     @staticmethod
     def show():

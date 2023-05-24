@@ -24,11 +24,6 @@ class UpdateRecordPage(RecordPage):
         print("請輸入要更改的項目:")
 
     @staticmethod
-    def hintGetIE():
-        print("1 收入 2 支出")
-        print("請選擇新的收入/支出:")
-
-    @staticmethod
     def hintGetCategory():
         print("請輸入新的紀錄類型:")
 
@@ -224,9 +219,8 @@ class UpdateRecordPage(RecordPage):
         else: 
             cls.updateNote(ID)
         
-
     @classmethod
-    def updateByID(cls):  # pragma: no cover
+    def updateByID(cls):  
         ID = cls.checkIDInteger()
         option = cls.chooseItem()
         cls.updateDB(ID, option)

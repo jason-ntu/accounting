@@ -78,6 +78,20 @@ class RecordPage(Accessor):
             except ValueError:
                 cls.hintRetryCategory()
         return category
+    
+    @classmethod
+    def askIE(cls):
+        cls.hintGetIE()
+        while True:
+            try:
+                IE = int(input())
+                if IE <= len(cls.IEList) and IE > 0:
+                    break
+                else: 
+                    raise ValueError()
+            except ValueError:
+                cls.hintGetIE()
+        return IE
 
     @classmethod
     def showCategory(cls): # pragma: no cover
@@ -246,6 +260,12 @@ class RecordPage(Accessor):
     @staticmethod
     def hintGetAccount():
         print("請輸入帳戶:")
+    
+    @staticmethod
+    def hintGetIE():
+        print("1 收入 2 支出")
+        print("請選擇新的收入/支出:")
+    
 
 if __name__ == '__main__': # pragma: no cover
     RecordPage.start()

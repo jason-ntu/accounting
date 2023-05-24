@@ -79,6 +79,12 @@ class TestAccountPage(MockDB):
         self.assertEqual(_hintRetryCategory.call_count, 3)
         self.assertEqual(_input.call_count, 4)
 
+    @patch.object(RecordPage, 'hintGetIE')
+    @patch('builtins.input', side_effect=['T', '3', '0', '1'])
+    def test_askIE(self, _input, _hintGetIE):
+        RecordPage.askIE()
+        self.assertEqual(_input.call_count, 4)
+
     @patch.object(RecordPage, 'hintRetryAccount')
     @patch.object(AccountPage, 'getList', return_value=[["錢包", "儲蓄卡", "信用卡", "Line Pay", "Metamask"]])
     @patch.object(RecordPage, 'hintGetAccount')
@@ -168,6 +174,7 @@ class TestAccountPage(MockDB):
                  (RecordPage.hintGetPurchaseDate, "請輸入消費日期(yyyy-mm-dd):\n"),
                  (RecordPage.hintGetDebitDate, "請輸入扣款日期(yyyy-mm-dd):\n"),
                  (RecordPage.hintGetNote, "請輸入備註:\n"),
+                 (RecordPage.hintGetIE, "1 收入 2 支出\n請選擇新的收入/支出:\n"),
                  (RecordPage.hintGetInvoice, "請輸入發票末八碼數字:\n")]
         for hint in hints:
             hint[0]()
