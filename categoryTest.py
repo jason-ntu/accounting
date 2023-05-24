@@ -94,7 +94,7 @@ class TestCategoryPage(MockDB):
             CategoryPage.read()
             CategoryPage.tearDown_connection(es.NONE)
         output_lines = _stdout.getvalue().strip().split('\n')
-        categories = ["食物", "飲料", "衣服", "住宿", "交通", "其它"]
+        categories = ["薪資 INCOME", "獎金 INCOME", "投資 INCOME", "保險 INCOME", "利息 INCOME", "其它 INCOME", "食物 EXPENSE", "飲料 EXPENSE", "衣服 EXPENSE", "住宿 EXPENSE", "交通 EXPENSE", "其它 EXPENSE"]
         for i in range(len(output_lines)):
             self.assertEqual(output_lines[i], categories[i])
 

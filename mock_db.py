@@ -139,19 +139,19 @@ class MockDB(TestCase):
 
 
         default_categories = [
-        {'name': "食物", 'IE': FixedIEType.INCOME.name},
-        {'name': "飲料", 'IE': FixedIEType.INCOME.name},
-        {'name': "衣服", 'IE': FixedIEType.INCOME.name},
-        {'name': "住宿", 'IE': FixedIEType.INCOME.name},
-        {'name': "交通", 'IE': FixedIEType.INCOME.name},
-        {'name': "其它", 'IE': FixedIEType.INCOME.name},
-        {'name': "薪資", 'IE': FixedIEType.EXPENSE.name},
-        {'name': "獎金", 'IE': FixedIEType.EXPENSE.name},
-        {'name': "投資", 'IE': FixedIEType.EXPENSE.name},
-        {'name': "保險", 'IE': FixedIEType.EXPENSE.name},
-        {'name': "利息", 'IE': FixedIEType.EXPENSE.name},
-        {'name': "其它", 'IE': FixedIEType.EXPENSE.name}
-    ]
+            {'name': "薪資", 'IE': FixedIEType.INCOME.name},
+            {'name': "獎金", 'IE': FixedIEType.INCOME.name},
+            {'name': "投資", 'IE': FixedIEType.INCOME.name},
+            {'name': "保險", 'IE': FixedIEType.INCOME.name},
+            {'name': "利息", 'IE': FixedIEType.INCOME.name},
+            {'name': "其它", 'IE': FixedIEType.INCOME.name},
+            {'name': "食物", 'IE': FixedIEType.EXPENSE.name},
+            {'name': "飲料", 'IE': FixedIEType.EXPENSE.name},
+            {'name': "衣服", 'IE': FixedIEType.EXPENSE.name},
+            {'name': "住宿", 'IE': FixedIEType.EXPENSE.name},
+            {'name': "交通", 'IE': FixedIEType.EXPENSE.name},
+            {'name': "其它", 'IE': FixedIEType.EXPENSE.name}
+        ]
         conn.execute(category.insert().values(default_categories))
 
         default_locations = [
