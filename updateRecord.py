@@ -118,6 +118,14 @@ class UpdateRecordPage(RecordPage):
     def updateAmount(cls, ID):
         newAmount = cls.askAmount()
         cls.setUp_connection_and_table()
+
+        query = sql.select(cls.table).where(cls.table.c.id == ID)
+        results = cls.conn.execute(query).fetchall()
+        dictRow = results[0]._asdict() 
+        originIE = dictRow['IE']
+        originAccount = dictRow['account']
+        originAmount = dictRow['amount']    
+            
         query = sql.update(cls.table).where(cls.table.c.id == ID).values(amount=newAmount)
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
@@ -126,6 +134,7 @@ class UpdateRecordPage(RecordPage):
             cls.tearDown_connection(es.ROLLBACK)
             return
         cls.tearDown_connection(es.COMMIT)
+        cls.updateAccountAmount(originIE, originAccount, newAmount-originAmount)
 
     @classmethod
     def updateLocation(cls, ID):

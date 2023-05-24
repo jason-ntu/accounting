@@ -4,6 +4,8 @@ from category import CategoryPage
 from account import AccountPage
 from location import LocationPage
 from datetime import datetime
+from accessor import ExecutionStatus as es
+import sqlalchemy as sql
 import re
 
 class RecordOption(IntEnum):
@@ -221,6 +223,27 @@ class RecordPage(Accessor):
         cls.hintGetNote()
         note = input()
         return note
+    
+    @classmethod
+    def updateAccountAmount(cls, IE, account, amount):
+        if (IE == "EXPENSE"):
+            amount *= -1
+        cls.setUp_connection_and_table(["Account"])
+        query = sql.select(cls.tables[0].c['balance']).where(cls.tables[0].c.name == account)
+        resultProxy = cls.conn.execute(query)
+        successful = (resultProxy.rowcount == 1)
+        results = cls.conn.execute(query).fetchall()
+        dictRow = results[0]._asdict() 
+        originAmount = dictRow['balance']
+        newAmount = originAmount + amount
+        query = sql.update(cls.tables[0]).where(cls.tables[0].c.name == account).values(balance=newAmount)
+        resultProxy = cls.conn.execute(query)
+        successful = (resultProxy.rowcount == 1)
+        if not successful:
+            print("更新帳戶餘額失敗")
+            cls.tearDown_connection(es.ROLLBACK)
+            return
+        cls.tearDown_connection(es.COMMIT)
     
     @classmethod
     def hintRetryLocation(cls):
