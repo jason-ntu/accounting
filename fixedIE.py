@@ -73,6 +73,7 @@ class FixedIEPage(RecordPage):
             IE = FixedIEType.INCOME
         else:
             IE = FixedIEType.EXPENSE
+        cls.IE = IE.name
 
         cls.hint_create_name(IE)
         name = input()
