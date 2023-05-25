@@ -88,8 +88,11 @@ class RecordPage(Accessor):
         while True:
             try:
                 IE = int(input())
+
+                # TODO: CACC Elia
                 if IE <= len(cls.IEList) and IE > 0:
                     break
+
                 else: 
                     raise ValueError()
             except ValueError:
