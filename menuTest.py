@@ -7,6 +7,7 @@ from report import ReportPage
 from export import ExportPage
 from invoice import InvoicePage
 from setting import SettingPage
+from fixedIErecord import fixedIERecord
 
 
 class TestMenuPage(TestCase):
@@ -14,14 +15,16 @@ class TestMenuPage(TestCase):
     def setUp(self):
         self.menuPage = MenuPage()
 
+    @patch.object(fixedIERecord,'start')
     @patch.object(MenuPage, 'execute')
     @patch.object(MenuPage, 'choose', side_effect = [MenuOption.RECORD, MenuOption.REPORT, MenuOption.EXPORT, MenuOption.INVOICE, MenuOption.SETTING, MenuOption.CLOSE])
     @patch.object(MenuPage, 'show')
-    def test_start(self, m_show, m_choose, m_execute):
+    def test_start(self, m_show, m_choose, m_execute, m_start):
         self.menuPage.start()
         self.assertEqual(m_show.call_count, 6)
         self.assertEqual(m_choose.call_count, 6)
         self.assertEqual(m_execute.call_count, 5)
+        self.assertEqual(m_start.call_count, 1)
 
     @patch("sys.stdout", new_callable = io.StringIO)
     def test_show(self, m_stdout):
