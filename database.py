@@ -88,6 +88,8 @@ def initialize(config):
                         sql.Column(
                             'note', sql.String(30), nullable=True),
                         sql.Column(
+                            'registerTime', sql.DateTime(), nullable=False),
+                        sql.Column(
                             'flag', sql.Boolean(), default=False, nullable=False)
                         )
 

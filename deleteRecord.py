@@ -8,7 +8,7 @@ class DeleteRecordPage(RecordPage):
     @staticmethod
     def hintGetID():
         print("請輸入想刪除的紀錄ID:")
-            
+
     @classmethod
     def checkIDInteger(cls):
         while True:
@@ -27,14 +27,17 @@ class DeleteRecordPage(RecordPage):
 
         query = sql.select(cls.table).where(cls.table.c.id == ID)
         results = cls.conn.execute(query).fetchall()
-        dictRow = results[0]._asdict() 
-        originIE = dictRow['IE']
-        originAccount = dictRow['account']
-        originAmount = dictRow['amount'] 
+        if results is None:
+            successful = False
+        else:
+            dictRow = results[0]._asdict()
+            originIE = dictRow['IE']
+            originAccount = dictRow['account']
+            originAmount = dictRow['amount']
 
-        query = sql.delete(cls.table).where(cls.table.c.id == ID)
-        resultProxy = cls.conn.execute(query)
-        successful = (resultProxy.rowcount == 1)
+            query = sql.delete(cls.table).where(cls.table.c.id == ID)
+            resultProxy = cls.conn.execute(query)
+            successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
             cls.tearDown_connection(es.ROLLBACK)

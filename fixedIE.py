@@ -2,6 +2,7 @@ from enum import IntEnum, auto
 import sqlalchemy as sql
 from accessor import ExecutionStatus as es
 from records import RecordPage
+from datetime import datetime
 
 class FixedIEOption(IntEnum):
     CREATE = auto()
@@ -89,7 +90,7 @@ class FixedIEPage(RecordPage):
         query = cls.table.insert().values(IE=IE.name, name=name,
                                           category=category, account=account['name'],
                                           amount=amount, location=location,
-                                          day=day, note=note, flag=False)
+                                          day=day, note=note, registerTime=datetime.today() ,flag=False)
         rowsAffected = cls.conn.execute(query).rowcount
         return rowsAffected == 1
 
