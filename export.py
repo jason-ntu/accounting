@@ -81,7 +81,6 @@ class ExportPage(Accessor):
     def exportFile(cls, startDate, endDate, filename):
         query = sql.select(cls.table).where(and_(cls.table.c.purchaseDate >= startDate, cls.table.c.debitDate <= endDate))
         results = cls.conn.execute(query).fetchall()
-        print(results)
         workbook = Workbook()
         worksheet = workbook.active
 
