@@ -5,7 +5,6 @@ from export import ExportPage, ExportOption
 from mock_db import MockDB
 from accessor import ExecutionStatus as es
 import const
-from records import RecordPage
 import os
 from openpyxl import load_workbook
 from datetime import datetime
