@@ -1,7 +1,6 @@
 import io
 from unittest.mock import patch
 import sqlalchemy as sql
-from export import ExportPage, ExportOption
 from mock_db import MockDB
 from accessor import ExecutionStatus as es
 from accessor import Accessor
@@ -19,45 +18,17 @@ class TestExportPage(MockDB):
 
         fixedIE = [('INCOME', '獎學金', '獎金', '中華郵政', 10000.0, '其它', 15, '', datetime(2023, 5, 1, 10, 0, 25), 1),
                   ('EXPENSE', '房租', '其它', '其它', 6000.0, '其它', 20, 'sos', datetime(2023, 5, 18, 0, 0), 0)]
-
-        for i, row in enumerate(results):
-            fixedIE_dict = {
-                'IE': fixedIE[i][0],
-                'name': fixedIE[i][1],
-                'category': fixedIE[i][2],
-                'account': fixedIE[i][3],
-                'amount': fixedIE[i][4],
-                'location': fixedIE[i][5],
-                'day': fixedIE[i][6],
-                'note': fixedIE[i][7],
-                'registerTime': fixedIE[i][8],
-                'flag': fixedIE[i][9]
-            }
-            dictRow = row._asdict()
-            self.assertEqual(fixedIE_dict, dictRow)
+        self.assertEqual(fixedIE, results)
 
     def test_newFixedIERocord(self):
         fixedIE = {'IE': 'EXPENSE', 'name': 'YOUTUBE premium', 'category': '其它', 'account': 'Line Pay', 'amount': 50.0, 'location': '其它', 'day': 6, 'note': 'youtube premium', 'registerTime': datetime(2023, 5, 3, 0, 0), 'flag': 0}
         with self.mock_db_config:
-            fixedIERecord.setUp_connection_and_table(["Record"])
             fixedIERecord.newFixedIERocord(fixedIE, "2023-05-06")
-            fixedIERecord.tearDown_connection(es.NONE)
         with self.mock_db_config:
             fixedIERecord.setUp_connection_and_table(["Record"])
-            query = sql.select(
-                        fixedIERecord.tables[0].c.IE,
-                        fixedIERecord.tables[0].c.category,
-                        fixedIERecord.tables[0].c.account,
-                        fixedIERecord.tables[0].c.amount,
-                        fixedIERecord.tables[0].c.location,
-                        fixedIERecord.tables[0].c.purchaseDate,
-                        fixedIERecord.tables[0].c.debitDate,
-                        fixedIERecord.tables[0].c.invoice,
-                        fixedIERecord.tables[0].c.note,
-                    ).where(fixedIERecord.tables[0].c.id == 9)
-            results = fixedIERecord.conn.execute(query).fetchall()
+            query = sql.select(fixedIERecord.tables[0].c["IE", "category", "account", "amount", "location", "purchaseDate", "debitDate", "invoice", "note"]).where(fixedIERecord.tables[0].c.id == 9)
+            result = fixedIERecord.conn.execute(query).fetchone()
             fixedIERecord.tearDown_connection(es.NONE)
-        record = ('EXPENSE', '', 'youtube premium')
         record_dict = {
                 'IE': 'EXPENSE',
                 'category': '其它',
@@ -69,7 +40,7 @@ class TestExportPage(MockDB):
                 'invoice' : '',
                 'note': 'youtube premium'
             }
-        self.assertEqual(record_dict, results[0]._asdict())
+        self.assertEqual(record_dict, result._asdict())
 
     def test_getEndTime(self):
         with self.mock_db_config:
@@ -88,10 +59,10 @@ class TestExportPage(MockDB):
         with self.mock_db_config:
             fixedIERecord.setUp_connection_and_table(["EndTime"])
             query = sql.select(fixedIERecord.tables[0].c.time)
-            results = fixedIERecord.conn.execute(query).fetchall()
+            result = fixedIERecord.conn.execute(query).fetchone()
             fixedIERecord.tearDown_connection(es.NONE)
 
-        dictRow = results[0]._asdict()
+        dictRow = result._asdict()
         self.assertEqual(dictRow['time'], end_time)
 
     def test_updateFlag(self):
