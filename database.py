@@ -118,6 +118,12 @@ def initialize(config):
 
     metadata.create_all(engine)
 
+    default_end_time = [
+        {'time': datetime(1970, 1, 1, 0, 0, 0)}
+    ]
+    conn.execute(end_time.insert().values(default_end_time))
+
+
     conn.execute(budget.insert().values(id=1, amount=0))
 
     default_accounts = [

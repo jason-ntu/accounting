@@ -28,6 +28,13 @@ class MockDB(TestCase):
         conn = engine.connect()
         metadata = sql.MetaData()
 
+        end_time = sql.Table('EndTime', metadata,
+                          sql.Column(
+                            'id', sql.Integer(), nullable=False,primary_key=True),
+                          sql.Column(
+                            'time', sql.DateTime(), nullable=False)
+                        )
+
         budget = sql.Table('Budget', metadata,
                          sql.Column(
                              'id', sql.Integer(), nullable=False, primary_key=True),
@@ -117,6 +124,11 @@ class MockDB(TestCase):
 
         conn.execute(budget.insert().values(id=1, amount=10000.00))
 
+        default_end_time = [
+            {'time': datetime(2023, 5, 4, 0, 13, 45)}
+        ]
+        conn.execute(end_time.insert().values(default_end_time))
+
         default_accounts = [
             {'name': "錢包", 'balance': 10000, 'category': AccountCategory.CASH.name},
             {'name': "中華郵政", 'balance': 25000, 'category': AccountCategory.DEBIT_CARD.name},
@@ -134,7 +146,7 @@ class MockDB(TestCase):
         conn.execute(income.insert().values(default_incomes))
 
         default_fixedIE = [
-            {'IE': FixedIEType.INCOME.name, 'name': "獎學金", 'category': "其它", 'account': "其它", 'amount': 10000, 'location': "其它", 'day': 15, 'note': '', 'registerTime':'2023-05-01 10:00:25','flag': True},
+            {'IE': FixedIEType.INCOME.name, 'name': "獎學金", 'category': "獎金", 'account': "中華郵政", 'amount': 10000, 'location': "其它", 'day': 15, 'note': '', 'registerTime':'2023-05-01 10:00:25','flag': True},
             {'IE': FixedIEType.EXPENSE.name, 'name': "房租", 'category': "其它", 'account': "其它", 'amount': 6000, 'location': "其它", 'day': 20, 'note': 'sos', 'registerTime':datetime.today(), 'flag': False}
         ]
         conn.execute(fixedIE.insert().values(default_fixedIE))
