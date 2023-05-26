@@ -101,7 +101,7 @@ class fixedIERecord(Accessor):
                     cls.updateFlag(dictRow['name'], False)
                     now_flag = False
                 # TODO: CACC yyyenn
-                elif dictRow['day'] < dictRow['registerTime'].day and  now_time.month == dictRow['registerTime'].month:
+                elif dictRow['day'] < dictRow['registerTime'].day and now_time.month == dictRow['registerTime'].month and now_time.year == dictRow['registerTime'].year:
                     cls.updateFlag(dictRow['name'], True)
                     now_flag = True
                 else:
