@@ -30,8 +30,8 @@ class InvoicePage(Accessor):
     
     # 進入點
     def start(self):
-        # self.queryLatest()
-        # print(self.dicLatest)
+        self.queryLatest()
+        
         if self.dicLatest:
             self.goPair()
 
