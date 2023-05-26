@@ -112,17 +112,15 @@ class TestExportPage(MockDB):
         workbook = load_workbook("testfile.xlsx")
         worksheet = workbook.active
         data_range = worksheet.iter_rows(min_row=2, values_only=True)
-        record_0 = ('EXPENSE', '飲料', '現金', 101, 'comebuy', datetime(2023, 1, 1, 0, 0), datetime(2023, 1, 1, 0, 0), None, None)
-        record_1 = ('EXPENSE', '食物', '現金', 87, '全家', datetime(2023, 2, 18, 0, 0), datetime(2023, 2, 18, 0, 0), None, None)
-        record_2 = ('EXPENSE', '衣服', 'LinePay', 321, '百貨公司', datetime(2023, 3, 5, 0, 0), datetime(2023, 3, 5, 0, 0), None, '洋裝')
-        record_3 = ('EXPENSE', '食物', '信用卡', 70, '百貨公司', datetime(2023, 3, 28, 0, 0), datetime(2023, 3, 30, 0, 0), None, 'coco')
-        file_info = []
-        for row in data_range:
-            file_info.append(row)
-        self.assertEqual(file_info[0], record_0)
-        self.assertEqual(file_info[1], record_1)
-        self.assertEqual(file_info[2], record_2)
-        self.assertEqual(file_info[3], record_3)
+        
+        records = [('EXPENSE', '飲料', '現金', 101, 'comebuy', datetime(2023, 1, 1, 0, 0), datetime(2023, 1, 1, 0, 0), None, None),
+        ('EXPENSE', '食物', '現金', 87, '全家', datetime(2023, 2, 18, 0, 0), datetime(2023, 2, 18, 0, 0), None, None),
+        ('EXPENSE', '衣服', 'LinePay', 321, '百貨公司', datetime(2023, 3, 5, 0, 0), datetime(2023, 3, 5, 0, 0), None, '洋裝'),
+        ('EXPENSE', '食物', '信用卡', 70, '百貨公司', datetime(2023, 3, 28, 0, 0), datetime(2023, 3, 30, 0, 0), None, 'coco')]
+
+        for i, row in enumerate(data_range):
+            with self.subTest():
+                self.assertEqual(row, records[i])
 
         os.remove("testfile.xlsx")
 
