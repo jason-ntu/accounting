@@ -153,7 +153,7 @@ class RecordPage(Accessor):
 
     @classmethod
     def askLocation(cls):
-        cls.locationList = LocationPage.getList()
+        cls.locationList = LocationPage.getList(cls.IE)
         cls.showLocation()
         cls.hintGetLocation()
         while True:

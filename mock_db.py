@@ -62,7 +62,9 @@ class MockDB(TestCase):
                              sql.Column(
                                  'id', sql.Integer(), nullable=False, primary_key=True),
                              sql.Column(
-                                 'name', sql.String(50), nullable=False)
+                                 'name', sql.String(50), nullable=False),
+                            sql.Column(
+                                'IE', sql.Enum(FixedIEType), nullable=False)
                              )
 
         fixedIE = sql.Table('FixedIE', metadata,
@@ -157,11 +159,22 @@ class MockDB(TestCase):
         conn.execute(category.insert().values(default_categories))
 
         default_locations = [
-            {'name': "便利商店"},
-            {'name': "蝦皮"},
-            {'name': "誠品"},
-            {'name': "夜市"},
-            {'name': "其它"}
+            {'name': "公司", 'IE': FixedIEType.INCOME.name},
+            {'name': "學校", 'IE': FixedIEType.INCOME.name},
+            {'name': "家裡", 'IE': FixedIEType.INCOME.name},
+            {'name': "政府", 'IE': FixedIEType.INCOME.name},
+            {'name': "銀行", 'IE': FixedIEType.INCOME.name},
+            {'name': "其它", 'IE': FixedIEType.INCOME.name},
+            {'name': "餐廳", 'IE': FixedIEType.EXPENSE.name},
+            {'name': "飲料店", 'IE': FixedIEType.EXPENSE.name},
+            {'name': "超商", 'IE': FixedIEType.EXPENSE.name},
+            {'name': "超市", 'IE': FixedIEType.EXPENSE.name},
+            {'name': "夜市", 'IE': FixedIEType.EXPENSE.name},
+            {'name': "文具店", 'IE': FixedIEType.EXPENSE.name},
+            {'name': "線上商店", 'IE': FixedIEType.EXPENSE.name},
+            {'name': "百貨公司", 'IE': FixedIEType.EXPENSE.name},
+            {'name': "學校", 'IE': FixedIEType.EXPENSE.name},
+            {'name': "其它", 'IE': FixedIEType.EXPENSE.name}
         ]
         conn.execute(location.insert().values(default_locations))
 
