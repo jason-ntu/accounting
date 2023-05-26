@@ -5,6 +5,9 @@ from export import ExportPage, ExportOption
 from mock_db import MockDB
 from accessor import ExecutionStatus as es
 import const
+import os
+from openpyxl import load_workbook
+from datetime import datetime
 
 class TestExportPage(MockDB):
 
@@ -99,13 +102,27 @@ class TestExportPage(MockDB):
         self.assertEqual(_hint_input_filename.call_count, 1)
         self.assertEqual(_input.call_count, 1)
 
-    @patch.object(sql.engine.cursor.CursorResult, "fetchall")
-    def testExportFilePath(self, _fetchall):
-        pass
+    def testExportFile(self):
+        with self.mock_db_config:
+            ExportPage.setUp_connection_and_table()
+            ExportPage.exportFile("2023-01-01", "2023-03-31", "testfile")
+            ExportPage.tearDown_connection(es.NONE)
+        current_files = os.listdir()
+        self.assertIn("testfile.xlsx", current_files)
+        workbook = load_workbook("testfile.xlsx")
+        worksheet = workbook.active
+        data_range = worksheet.iter_rows(min_row=2, values_only=True)
+        
+        records = [('EXPENSE', '飲料', '現金', 101, 'comebuy', datetime(2023, 1, 1, 0, 0), datetime(2023, 1, 1, 0, 0), None, None),
+        ('EXPENSE', '食物', '現金', 87, '全家', datetime(2023, 2, 18, 0, 0), datetime(2023, 2, 18, 0, 0), None, None),
+        ('EXPENSE', '衣服', 'LinePay', 321, '百貨公司', datetime(2023, 3, 5, 0, 0), datetime(2023, 3, 5, 0, 0), None, '洋裝'),
+        ('EXPENSE', '食物', '信用卡', 70, '百貨公司', datetime(2023, 3, 28, 0, 0), datetime(2023, 3, 30, 0, 0), None, 'coco')]
 
-    @patch.object(sql.engine.cursor.CursorResult, "fetchall")
-    def testExportFileContent(self, _fetchall):
-        pass
+        for i, row in enumerate(data_range):
+            with self.subTest():
+                self.assertEqual(row, records[i])
+
+        os.remove("testfile.xlsx")
 
     @patch.object(ExportPage, 'execute')
     @patch.object(ExportPage, 'choose', side_effect=[ExportOption.CHOOSE, ExportOption.BACK])
