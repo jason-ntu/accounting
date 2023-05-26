@@ -31,9 +31,6 @@ class fixedIERecord(Accessor):
                                               note = dictRow['note'])
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
-        if not successful:
-            cls.tearDown_connection(es.ROLLBACK)
-            return
         cls.tearDown_connection(es.COMMIT)
 
     @classmethod

@@ -98,6 +98,7 @@ class TestExportPage(MockDB):
         with self.mock_db_config:
             fixedIERecord.setUp_connection_and_table(["FixedIE"])
             fixedIERecord.updateFlag("獎學金", False)
+            fixedIERecord.updateFlag("fake", False)
             fixedIERecord.tearDown_connection(es.NONE)
 
         with self.mock_db_config:
