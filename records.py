@@ -233,6 +233,8 @@ class RecordPage(Accessor):
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         results = cls.conn.execute(query).fetchall()
+        print(results, type(results))
+        print(results[0], type(results[0]))
         dictRow = results[0]._asdict() 
         originAmount = dictRow['balance']
         newAmount = originAmount + amount

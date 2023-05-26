@@ -1,6 +1,6 @@
-TEST_FILE_NAME := budgetTest.py   fixedIETest.py locationTest.py \
+TEST_FILE_NAME := budgetTest.py fixedIETest.py locationTest.py \
 				 accountTest.py readRecordTest.py reportTest.py settingTest.py recordsTest.py \
-				 categoryTest.py
+				 categoryTest.py 
 #  exportTest.py fixedIErecordTest.py invoiceTest.py menuTest.py createRecordTest.py updateRecordTest.py deleteRecordTest.py
 
 RUN_FILE_NAME := menu.py
