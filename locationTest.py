@@ -90,7 +90,6 @@ class TestLocationPage(MockDB):
             _stdout.truncate(0)
             _stdout.seek(0)
     
-    @unittest.skip('TODO')
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_read(self, _stdout):
         with self.mock_db_config:
@@ -98,9 +97,24 @@ class TestLocationPage(MockDB):
             LocationPage.read()
             LocationPage.tearDown_connection(es.NONE)
         output_lines = _stdout.getvalue().strip().split('\n')
-        locations = ["便利商店", "蝦皮", "誠品", "夜市", "其它"]
-        for i in range(len(output_lines)):
-            self.assertEqual(output_lines[i], locations[i])
+        locations = ["公司 INCOME",
+        "學校 INCOME",
+        "家裡 INCOME",
+        "政府 INCOME",
+        "銀行 INCOME",
+        "其它 INCOME",
+        "餐廳 EXPENSE",
+        "飲料店 EXPENSE",
+        "超商 EXPENSE",
+        "超市 EXPENSE",
+        "夜市 EXPENSE",
+        "文具店 EXPENSE",
+        "線上商店 EXPENSE",
+        "百貨公司 EXPENSE",
+        "學校 EXPENSE",
+        "其它 EXPENSE"]
+        for i, line in enumerate(output_lines):
+            self.assertEqual(line, locations[i])
 
     @unittest.skip('TODO')
     @patch("sys.stdout", new_callable=io.StringIO)
