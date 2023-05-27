@@ -12,6 +12,7 @@ class TestLocationPage(MockDB):
     
     def setUp(self):
         IEAttribute.table_name = "IEAttribute"
+        IEAttribute.IE = IEOption.INCOME
     
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_hints(self, _stdout):
@@ -155,16 +156,38 @@ class TestLocationPage(MockDB):
             _stdout.truncate(0)
             _stdout.seek(0)
 
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch('builtins.input', side_effect=['X', 0, 1, 2, 4, 3])
+    def test_chooseIE(self, _input, _stdout):
+        errMsg = f"請輸入 1 到 {len(IEOption)} 之間的數字:\n"
+        result = IEAttribute.chooseIE()
+        self.assertEqual(_stdout.getvalue(), errMsg*2)
+        _stdout.truncate(0)
+        _stdout.seek(0)
+        self.assertEqual(result, IEOption.INCOME)
+
+        result = IEAttribute.chooseIE()
+        self.assertEqual(result , IEOption.EXPENSE)
+
+        result = IEAttribute.chooseIE()
+        self.assertEqual(_stdout.getvalue(), errMsg)
+        _stdout.truncate(0)
+        _stdout.seek(0)
+        self.assertEqual(result, IEOption.BACK)
 
 
-    # @patch.object(LocationPage, 'execute')
-    # @patch.object(LocationPage, 'choose', side_effect=[LocationOption.CREATE, LocationOption.READ, LocationOption.UPDATE, LocationOption.DELETE, LocationOption.BACK])
-    # @patch.object(LocationPage, 'show')
-    # def test_start(self, _show, _choose, _execute):
-    #     LocationPage.start()
-    #     self.assertEqual(_show.call_count, 5)
-    #     self.assertEqual(_choose.call_count, 5)
-    #     self.assertEqual(_execute.call_count, 4)
+    @patch.object(IEAttribute, 'execute')
+    @patch.object(IEAttribute, 'chooseOperation', side_effect=[Operation.READ, Operation.CREATE, Operation.BACK, Operation.READ, Operation.UPDATE, Operation.DELETE, Operation.BACK])
+    @patch.object(IEAttribute, 'hintGetOperation')
+    @patch.object(IEAttribute, 'chooseIE', side_effect=[IEOption.INCOME, IEOption.EXPENSE, Operation.BACK])
+    @patch.object(IEAttribute, 'hintGetIE')
+    def test_start(self, _hintGetIE, _chooseIE, _hintGetOperation, _chooseOperation, _execute):
+        IEAttribute.start()
+        self.assertEqual(_hintGetIE.call_count, 3)
+        self.assertEqual(_chooseIE.call_count, 3)
+        self.assertEqual(_hintGetOperation.call_count, 7)
+        self.assertEqual(_chooseOperation.call_count, 7)
+        self.assertEqual(_execute.call_count, 5)
 
     def test_getList(self):
         with self.mock_db_config:
