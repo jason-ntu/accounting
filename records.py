@@ -231,7 +231,6 @@ class RecordPage(Accessor):
     def updateAccountAmount(cls, IE, account_name, amount):
         if (IE == "EXPENSE"):
             amount *= -1
-        # cls.setUp_connection_and_table(["Account"])
         query_balance = sql.select(cls.tables[1].c['balance']).where(cls.tables[1].c.name == account_name)
         account = cls.conn.execute(query_balance).fetchone()
         dictAccount = account._asdict() 
