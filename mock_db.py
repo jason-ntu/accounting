@@ -85,6 +85,8 @@ class MockDB(TestCase):
                         sql.Column(
                             'note', sql.String(30), nullable=True),
                         sql.Column(
+                            'registerTime', sql.DateTime(), nullable=False),
+                        sql.Column(
                             'flag', sql.Boolean(), default=False, nullable=False)
         )
 
@@ -132,8 +134,8 @@ class MockDB(TestCase):
         conn.execute(income.insert().values(default_incomes))
 
         default_fixedIE = [
-            {'IE': FixedIEType.INCOME.name, 'name': "獎學金", 'category': "其它", 'account': "其它", 'amount': 10000, 'location': "其它", 'day': 15, 'note': '', 'flag': True},
-            {'IE': FixedIEType.EXPENSE.name, 'name': "房租", 'category': "其它", 'account': "其它", 'amount': 6000, 'location': "其它", 'day': 20, 'note': 'sos', 'flag': False}
+            {'IE': FixedIEType.INCOME.name, 'name': "獎學金", 'category': "其它", 'account': "其它", 'amount': 10000, 'location': "其它", 'day': 15, 'note': '', 'registerTime':'2023-05-01 10:00:25','flag': True},
+            {'IE': FixedIEType.EXPENSE.name, 'name': "房租", 'category': "其它", 'account': "其它", 'amount': 6000, 'location': "其它", 'day': 20, 'note': 'sos', 'registerTime':datetime.today(), 'flag': False}
         ]
         conn.execute(fixedIE.insert().values(default_fixedIE))
 

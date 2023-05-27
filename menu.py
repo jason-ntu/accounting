@@ -29,7 +29,7 @@ class MenuText():
 class MenuPage:
     #進入點
     def start(self):
-        #fixedIERecord.start()
+        fixedIERecord.start()
         while True:
             self.show()
             option = self.choose()

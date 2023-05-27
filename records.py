@@ -88,8 +88,11 @@ class RecordPage(Accessor):
         while True:
             try:
                 IE = int(input())
+
+                # TODO: CACC Elia
                 if IE <= len(cls.IEList) and IE > 0:
                     break
+
                 else: 
                     raise ValueError()
             except ValueError:
@@ -226,6 +229,7 @@ class RecordPage(Accessor):
     
     @classmethod
     def updateAccountAmount(cls, IE, account, amount):
+        print(IE, account, amount)
         if (IE == "EXPENSE"):
             amount *= -1
         cls.setUp_connection_and_table(["Account"])
@@ -233,8 +237,6 @@ class RecordPage(Accessor):
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         results = cls.conn.execute(query).fetchall()
-        print(results, type(results))
-        print(results[0], type(results[0]))
         dictRow = results[0]._asdict() 
         originAmount = dictRow['balance']
         newAmount = originAmount + amount
@@ -244,8 +246,10 @@ class RecordPage(Accessor):
         if not successful:
             print("更新帳戶餘額失敗")
             cls.tearDown_connection(es.ROLLBACK)
-            return
-        cls.tearDown_connection(es.COMMIT)
+            return False
+        else:
+            cls.tearDown_connection(es.COMMIT)
+            return True
     
     @classmethod
     def hintRetryLocation(cls):

@@ -12,7 +12,7 @@ class fixedIERecord(Accessor):
     @classmethod
     def readFixedIE(cls):
         cls.setUp_connection_and_table(["FixedIE"])
-        query = sql.select(cls.tables[0].c['IE', 'name', 'category', 'account', 'amount', 'location' ,'day', 'note', 'flag'])
+        query = sql.select(cls.tables[0].c['IE', 'name', 'category', 'account', 'amount', 'location' ,'day', 'note', 'registerTime', 'flag'])
         results = cls.conn.execute(query).fetchall()
         cls.tearDown_connection(es.NONE)
         return results
@@ -96,20 +96,26 @@ class fixedIERecord(Accessor):
             dictRow = row._asdict()
 
             for m in range(month_difference, -1, -1):
+                # TODO: CACC sylvia
                 if m == 0 and month_difference > 0:
-                    print("hi")
                     cls.updateFlag(dictRow['name'], False)
                     now_flag = False
-                if now_time.day >= dictRow['day'] and m == 0 and (dictRow['flag'] == False or now_flag == False):
-                    print("insert1")
+                # TODO: CACC yyyenn
+                elif dictRow['day'] < dictRow['registerTime'].day and now_time.month == dictRow['registerTime'].month and now_time.year == dictRow['registerTime'].year:
+                    cls.updateFlag(dictRow['name'], True)
+                    now_flag = True
+                else:
+                    now_flag = dictRow['flag']
+
+                # TODO: CACC yyyenn
+                if now_time.day >= dictRow['day'] and m == 0 and now_flag == False:
                     cls.newFixedIERocord(dictRow, date(now_time.year, now_time.month, int(dictRow['day'])))
                     cls.updateFlag(dictRow['name'], True)
                     now_flag = True
-                elif m == 1 and dictRow['flag'] == True:
-                    print("cont")
+                # TODO: CACC sylvia
+                elif m == 1 and now_flag == True:
                     continue
                 elif m > 0:
-                    print("insert2")
                     cls.newFixedIERocord(dictRow, date(now_time.year, now_time.month-m, int(dictRow['day'])))
 
         cls.recordEndTime()

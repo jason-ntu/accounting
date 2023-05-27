@@ -163,16 +163,26 @@ class TestAccountPage(MockDB):
         self.assertEqual(_input.call_count, 2)
     
     @patch("sys.stdout", new_callable=io.StringIO)
-    @patch.object(sql.engine.cursor.CursorResult, "fetchall", return_value=[(100.0,)])
-    def test_updateAccountAmount(self, _fetchall, _stdout):
+    def test_updateAccountAmount(self, _stdout):
+        results = [True, False]
+        # outputs = ["更新帳戶餘額失敗\n\x1b[31m操作失敗\x1b[0m\n", ""]
+        # for i in range(1):
         with self.mock_db_config:
             RecordPage.setUp_connection_and_table()
-            RecordPage.updateAccountAmount("EXPENSE", "Line Pay", "100.0")
+            result = RecordPage.updateAccountAmount("EXPENSE", "錢包", 100.0)
             RecordPage.tearDown_connection(es.NONE)
-        # output_lines = _stdout.getvalue().strip().split('\n')
-        # self.assertEqual(len(output_lines), 1)
-        # self.assertEqual(output_lines[0], "%s操作成功%s" % (const.ANSI_GREEN, const.ANSI_RESET))
+        self.assertEqual(result, results[0])
 
+        # with self.mock_db_config:
+        #     RecordPage.setUp_connection_and_table()
+        #     result = RecordPage.updateAccountAmount("EXPENSE", "街口", 100.0)
+        #     RecordPage.tearDown_connection(es.NONE)
+        # self.assertEqual(result, results[1])
+
+            # self.assertEqual(_stdout.getvalue(), outputs[i])
+            # _stdout.truncate(0)
+            # _stdout.seek(0)
+    
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_hints(self, _stdout):
         hints = [(RecordPage.hintGetCategory, "請輸入紀錄類型:\n"),

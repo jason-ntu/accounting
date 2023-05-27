@@ -37,14 +37,14 @@ class TestCreateRecord(MockDB):
         CreateRecordPage.execute(CreateRecordOption.EXPENSE)
         self.assertEqual(_createRecord.call_count, 2)
 
-    # @patch.object(RecordPage, "askNote", side_effect=["yum"])
-    # @patch.object(RecordPage, "askInvoice", side_effect=[""])
-    # @patch.object(RecordPage, "askDebitDate", side_effect=[""])
-    # @patch.object(RecordPage, "askPurchaseDate", side_effect=[""])
-    # @patch.object(RecordPage, "askLocation", side_effect=[3])
-    # @patch.object(RecordPage, "askAmount", side_effect=[100])
-    # @patch.object(RecordPage, "askAccount", side_effect=[3], return_value = {'name': '信用卡', 'category': 'CREDIT_CARD'})
-    # @patch.object(RecordPage, "askCategory", side_effect=[3])
+    # @patch.object(RecordPage, "askNote")
+    # @patch.object(RecordPage, "askInvoice")
+    # @patch.object(RecordPage, "askDebitDate")
+    # @patch.object(RecordPage, "askPurchaseDate")
+    # @patch.object(RecordPage, "askLocation")
+    # @patch.object(RecordPage, "askAmount")
+    # @patch.object(RecordPage, "askAccount", return_value = {'name': '信用卡', 'category': 'CREDIT_CARD'})
+    # @patch.object(RecordPage, "askCategory")
     # def test_createRecord(self, _askCategory, _askAccount, _askAmount, _askLocation, _askPurchaseDate, _askDebitDate, _askInvoice, _askNote):
     #     with self.mock_db_config:
     #         CreateRecordPage.setUp_connection_and_table()

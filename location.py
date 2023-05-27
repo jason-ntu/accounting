@@ -92,10 +92,15 @@ class LocationPage(Accessor):
         query = sql.select(cls.table.c["name"]).where(
             cls.table.c.name == new_name)
         results = cls.conn.execute(query).fetchall()
+        
+        
+        # TODO: CACC Jason
         if len(results) > 0 and name != new_name:
             print("%s新名稱不得與其它地點的名稱重複%s" %
                   (const.ANSI_YELLOW, const.ANSI_RESET))
             return False
+        
+
         query = cls.table.update().values(name=new_name).where(cls.table.c.name == name)
         rowsAffected = cls.conn.execute(query).rowcount
         if rowsAffected == 0:
