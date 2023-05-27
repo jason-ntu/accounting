@@ -19,14 +19,14 @@ class Operation(IntEnum):
 # this class is intended to be a base class for CategoryPage and LocationPage
 class IEAttribute(Accessor):
 
-    attribute_name = ""
-    IE_name = ""
+    attribute_name = "屬性"
+    IE_name = "收支"
 
     @classmethod
     def hintGetOperation(cls):
         print(f"{Operation.CREATE}: 新增{cls.IE_name}{cls.attribute_name}")
         print(f"{Operation.READ}: 查看{cls.IE_name}{cls.attribute_name}")
-        print(f"{Operation.PUPDATE}: 修改{cls.IE_name}{cls.attribute_name}")
+        print(f"{Operation.UPDATE}: 修改{cls.IE_name}{cls.attribute_name}")
         print(f"{Operation.DELETE}: 刪除{cls.IE_name}{cls.attribute_name}")
         print(f"{Operation.BACK}: 回到上一頁")
 
