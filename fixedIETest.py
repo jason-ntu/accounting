@@ -4,6 +4,7 @@ from fixedIE import FixedIEPage, FixedIEOption
 from IEDirection import IEDirection
 from mock_db import MockDB
 from accessor import ExecutionStatus as es
+import const
 
 class TestFixedIEPage(MockDB):
 
@@ -59,7 +60,7 @@ class TestFixedIEPage(MockDB):
         self.assertEqual(_input.call_count, 7)
         self.assertEqual(FixedIEPage.choose(), 5)
         self.assertEqual(_input.call_count, 8)
-    """
+
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch.object(FixedIEPage, 'delete', return_value=True)
     @patch.object(FixedIEPage, 'update', return_value=False)
@@ -82,7 +83,8 @@ class TestFixedIEPage(MockDB):
                          (const.ANSI_RED, const.ANSI_RESET))
         self.assertEqual(output_lines[2], "%s操作成功%s" %
                          (const.ANSI_GREEN, const.ANSI_RESET))
-
+        
+    """
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch('builtins.input', side_effect=[ 3, 1, "獎學金", 0 ,2 , 0, 5, "一萬", 10000, 80, 25 , '', 2, "房租", 2, 5, 8000, 5, 'sos'])
     @patch.object(FixedIEPage, 'hint_create_note')

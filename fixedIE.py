@@ -65,12 +65,7 @@ class FixedIEPage(RecordPage):
 
     @classmethod
     def create(cls):
-        # TODO: should update askIE, but may need to refactor createRecord and updateRecord
-        IEnumber = cls.askIE()
-        if IEnumber == 1:
-            IE = IEDirection.INCOME
-        else:
-            IE = IEDirection.EXPENSE
+        IE = cls.askIE()
         cls.IE = IE.name
 
         cls.hint_create_name(IE)

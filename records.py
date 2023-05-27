@@ -5,6 +5,7 @@ from account import AccountPage
 from location import LocationPage
 from datetime import datetime
 from accessor import ExecutionStatus as es
+from IEDirection import IEDirection
 import sqlalchemy as sql
 import re
 
@@ -18,7 +19,6 @@ class RecordOption(IntEnum):
 class RecordPage(Accessor):
 
     table_name = "Record"
-    IEList = ["INCOME", "EXPENSE"]
     categoryList = []
     accountList = []
     locationList = []
@@ -87,14 +87,8 @@ class RecordPage(Accessor):
         cls.hintGetIE()
         while True:
             try:
-                IE = int(input())
-
-                # TODO: CACC Elia
-                if IE <= len(cls.IEList) and IE > 0:
-                    break
-
-                else: 
-                    raise ValueError()
+                IE = IEDirection(int(input()))
+                break
             except ValueError:
                 cls.hintGetIE()
         return IE
