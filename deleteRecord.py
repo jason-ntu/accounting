@@ -30,7 +30,7 @@ class DeleteRecordPage(RecordPage):
         if results is None:
             successful = False
         else:
-            dictRow = results[0]._asdict()
+            dictRow = results._asdict()
             originIE = dictRow['IE']
             originAccount = dictRow['account']
             originAmount = dictRow['amount']

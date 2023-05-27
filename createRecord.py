@@ -30,7 +30,7 @@ class CreateRecordPage(RecordPage):
 
     @classmethod
     def execute(cls, option):
-        if option is IEDirection.INCOME:
+        if option is CreateRecordOption.INCOME:
             cls.IE = IEDirection.INCOME.name
         else :
             cls.IE = IEDirection.EXPENSE.name
