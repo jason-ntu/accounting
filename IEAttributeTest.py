@@ -131,27 +131,31 @@ class TestLocationPage(MockDB):
             _stdout.truncate(0)
             _stdout.seek(0)
 
-    # @unittest.skip('TODO')
-    # @patch("sys.stdout", new_callable=io.StringIO)
-    # @patch('builtins.input', side_effect=["", "unknown", "蝦皮"])
-    # @patch.object(LocationPage, 'hint_delete')
-    # def test_delete(self, _hint_delete, _input, _stdout):
-    #     results = [False, False, True]
-    #     outputs = ["%s名稱不得為空%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
-    #                "%s目前沒有這個地點%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
-    #                ""]
-    #     for i in range(3):
-    #         with self.mock_db_config:
-    #             LocationPage.setUp_connection_and_table()
-    #             result = LocationPage.delete()
-    #             # LocationPage.read()
-    #             LocationPage.tearDown_connection(es.NONE)
-    #         self.assertEqual(result, results[i])
-    #         self.assertEqual(_hint_delete.call_count, i+1)
-    #         self.assertEqual(_input.call_count, i + 1)
-    #         self.assertEqual(_stdout.getvalue(), outputs[i])
-    #         _stdout.truncate(0)
-    #         _stdout.seek(0)
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch('builtins.input', side_effect=[
+        "",
+        "unknown",
+        "選項A"]
+        )
+    @patch.object(IEAttribute, 'hint_delete')
+    def test_delete(self, _hint_delete, _input, _stdout):
+        results = [False, False, True]
+        outputs = ["%s名稱不得為空%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
+                   "%s目前沒有這個屬性%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
+                   ""]
+        for i in range(3):
+            with self.mock_db_config:
+                IEAttribute.setUp_connection_and_table()
+                result = IEAttribute.delete()
+                IEAttribute.tearDown_connection(es.NONE)
+            self.assertEqual(result, results[i])
+            self.assertEqual(_hint_delete.call_count, i+1)
+            self.assertEqual(_input.call_count, i + 1)
+            self.assertEqual(_stdout.getvalue(), outputs[i])
+            _stdout.truncate(0)
+            _stdout.seek(0)
+
+
 
     # @patch.object(LocationPage, 'execute')
     # @patch.object(LocationPage, 'choose', side_effect=[LocationOption.CREATE, LocationOption.READ, LocationOption.UPDATE, LocationOption.DELETE, LocationOption.BACK])
@@ -162,9 +166,9 @@ class TestLocationPage(MockDB):
     #     self.assertEqual(_choose.call_count, 5)
     #     self.assertEqual(_execute.call_count, 4)
 
-    # def test_getList(self):
-    #     with self.mock_db_config:
-    #         incomeLocationList = LocationPage.getList('INCOME')
-    #         expenseLocationList = LocationPage.getList('EXPENSE')
-    #     self.assertEqual(incomeLocationList, ['公司', '學校', '家裡', '政府', '銀行', '其它'])
-    #     self.assertEqual(expenseLocationList, ['餐廳', '飲料店', '超商', '超市', '夜市', '文具店', '線上商店', '百貨公司', '學校', '其它'])
+    def test_getList(self):
+        with self.mock_db_config:
+            incomeLocationList = IEAttribute.getList('INCOME')
+            expenseLocationList = IEAttribute.getList('EXPENSE')
+        self.assertEqual(incomeLocationList, ['選項A', '選項C'])
+        self.assertEqual(expenseLocationList, ['選項B'])
