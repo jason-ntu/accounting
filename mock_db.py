@@ -4,7 +4,7 @@ import sqlalchemy as sql
 from mock import patch
 import const
 from account import AccountCategory
-from records import RecordDirection
+from recordDirection import RecordDirection
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from datetime import datetime
 from freezegun import freeze_time

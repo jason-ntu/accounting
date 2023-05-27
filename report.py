@@ -3,7 +3,7 @@ from datetime import datetime
 import sqlalchemy as sql
 from sqlalchemy import and_
 from accessor import Accessor, ExecutionStatus as es
-from records import RecordDirection
+from recordDirection import RecordDirection
 
 class ReportOption(IntEnum):
     CHOOSE = auto()

@@ -1,7 +1,7 @@
 import io
 from unittest.mock import patch
 from fixedIE import FixedIEPage, FixedIEOption
-from records import RecordDirection
+from recordDirection import RecordDirection
 from mock_db import MockDB
 from accessor import ExecutionStatus as es
 

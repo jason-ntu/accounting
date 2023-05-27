@@ -2,8 +2,8 @@ from enum import IntEnum, auto
 from accessor import ExecutionStatus as es
 import sys
 from account import AccountCategory
-from records import RecordPage, RecordDirection
-
+from records import RecordPage
+from recordDirection import RecordDirection
 
 class CreateRecordOption(IntEnum):
     INCOME = RecordDirection.INCOME

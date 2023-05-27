@@ -6,7 +6,7 @@ from datetime import datetime
 from mock_db import MockDB
 from accessor import ExecutionStatus as es
 import const
-from records import RecordDirection
+from recordDirection import RecordDirection
 
 class TestReport(MockDB):
 

@@ -14,10 +14,6 @@ class RecordOption(IntEnum):
     UPDATE = auto()
     DELETE = auto()
     BACK = auto()
-
-class RecordDirection(IntEnum):
-    INCOME = auto()
-    EXPENSE = auto()
     
 class RecordPage(Accessor):
 

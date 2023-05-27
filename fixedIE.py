@@ -3,7 +3,7 @@ import sqlalchemy as sql
 from accessor import ExecutionStatus as es
 from records import RecordPage
 from datetime import datetime
-from records import RecordDirection
+from recordDirection import RecordDirection
 
 class FixedIEOption(IntEnum):
     CREATE = auto()
