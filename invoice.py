@@ -21,7 +21,9 @@ class InvoiceText():
     TITLE = '========== 記帳簿［自動對獎］ =========='
     SUBTITLE = '［首頁］'
     QUESTION = '請選擇功能：'
-    HINT = '輸入錯誤，請重新輸入！'
+    HINT = '輸入錯誤，請重新輸入！\n'
+    NODATA = '本期兌獎資訊抓取失敗！\n'
+    NOPAIR = '本期未中獎！\n'
 
 class InvoicePage(Accessor):
     table_name = "Record"
@@ -30,13 +32,11 @@ class InvoicePage(Accessor):
     # 進入點
     def start(self):
         self.queryLatest()
-    
-    # 進入點
-    def start(self):
-        self.queryLatest()
-
+        
         if self.dicLatest:
             self.goPair()
+        else:
+            print(InvoiceText.NODATA)
 
         self.show()
         option = self.choose()
@@ -112,7 +112,7 @@ class InvoicePage(Accessor):
     
             browser.close()        
         except:
-            print('發票資訊抓取失敗')
+            print(InvoiceText.NODATA)
 
     # 取得符合期別之紀錄
     def queryRecord(self, dateS, dateE):
@@ -128,10 +128,10 @@ class InvoicePage(Accessor):
         year = int(period[0:3]) + 1911
         month1 = int(period[4:6])
         month2 = int(period[7:9])
-        dateStart = datetime(year, month1, 1)
+        dateSart = datetime(year, month1, 1)
         dateEnd = datetime(year, month2, calendar.monthrange(year, month2)[1])        
 
-        records = self.queryRecord(dateStart, dateEnd)        
+        records = self.queryRecord(dateSart, dateEnd)        
         if records:
             headerE = ["id", "IE", "category", "account", "amount", "location", "purchaseDate", "debitDate", "invoice", "note"]
             headerC = ["id", "收/支", "類別", "金額", "帳戶", "地點", "消費時間", "扣款時間", "發票號碼", "備註"]
@@ -141,15 +141,20 @@ class InvoicePage(Accessor):
             headerC.append("兌獎結果")
             df2 = pd.DataFrame(columns = headerE)
 
-            for row in df.iterrows():
+            for index, row in df.iterrows():
                 ret = self.checkNumbers(row["invoice"])
                 if ret != '':
                     row["result"] =  ret
                     df2.loc[len(df2)] = row
 
-            print("\n" + self.dicLatest["period"])
-            print(tabulate(df2, headers = headerC, tablefmt = 'pretty', showindex = False, stralign = 'left'))
-            print("\n")
+            if len(df2) > 0:
+                print("\n" + self.dicLatest["period"])
+                print(tabulate(df2, headers = headerC, tablefmt = 'pretty', showindex = False, stralign = 'left'))
+                print("\n")
+            else:
+                print(InvoiceText.NOPAIR)
+        else:
+            print(InvoiceText.NOPAIR)
 
     # 兌獎邏輯
     def checkNumbers(self, myInvoice):
