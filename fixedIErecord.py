@@ -71,8 +71,8 @@ class fixedIERecord(Accessor):
     def start(cls):
         last_end_time = cls.getEndTime().date()
         now_time = datetime.today().date()
-        print("last time: ", last_end_time)
-        print("now time: ", now_time)
+        #print("last time: ", last_end_time)
+        #print("now time: ", now_time)
         results = cls.readFixedIE()
         print("自動記錄固定收支...")
 
@@ -83,12 +83,10 @@ class fixedIERecord(Accessor):
 
             # 從上次登入時間開始 run
             for m in range(month_difference, -1, -1):
-                # TODO: CACC sylvia
                 # 最新的月份，更新flag(表示還沒record)
                 if m == 0 and month_difference > 0:
                     cls.updateFlag(dictRow['name'], False)
                     now_flag = False
-                # TODO: CACC yyyenn
                 # ex: 2023-05-27 設定一個每月 3 號的固定收支，若當月有登入不可以record
                 elif dictRow['day'] < dictRow['registerTime'].day and now_time.month == dictRow['registerTime'].month and now_time.year == dictRow['registerTime'].year:
                     cls.updateFlag(dictRow['name'], True)
@@ -101,7 +99,6 @@ class fixedIERecord(Accessor):
                 except ValueError:
                     record_date = date(1970, 1, 1)
 
-                # TODO: CACC yyyenn
                 # 欲記錄的日期包含在 "上次更新時間" 跟 "當次登入時間" 之間
                 if record_date >= last_end_time and record_date<=now_time:
                     # 當月需判斷有沒有記錄過
