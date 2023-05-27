@@ -2,6 +2,7 @@
 .vscode
 .coverage
 .DS_Store
+*.icloud
 htmlcov
 coverage_html_report
 __pycache__/
