@@ -83,7 +83,6 @@ class TestLocationPage(MockDB):
             with self.mock_db_config:
                 IEAttribute.setUp_connection_and_table()
                 result = IEAttribute.create()
-                # LocationPage.read()
                 IEAttribute.tearDown_connection(es.NONE)
             self.assertEqual(result, results[i])
             self.assertEqual(_hint_create_name.call_count, i+1)
@@ -92,66 +91,45 @@ class TestLocationPage(MockDB):
             _stdout.truncate(0)
             _stdout.seek(0)
     
-    # @patch("sys.stdout", new_callable=io.StringIO)
-    # def test_read(self, _stdout):
-    #     with self.mock_db_config:
-    #         LocationPage.setUp_connection_and_table()
-    #         LocationPage.read()
-    #         LocationPage.tearDown_connection(es.NONE)
-    #     output_lines = _stdout.getvalue().strip().split('\n')
-    #     locations = ["公司 INCOME",
-    #     "學校 INCOME",
-    #     "家裡 INCOME",
-    #     "政府 INCOME",
-    #     "銀行 INCOME",
-    #     "其它 INCOME",
-    #     "餐廳 EXPENSE",
-    #     "飲料店 EXPENSE",
-    #     "超商 EXPENSE",
-    #     "超市 EXPENSE",
-    #     "夜市 EXPENSE",
-    #     "文具店 EXPENSE",
-    #     "線上商店 EXPENSE",
-    #     "百貨公司 EXPENSE",
-    #     "學校 EXPENSE",
-    #     "其它 EXPENSE"]
-    #     for i, line in enumerate(output_lines):
-    #         self.assertEqual(line, locations[i])
+    @patch("sys.stdout", new_callable=io.StringIO)
+    def test_read(self, _stdout):
+        with self.mock_db_config:
+            IEAttribute.setUp_connection_and_table()
+            IEAttribute.read()
+            IEAttribute.tearDown_connection(es.NONE)
+        self.assertEqual(_stdout.getvalue(), "選項A\n選項C\n")
 
-    # @unittest.skip('TODO')
-    # @patch("sys.stdout", new_callable=io.StringIO)
-    # @patch('builtins.input', side_effect=[
-    #     # pairs of input for 5 cases
-    #     "百貨公司", "商場",
-    #     "蝦皮", "",
-    #     "便利商店", "夜市",
-    #     "誠品", "誠品",
-    #     "蝦皮", "淘寶"])
-    # @patch.object(LocationPage, 'hint_update_new_name')
-    # @patch.object(LocationPage, 'hint_update_name')
-    # def test_update(self, _hint_update_name, _hint_update_new_name, _input, _stdout):
-    #     results = [False, False, False, True, True]
-    #     outputs = [
-    #         "%s目前沒有這個地點%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
-    #         "%s新名稱不得為空%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
-    #         "%s新名稱不得與其它地點的名稱重複%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
-    #         "",
-    #         ""
-    #         ]
-        
-    #     for i in range(5):
-    #         with self.mock_db_config:
-    #             LocationPage.setUp_connection_and_table()
-    #             result = LocationPage.update()
-    #             # LocationPage.read()
-    #             LocationPage.tearDown_connection(es.NONE)
-    #         self.assertEqual(result, results[i])
-    #         self.assertEqual(_hint_update_name.call_count, i+1)
-    #         self.assertEqual(_hint_update_new_name.call_count, i+1)
-    #         self.assertEqual(_input.call_count, 2*i+2)
-    #         self.assertEqual(_stdout.getvalue(), outputs[i])
-    #         _stdout.truncate(0)
-    #         _stdout.seek(0)
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch('builtins.input', side_effect=[
+        # pairs of input for 5 cases
+        "選項B", "選項D",
+        "選項A", "",
+        "選項A", "選項C",
+        "選項A", "選項A",
+        "選項A", "選項D"])
+    @patch.object(IEAttribute, 'hint_update_new_name')
+    @patch.object(IEAttribute, 'hint_update_name')
+    def test_update(self, _hint_update_name, _hint_update_new_name, _input, _stdout):
+        results = [False, False, False, True, True]
+        outputs = [
+            "%s目前沒有這個屬性%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
+            "%s新名稱不得為空%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
+            "%s新名稱不得與既有屬性的名稱重複%s\n" % (const.ANSI_YELLOW, const.ANSI_RESET),
+            "",
+            ""
+            ]
+        for i in range(5):
+            with self.mock_db_config:
+                IEAttribute.setUp_connection_and_table()
+                result = IEAttribute.update()
+                IEAttribute.tearDown_connection(es.NONE)
+            self.assertEqual(result, results[i])
+            self.assertEqual(_hint_update_name.call_count, i+1)
+            self.assertEqual(_hint_update_new_name.call_count, i+1)
+            self.assertEqual(_input.call_count, 2*i+2)
+            self.assertEqual(_stdout.getvalue(), outputs[i])
+            _stdout.truncate(0)
+            _stdout.seek(0)
 
     # @unittest.skip('TODO')
     # @patch("sys.stdout", new_callable=io.StringIO)

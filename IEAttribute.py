@@ -79,7 +79,7 @@ class IEAttribute(Accessor):
 
     @classmethod
     def read(cls):
-        query = sql.select(cls.table.c["name", "IE"]).where(cls.table.c.IE == cls.IE.name)
+        query = sql.select(cls.table.c["name"]).where(cls.table.c.IE == cls.IE.name)
         results = cls.conn.execute(query).fetchall()
         for row in results:
             dictRow = row._asdict()
