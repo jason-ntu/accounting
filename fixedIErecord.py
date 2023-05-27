@@ -31,11 +31,6 @@ class fixedIERecord(Accessor):
                                               note = dictRow['note'])
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
-        if not successful:
-            print("新增固定收支失敗")
-            cls.tearDown_connection(es.ROLLBACK)
-            return
-        print("新增固定收支成功")
         cls.tearDown_connection(es.COMMIT)
 
     @classmethod
@@ -44,30 +39,20 @@ class fixedIERecord(Accessor):
         query = sql.select(cls.tables[0].c.time)
         result = cls.conn.execute(query).fetchall()
 
-        if result:
-            time = result[0][0]
-            formatted_time = time.strftime("%Y-%m-%d %H:%M:%S")
-            cls.tearDown_connection(es.NONE)
-            return parse(formatted_time)
-        else:
-            cls.tearDown_connection(es.NONE)
-            return datetime.now()
-
-
+        time = result[0][0]
+        formatted_time = time.strftime("%Y-%m-%d %H:%M:%S")
+        cls.tearDown_connection(es.NONE)
+        return parse(formatted_time)
 
     @classmethod
-    def recordEndTime(cls):
+    def recordEndTime(cls ,end_time):
         cls.setUp_connection_and_table(["EndTime"])
         query = sql.select(cls.tables[0]).limit(1)
         result = cls.conn.execute(query).fetchone()
 
-        if result:
-            existing_id = result[0]
-            update_query = cls.tables[0].update().where(cls.tables[0].c.id == existing_id).values(time=datetime.today())
-            cls.conn.execute(update_query)
-        else:
-            insert_query = cls.tables[0].insert().values(time=datetime.today())
-            cls.conn.execute(insert_query)
+        existing_id = result[0]
+        update_query = cls.tables[0].update().where(cls.tables[0].c.id == existing_id).values(time=end_time)
+        cls.conn.execute(update_query)
 
         cls.tearDown_connection(es.COMMIT)
 
@@ -109,16 +94,26 @@ class fixedIERecord(Accessor):
 
                 # TODO: CACC yyyenn
                 if now_time.day >= dictRow['day'] and m == 0 and now_flag == False:
-                    cls.newFixedIERocord(dictRow, date(now_time.year, now_time.month, int(dictRow['day'])))
+                    try:
+                        record_date = date(now_time.year, now_time.month, int(dictRow['day']))
+                    except ValueError:
+                        record_date = None
+                    if record_date:
+                        cls.newFixedIERocord(dictRow, record_date)
                     cls.updateFlag(dictRow['name'], True)
                     now_flag = True
                 # TODO: CACC sylvia
                 elif m == 1 and now_flag == True:
                     continue
                 elif m > 0:
-                    cls.newFixedIERocord(dictRow, date(now_time.year, now_time.month-m, int(dictRow['day'])))
+                    try:
+                        record_date = date(now_time.year, now_time.month - m, int(dictRow['day']))
+                    except ValueError:
+                        record_date = None
+                    if record_date:
+                        cls.newFixedIERocord(dictRow, record_date)
 
-        cls.recordEndTime()
+        cls.recordEndTime(datetime.today())
 
 if __name__ == "__main__":  # pragma: no cover
     fixedIERecord = fixedIERecord
