@@ -1,7 +1,7 @@
-TEST_FILE_NAME := budgetTest.py   fixedIETest.py locationTest.py \
+TEST_FILE_NAME := budgetTest.py   fixedIETest.py \
 				 accountTest.py readRecordTest.py reportTest.py settingTest.py recordsTest.py \
 				 menuTest.py exportTest.py fixedIErecordTest.py
-# invoiceTest.py createRecordTest.py updateRecordTest.py deleteRecordTest.py categoryTest.py
+# invoiceTest.py createRecordTest.py updateRecordTest.py deleteRecordTest.py categoryTest.py locationTest.py
 
 RUN_FILE_NAME := menu.py
 CACHE := .coverage htmlcov coverage_html_report

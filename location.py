@@ -1,6 +1,7 @@
 from enum import IntEnum, auto
 import sqlalchemy as sql
 from accessor import Accessor, ExecutionStatus as es
+from recordDirection import RecordDirection, askIE
 import const
 
 
@@ -17,12 +18,15 @@ class LocationPage(Accessor):
     table_name = "Location"
 
     @staticmethod
-    def show():
-        print("%d: 新增地點" % LocationOption.CREATE)
-        print("%d: 查看地點" % LocationOption.READ)
-        print("%d: 修改地點" % LocationOption.UPDATE)
-        print("%d: 刪除地點" % LocationOption.DELETE)
-        print("%d: 回到上一頁" % LocationOption.BACK)
+    def show(IE):
+        IEtext = "收入"
+        if IE == RecordDirection.EXPENSE:
+            IEtext = "支出"
+        print(f"{LocationOption.CREATE}: 新增{IEtext}地點")
+        print(f"{LocationOption.READ}: 查看{IEtext}地點")
+        print(f"{LocationOption.UPDATE}: 修改{IEtext}地點")
+        print(f"{LocationOption.DELETE}: 刪除{IEtext}地點")
+        print(f"{LocationOption.BACK}: 回到上一頁")
 
     @staticmethod
     def choose():
@@ -35,36 +39,36 @@ class LocationPage(Accessor):
         return option
 
     @classmethod
-    def execute(cls, option):
+    def execute(cls, IE, option):
         cls.setUp_connection_and_table()
         if option is LocationOption.CREATE:
-            successful = cls.create()
+            successful = cls.create(IE)
         elif option is LocationOption.READ:
-            cls.read()
+            cls.read(IE)
             cls.tearDown_connection(es.NONE)
             return
         elif option is LocationOption.UPDATE:
-            successful = cls.update()
+            successful = cls.update(IE)
         else:
-            successful = cls.delete()
+            successful = cls.delete(IE)
         if successful:
             cls.tearDown_connection(es.COMMIT)
         else:
             cls.tearDown_connection(es.ROLLBACK)
 
     @classmethod
-    def create(cls):
+    def create(cls, IE):
         cls.hint_create_name()
         name = input()
         if name == "":
             print("%s名稱不得為空%s" % (const.ANSI_YELLOW, const.ANSI_RESET))
             return False
-        query = sql.select(cls.table.c["name"]).where(cls.table.c.name == name)
+        query = sql.select(cls.table.c["name"]).where(sql.and_(cls.table.c.name == name,cls.table.c.IE == IE.name))
         results = cls.conn.execute(query).fetchall()
         if len(results) > 0:
-            print("%s名稱不得與其它地點的名稱重複%s" % (const.ANSI_YELLOW, const.ANSI_RESET))
+            print("%s名稱不得與既有其它地點的名稱重複%s" % (const.ANSI_YELLOW, const.ANSI_RESET))
             return False
-        query = cls.table.insert().values(name=name)
+        query = cls.table.insert().values(name=name, IE=IE.name)
         rowsAffected = cls.conn.execute(query).rowcount
         return rowsAffected == 1
 
@@ -73,15 +77,15 @@ class LocationPage(Accessor):
         print("請輸入新地點的名稱:")
 
     @classmethod
-    def read(cls):
-        query = sql.select(cls.table.c["name", "IE"])
+    def read(cls, IE):
+        query = sql.select(cls.table.c["name", "IE"]).where(cls.table.c.IE == IE.name)
         results = cls.conn.execute(query).fetchall()
         for row in results:
             dictRow = row._asdict()
-            print(f"{dictRow['name']} {dictRow['IE']}")
+            print(dictRow['name'])
         
     @classmethod
-    def update(cls):
+    def update(cls, IE):
         cls.hint_update_name()
         name = input()
         cls.hint_update_new_name()
@@ -89,19 +93,16 @@ class LocationPage(Accessor):
         if new_name == "":
             print("%s新名稱不得為空%s" % (const.ANSI_YELLOW, const.ANSI_RESET))
             return False
-        query = sql.select(cls.table.c["name"]).where(
-            cls.table.c.name == new_name)
+        query = sql.select(cls.table.c["name"]).where(sql.and_(cls.table.c.name == new_name, cls.table.c.IE == IE.name))
         results = cls.conn.execute(query).fetchall()
-        
-        
         # TODO: CACC Jason
         if len(results) > 0 and name != new_name:
-            print("%s新名稱不得與其它地點的名稱重複%s" %
+            print("%s新名稱不得與既有地點的名稱重複%s" %
                   (const.ANSI_YELLOW, const.ANSI_RESET))
             return False
         
 
-        query = cls.table.update().values(name=new_name).where(cls.table.c.name == name)
+        query = cls.table.update().values(name=new_name).where(sql.and_(cls.table.c.name == name, cls.table.c.IE == IE.name))
         rowsAffected = cls.conn.execute(query).rowcount
         if rowsAffected == 0:
             print("%s目前沒有這個地點%s" %
@@ -116,13 +117,13 @@ class LocationPage(Accessor):
         print("請輸入新的名稱:")
 
     @classmethod
-    def delete(cls):
+    def delete(cls, IE):
         cls.hint_delete()
         name = input()
         if name == "":
             print("%s名稱不得為空%s" % (const.ANSI_YELLOW, const.ANSI_RESET))
             return False
-        query = cls.table.delete().where(cls.table.c.name == name)
+        query = cls.table.delete().where(sql.and_(cls.table.c.name == name, cls.table.c.IE == IE.name))
         rowsAffected = cls.conn.execute(query).rowcount
         if rowsAffected == 0:
             print("%s目前沒有這個地點%s" %
@@ -136,11 +137,17 @@ class LocationPage(Accessor):
     @classmethod
     def start(cls):
         while True:
-            cls.show()
+            cls.hint_IE()
+            IE = askIE()
+            cls.show(IE)
             option = cls.choose()
             if option is LocationOption.BACK:
                 return
-            cls.execute(option)
+            cls.execute(IE, option)
+
+    @staticmethod
+    def hint_IE():
+        print("請問要操作收入地點還是支出地點:")
     
     @classmethod
     def getList(cls, IE):
