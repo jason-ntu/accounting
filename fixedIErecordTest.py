@@ -84,12 +84,13 @@ class TestExportPage(MockDB):
         self.assertEqual(dictRow['name'],"獎學金")
         self.assertEqual(dictRow['flag'],0)
 
-    # TODO
+
     @freeze_time("2023-05-18")
+    @patch('sys.stdout', new_callable=io.StringIO)
     @patch.object(fixedIERecord, 'recordEndTime')
     @patch.object(fixedIERecord, 'readFixedIE')
     @patch.object(fixedIERecord, 'getEndTime')
-    def test_start(self, _getEndTime , _readFixedIE, _recordEndTime):
+    def test_start(self, _getEndTime , _readFixedIE, _recordEndTime, _stdout):
         with self.mock_db_config:
             fixedIERecord.setUp_connection_and_table(["FixedIE"])
             query = sql.select(fixedIERecord.tables[0].c["name", "IE" , "category", "account", "amount", "location", "day", "note", "registerTime", "flag"])
@@ -115,6 +116,7 @@ class TestExportPage(MockDB):
         self.assertEqual(_getEndTime.call_count, 4)
         self.assertEqual(_readFixedIE.call_count, 4)
         self.assertEqual(_recordEndTime.call_count, 4)
+        #self.assertEqual(_stdout.getvalue(), "自動記錄固定收支...\n" * 3)
 
 
 
