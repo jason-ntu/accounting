@@ -43,13 +43,19 @@ class TestMenuPage(TestCase):
     @patch("sys.stdout", new_callable = io.StringIO)
     def test_choose(self, m_stdout, m_input):
         self.assertEqual(self.menuPage.choose(), MenuOption.RECORD)
+        self.assertEqual(m_input.call_count, 2)
         self.assertEqual(self.menuPage.choose(), MenuOption.REPORT)
+        self.assertEqual(m_input.call_count, 3)
         self.assertEqual(self.menuPage.choose(), MenuOption.EXPORT)
+        self.assertEqual(m_input.call_count, 4)
         self.assertEqual(self.menuPage.choose(), MenuOption.SETTING)
+        self.assertEqual(m_input.call_count, 5)
         self.assertEqual(self.menuPage.choose(), MenuOption.INVOICE)
+        self.assertEqual(m_input.call_count, 7)
         self.assertEqual(self.menuPage.choose(), MenuOption.CLOSE)
         self.assertEqual(m_input.call_count, 8)
-
+        self.assertEqual(m_stdout.getvalue(), (MenuText.HINT + "\n") * 2)
+        
     @patch.object(SettingPage, 'start')
     @patch.object(InvoicePage, 'start')
     @patch.object(ExportPage, 'start')
