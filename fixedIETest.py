@@ -1,7 +1,7 @@
 import io
 from unittest.mock import patch
 from fixedIE import FixedIEPage, FixedIEOption
-from recordDirection import RecordDirection
+from recordDirection import IEDirection
 from mock_db import MockDB
 from accessor import ExecutionStatus as es
 
@@ -19,8 +19,8 @@ class TestFixedIEPage(MockDB):
 
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_hints(self, _stdout):
-        hints_argc1 = [(FixedIEPage.hint_create_name, RecordDirection.INCOME,  "請輸入新的固定收入名稱:\n"),
-                       (FixedIEPage.hint_create_name, RecordDirection.EXPENSE, "請輸入新的固定支出名稱:\n")]
+        hints_argc1 = [(FixedIEPage.hint_create_name, IEDirection.INCOME,  "請輸入新的固定收入名稱:\n"),
+                       (FixedIEPage.hint_create_name, IEDirection.EXPENSE, "請輸入新的固定支出名稱:\n")]
         hints_argc0 = [(FixedIEPage.hint_create_day, "請輸入每月收支日(1-31):\n"),
                        (FixedIEPage.hint_select_update_name, "請輸入要修改的固定收支的名稱:\n"),
                        (FixedIEPage.hint_update_option, "請選擇要修改的項目(1 類別, 2 帳戶, 3 金額, 4 地點, 5 時間, 6 備註, 7 返回):\n"),

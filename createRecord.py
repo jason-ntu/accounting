@@ -3,11 +3,11 @@ from accessor import ExecutionStatus as es
 import sys
 from account import AccountCategory
 from records import RecordPage
-from recordDirection import RecordDirection
+from recordDirection import IEDirection
 
 class CreateRecordOption(IntEnum):
-    INCOME = RecordDirection.INCOME
-    EXPENSE = RecordDirection.EXPENSE
+    INCOME = IEDirection.INCOME
+    EXPENSE = IEDirection.EXPENSE
     BACK = auto()
 
 class CreateRecordPage(RecordPage):
@@ -30,10 +30,10 @@ class CreateRecordPage(RecordPage):
 
     @classmethod
     def execute(cls, option):
-        if option is RecordDirection.INCOME:
-            cls.IE = RecordDirection.INCOME.name
+        if option is IEDirection.INCOME:
+            cls.IE = IEDirection.INCOME.name
         else :
-            cls.IE = RecordDirection.EXPENSE.name
+            cls.IE = IEDirection.EXPENSE.name
         cls.createRecord()
 
     @classmethod

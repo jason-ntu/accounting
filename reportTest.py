@@ -6,7 +6,7 @@ from datetime import datetime
 from mock_db import MockDB
 from accessor import ExecutionStatus as es
 import const
-from recordDirection import RecordDirection
+from recordDirection import IEDirection
 
 class TestReport(MockDB):
 
@@ -111,10 +111,10 @@ class TestReport(MockDB):
     @patch.object(ReportPage, 'hint_choose_report_type')
     @patch.object(ReportPage, 'Report')
     def test_chooseReportType(self, _Report, _hint_choose_report_type, _input, _stdout):
-        result = ReportPage.chooseReportType('2023-01-01', '2023-04-30', RecordDirection.INCOME)
+        result = ReportPage.chooseReportType('2023-01-01', '2023-04-30', IEDirection.INCOME)
         self.assertEqual(result, False)
-        result = ReportPage.chooseReportType('2023-01-01', '2023-04-30', RecordDirection.INCOME)
-        result = ReportPage.chooseReportType('2023-01-01', '2023-04-30', RecordDirection.EXPENSE)
+        result = ReportPage.chooseReportType('2023-01-01', '2023-04-30', IEDirection.INCOME)
+        result = ReportPage.chooseReportType('2023-01-01', '2023-04-30', IEDirection.EXPENSE)
         self.assertEqual(_Report.call_count, 2)
         self.assertEqual(_hint_choose_report_type.call_count, 3)
 
@@ -122,10 +122,10 @@ class TestReport(MockDB):
     def test_Report(self, _stdout):
         with self.mock_db_config:
             ReportPage.setUp_connection_and_table()
-            result1 = ReportPage.Report('2023-01-01', '2023-03-30', RecordDirection.INCOME, ReportByOption.category)
-            result1 = ReportPage.Report('2023-01-01', '2023-03-30', RecordDirection.EXPENSE, ReportByOption.category)
-            result2 = ReportPage.Report('2023-05-01', '2023-05-19', RecordDirection.EXPENSE, ReportByOption.account)
-            result2 = ReportPage.Report('2023-05-01', '2023-05-23', RecordDirection.INCOME, ReportByOption.account)
+            result1 = ReportPage.Report('2023-01-01', '2023-03-30', IEDirection.INCOME, ReportByOption.category)
+            result1 = ReportPage.Report('2023-01-01', '2023-03-30', IEDirection.EXPENSE, ReportByOption.category)
+            result2 = ReportPage.Report('2023-05-01', '2023-05-19', IEDirection.EXPENSE, ReportByOption.account)
+            result2 = ReportPage.Report('2023-05-01', '2023-05-23', IEDirection.INCOME, ReportByOption.account)
             ReportPage.tearDown_connection(es.NONE)
         self.assertEqual(result1, True)
         self.assertEqual(result2, True)

@@ -3,7 +3,7 @@ import sqlalchemy as sql
 from accessor import ExecutionStatus as es
 from records import RecordPage
 from datetime import datetime
-from recordDirection import RecordDirection
+from recordDirection import IEDirection
 
 class FixedIEOption(IntEnum):
     CREATE = auto()
@@ -68,9 +68,9 @@ class FixedIEPage(RecordPage):
         # TODO: should update askIE, but may need to refactor createRecord and updateRecord
         IEnumber = cls.askIE()
         if IEnumber == 1:
-            IE = RecordDirection.INCOME
+            IE = IEDirection.INCOME
         else:
-            IE = RecordDirection.EXPENSE
+            IE = IEDirection.EXPENSE
         cls.IE = IE.name
 
         cls.hint_create_name(IE)
@@ -108,9 +108,9 @@ class FixedIEPage(RecordPage):
 
     @staticmethod
     def hint_create_name(IE):
-        if IE == RecordDirection.INCOME:
+        if IE == IEDirection.INCOME:
             print("請輸入新的固定收入名稱:")
-        if IE == RecordDirection.EXPENSE:
+        if IE == IEDirection.EXPENSE:
             print("請輸入新的固定支出名稱:")
 
     @staticmethod
