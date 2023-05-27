@@ -1,6 +1,5 @@
 from enum import IntEnum, auto
 from accessor import ExecutionStatus as es
-import sqlalchemy as sql
 import sys
 from fixedIE import FixedIEType
 from account import AccountCategory

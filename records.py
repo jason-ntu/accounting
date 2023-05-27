@@ -15,6 +15,10 @@ class RecordOption(IntEnum):
     DELETE = auto()
     BACK = auto()
 
+class RecordDirection(IntEnum):
+    INCOME = auto()
+    EXPENSE = auto()
+    
 class RecordPage(Accessor):
 
     table_name = "Record"
