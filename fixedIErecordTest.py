@@ -89,31 +89,28 @@ class TestExportPage(MockDB):
     @patch.object(fixedIERecord, 'recordEndTime')
     @patch.object(fixedIERecord, 'readFixedIE')
     @patch.object(fixedIERecord, 'getEndTime')
-    def test_start(self, _getEndTime , _readFixedIE, _recordEndTime):#,_stdout):
-
+    def test_start(self, _getEndTime , _readFixedIE, _recordEndTime):
         with self.mock_db_config:
             fixedIERecord.setUp_connection_and_table(["FixedIE"])
             query = sql.select(fixedIERecord.tables[0].c["name", "IE" , "category", "account", "amount", "location", "day", "note", "registerTime", "flag"])
-            results = fixedIERecord.conn.execute(query).fetchall()
+            _readFixedIE.return_value = fixedIERecord.conn.execute(query).fetchall()
             fixedIERecord.tearDown_connection(es.NONE)
 
-        _readFixedIE.return_value = results
+            # cross year
+            _getEndTime.return_value = datetime(2022, 5, 18, 0, 0, 0)
+            fixedIERecord.start()
 
-        # cross year
-        _getEndTime.return_value = datetime(2022, 5, 18, 0, 0, 0)
-        fixedIERecord.start()
+            # cross month
+            _getEndTime.return_value = datetime(2023, 4, 18, 0, 0, 0)
+            fixedIERecord.start()
 
-        # cross month
-        _getEndTime.return_value = datetime(2023, 4, 18, 0, 0, 0)
-        fixedIERecord.start()
+            # cross day
+            _getEndTime.return_value = datetime(2023, 5, 1, 0, 0, 0)
+            fixedIERecord.start()
 
-        # cross day
-        _getEndTime.return_value = datetime(2023, 5, 1, 0, 0, 0)
-        fixedIERecord.start()
-
-        # same date
-        _getEndTime.return_value = datetime(2023, 5, 18, 0, 0, 0)
-        fixedIERecord.start()
+            # same date
+            _getEndTime.return_value = datetime(2023, 5, 18, 0, 0, 0)
+            fixedIERecord.start()
 
         self.assertEqual(_getEndTime.call_count, 4)
         self.assertEqual(_readFixedIE.call_count, 4)
