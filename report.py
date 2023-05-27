@@ -3,7 +3,7 @@ from datetime import datetime
 import sqlalchemy as sql
 from sqlalchemy import and_
 from accessor import Accessor, ExecutionStatus as es
-from fixedIE import FixedIEType
+from records import RecordDirection
 
 class ReportOption(IntEnum):
     CHOOSE = auto()
@@ -76,7 +76,7 @@ class ReportPage(Accessor):
         cls.hint_choose_report_IE()
         while True:
             try:
-                IE = FixedIEType(int(input()))
+                IE = RecordDirection(int(input()))
                 break
             except ValueError:
                 print("請輸入 1 到 2 之間的數字:")
@@ -140,7 +140,7 @@ class ReportPage(Accessor):
             for report_type, amount, percentage in zip(report_dict.keys(), report_dict.values(), percentages):
                 print(f"\"{report_type}\" 總金額:{amount} 百分比:{percentage}%")
 
-            if IE == FixedIEType.INCOME:
+            if IE == RecordDirection.INCOME:
                 print(f"收入總金額:{total_amount} 百分比:{sum(percentages)}%")
             else:
                 print(f"支出總金額:{total_amount} 百分比:{sum(percentages)}%")

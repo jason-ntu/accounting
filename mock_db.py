@@ -4,7 +4,7 @@ import sqlalchemy as sql
 from mock import patch
 import const
 from account import AccountCategory
-from fixedIE import FixedIEType
+from records import RecordDirection
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from datetime import datetime
 from freezegun import freeze_time
@@ -59,7 +59,7 @@ class MockDB(TestCase):
                             sql.Column(
                                 'name', sql.String(50), nullable=False),
                             sql.Column(
-                            'IE', sql.Enum(FixedIEType), nullable=False)
+                            'IE', sql.Enum(RecordDirection), nullable=False)
                             )
 
         location = sql.Table('Location', metadata,
@@ -68,7 +68,7 @@ class MockDB(TestCase):
                              sql.Column(
                                  'name', sql.String(50), nullable=False),
                             sql.Column(
-                                'IE', sql.Enum(FixedIEType), nullable=False)
+                                'IE', sql.Enum(RecordDirection), nullable=False)
                              )
 
         fixedIE = sql.Table('FixedIE', metadata,
@@ -77,7 +77,7 @@ class MockDB(TestCase):
                         sql.Column(
                             'name', sql.String(50), nullable=False),
                         sql.Column(
-                            'IE', sql.Enum(FixedIEType), nullable=False),
+                            'IE', sql.Enum(RecordDirection), nullable=False),
                         sql.Column(
                             'category', sql.String(30), nullable=False),
                         sql.Column(
@@ -100,7 +100,7 @@ class MockDB(TestCase):
                         sql.Column(
                             'id', sql.Integer(), nullable=False, primary_key=True),
                         sql.Column(
-                            'IE', sql.Enum(FixedIEType), nullable=False),
+                            'IE', sql.Enum(RecordDirection), nullable=False),
                         sql.Column(
                             'category', sql.String(30), nullable=False),
                         sql.Column(
@@ -137,44 +137,44 @@ class MockDB(TestCase):
         conn.execute(account.insert().values(default_accounts))
 
         default_fixedIE = [
-            {'IE': FixedIEType.INCOME.name, 'name': "獎學金", 'category': "獎金", 'account': "中華郵政", 'amount': 10000, 'location': "其它", 'day': 15, 'note': '', 'registerTime':'2023-05-01 10:00:25','flag': True},
-            {'IE': FixedIEType.EXPENSE.name, 'name': "房租", 'category': "其它", 'account': "其它", 'amount': 6000, 'location': "其它", 'day': 20, 'note': 'sos', 'registerTime':datetime.today(), 'flag': False}
+            {'IE': RecordDirection.INCOME.name, 'name': "獎學金", 'category': "獎金", 'account': "中華郵政", 'amount': 10000, 'location': "其它", 'day': 15, 'note': '', 'registerTime':'2023-05-01 10:00:25','flag': True},
+            {'IE': RecordDirection.EXPENSE.name, 'name': "房租", 'category': "其它", 'account': "其它", 'amount': 6000, 'location': "其它", 'day': 20, 'note': 'sos', 'registerTime':datetime.today(), 'flag': False}
         ]
         conn.execute(fixedIE.insert().values(default_fixedIE))
 
         default_categories = [
-            {'name': "薪資", 'IE': FixedIEType.INCOME.name},
-            {'name': "獎金", 'IE': FixedIEType.INCOME.name},
-            {'name': "投資", 'IE': FixedIEType.INCOME.name},
-            {'name': "保險", 'IE': FixedIEType.INCOME.name},
-            {'name': "利息", 'IE': FixedIEType.INCOME.name},
-            {'name': "其它", 'IE': FixedIEType.INCOME.name},
-            {'name': "食物", 'IE': FixedIEType.EXPENSE.name},
-            {'name': "飲料", 'IE': FixedIEType.EXPENSE.name},
-            {'name': "衣服", 'IE': FixedIEType.EXPENSE.name},
-            {'name': "住宿", 'IE': FixedIEType.EXPENSE.name},
-            {'name': "交通", 'IE': FixedIEType.EXPENSE.name},
-            {'name': "其它", 'IE': FixedIEType.EXPENSE.name}
+            {'name': "薪資", 'IE': RecordDirection.INCOME.name},
+            {'name': "獎金", 'IE': RecordDirection.INCOME.name},
+            {'name': "投資", 'IE': RecordDirection.INCOME.name},
+            {'name': "保險", 'IE': RecordDirection.INCOME.name},
+            {'name': "利息", 'IE': RecordDirection.INCOME.name},
+            {'name': "其它", 'IE': RecordDirection.INCOME.name},
+            {'name': "食物", 'IE': RecordDirection.EXPENSE.name},
+            {'name': "飲料", 'IE': RecordDirection.EXPENSE.name},
+            {'name': "衣服", 'IE': RecordDirection.EXPENSE.name},
+            {'name': "住宿", 'IE': RecordDirection.EXPENSE.name},
+            {'name': "交通", 'IE': RecordDirection.EXPENSE.name},
+            {'name': "其它", 'IE': RecordDirection.EXPENSE.name}
         ]
         conn.execute(category.insert().values(default_categories))
 
         default_locations = [
-            {'name': "公司", 'IE': FixedIEType.INCOME.name},
-            {'name': "學校", 'IE': FixedIEType.INCOME.name},
-            {'name': "家裡", 'IE': FixedIEType.INCOME.name},
-            {'name': "政府", 'IE': FixedIEType.INCOME.name},
-            {'name': "銀行", 'IE': FixedIEType.INCOME.name},
-            {'name': "其它", 'IE': FixedIEType.INCOME.name},
-            {'name': "餐廳", 'IE': FixedIEType.EXPENSE.name},
-            {'name': "飲料店", 'IE': FixedIEType.EXPENSE.name},
-            {'name': "超商", 'IE': FixedIEType.EXPENSE.name},
-            {'name': "超市", 'IE': FixedIEType.EXPENSE.name},
-            {'name': "夜市", 'IE': FixedIEType.EXPENSE.name},
-            {'name': "文具店", 'IE': FixedIEType.EXPENSE.name},
-            {'name': "線上商店", 'IE': FixedIEType.EXPENSE.name},
-            {'name': "百貨公司", 'IE': FixedIEType.EXPENSE.name},
-            {'name': "學校", 'IE': FixedIEType.EXPENSE.name},
-            {'name': "其它", 'IE': FixedIEType.EXPENSE.name}
+            {'name': "公司", 'IE': RecordDirection.INCOME.name},
+            {'name': "學校", 'IE': RecordDirection.INCOME.name},
+            {'name': "家裡", 'IE': RecordDirection.INCOME.name},
+            {'name': "政府", 'IE': RecordDirection.INCOME.name},
+            {'name': "銀行", 'IE': RecordDirection.INCOME.name},
+            {'name': "其它", 'IE': RecordDirection.INCOME.name},
+            {'name': "餐廳", 'IE': RecordDirection.EXPENSE.name},
+            {'name': "飲料店", 'IE': RecordDirection.EXPENSE.name},
+            {'name': "超商", 'IE': RecordDirection.EXPENSE.name},
+            {'name': "超市", 'IE': RecordDirection.EXPENSE.name},
+            {'name': "夜市", 'IE': RecordDirection.EXPENSE.name},
+            {'name': "文具店", 'IE': RecordDirection.EXPENSE.name},
+            {'name': "線上商店", 'IE': RecordDirection.EXPENSE.name},
+            {'name': "百貨公司", 'IE': RecordDirection.EXPENSE.name},
+            {'name': "學校", 'IE': RecordDirection.EXPENSE.name},
+            {'name': "其它", 'IE': RecordDirection.EXPENSE.name}
         ]
         conn.execute(location.insert().values(default_locations))
 

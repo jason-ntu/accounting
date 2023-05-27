@@ -1,7 +1,6 @@
 from enum import IntEnum, auto
 from accessor import ExecutionStatus as es
 import sys
-from fixedIE import FixedIEType
 from account import AccountCategory
 from records import RecordPage, RecordDirection
 
@@ -31,10 +30,10 @@ class CreateRecordPage(RecordPage):
 
     @classmethod
     def execute(cls, option):
-        if option is CreateRecordOption.INCOME:
-            cls.IE = FixedIEType.INCOME.name
+        if option is RecordDirection.INCOME:
+            cls.IE = RecordDirection.INCOME.name
         else :
-            cls.IE = FixedIEType.EXPENSE.name
+            cls.IE = RecordDirection.EXPENSE.name
         cls.createRecord()
 
     @classmethod
