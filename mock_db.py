@@ -53,24 +53,6 @@ class MockDB(TestCase):
                              'category', sql.Enum(AccountCategory), default=AccountCategory.CASH, nullable=False)
                          )
 
-        # category = sql.Table('Category', metadata,
-        #                     sql.Column(
-        #                         'id', sql.Integer(), nullable=False, primary_key=True),
-        #                     sql.Column(
-        #                         'name', sql.String(50), nullable=False),
-        #                     sql.Column(
-        #                     'IE', sql.Enum(IEDirection), nullable=False)
-        #                     )
-
-        # location = sql.Table('Location', metadata,
-        #                      sql.Column(
-        #                          'id', sql.Integer(), nullable=False, primary_key=True),
-        #                      sql.Column(
-        #                          'name', sql.String(50), nullable=False),
-        #                     sql.Column(
-        #                         'IE', sql.Enum(IEDirection), nullable=False)
-        #                      )
-
         fixedIE = sql.Table('FixedIE', metadata,
                         sql.Column(
                             'id', sql.Integer(), nullable=False, primary_key=True),
@@ -150,42 +132,6 @@ class MockDB(TestCase):
             {'IE': IEDirection.EXPENSE.name, 'name': "房租", 'category': "其它", 'account': "其它", 'amount': 6000, 'location': "其它", 'day': 20, 'note': 'sos', 'registerTime':datetime.today(), 'flag': False}
         ]
         conn.execute(fixedIE.insert().values(default_fixedIE))
-
-        # default_categories = [
-        #     {'name': "薪資", 'IE': IEDirection.INCOME.name},
-        #     {'name': "獎金", 'IE': IEDirection.INCOME.name},
-        #     {'name': "投資", 'IE': IEDirection.INCOME.name},
-        #     {'name': "保險", 'IE': IEDirection.INCOME.name},
-        #     {'name': "利息", 'IE': IEDirection.INCOME.name},
-        #     {'name': "其它", 'IE': IEDirection.INCOME.name},
-        #     {'name': "食物", 'IE': IEDirection.EXPENSE.name},
-        #     {'name': "飲料", 'IE': IEDirection.EXPENSE.name},
-        #     {'name': "衣服", 'IE': IEDirection.EXPENSE.name},
-        #     {'name': "住宿", 'IE': IEDirection.EXPENSE.name},
-        #     {'name': "交通", 'IE': IEDirection.EXPENSE.name},
-        #     {'name': "其它", 'IE': IEDirection.EXPENSE.name}
-        # ]
-        # conn.execute(category.insert().values(default_categories))
-
-        # default_locations = [
-        #     {'name': "公司", 'IE': IEDirection.INCOME.name},
-        #     {'name': "學校", 'IE': IEDirection.INCOME.name},
-        #     {'name': "家裡", 'IE': IEDirection.INCOME.name},
-        #     {'name': "政府", 'IE': IEDirection.INCOME.name},
-        #     {'name': "銀行", 'IE': IEDirection.INCOME.name},
-        #     {'name': "其它", 'IE': IEDirection.INCOME.name},
-        #     {'name': "餐廳", 'IE': IEDirection.EXPENSE.name},
-        #     {'name': "飲料店", 'IE': IEDirection.EXPENSE.name},
-        #     {'name': "超商", 'IE': IEDirection.EXPENSE.name},
-        #     {'name': "超市", 'IE': IEDirection.EXPENSE.name},
-        #     {'name': "夜市", 'IE': IEDirection.EXPENSE.name},
-        #     {'name': "文具店", 'IE': IEDirection.EXPENSE.name},
-        #     {'name': "線上商店", 'IE': IEDirection.EXPENSE.name},
-        #     {'name': "百貨公司", 'IE': IEDirection.EXPENSE.name},
-        #     {'name': "學校", 'IE': IEDirection.EXPENSE.name},
-        #     {'name': "其它", 'IE': IEDirection.EXPENSE.name}
-        # ]
-        # conn.execute(location.insert().values(default_locations))
 
         default_IE_attributes = [
             {'name': "選項A", 'IE': IEDirection.INCOME.name},
