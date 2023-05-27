@@ -192,3 +192,12 @@ class TestAccountPage(MockDB):
         self.assertEqual(_show.call_count, 5)
         self.assertEqual(_choose.call_count, 5)
         self.assertEqual(_execute.call_count, 4)
+
+    def test_getList(self):
+        with self.mock_db_config:
+            accountList = AccountPage.getList()
+        self.assertEqual(accountList,
+                         [{'name': '錢包', 'category': 'CASH'},
+                            {'name': '中華郵政', 'category': 'DEBIT_CARD'},
+                            {'name': 'Line Pay', 'category': 'ELECTRONIC'},
+                            {'name': 'Line Pay', 'category': 'ELECTRONIC'}])

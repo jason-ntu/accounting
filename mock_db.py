@@ -52,9 +52,6 @@ class MockDB(TestCase):
                          sql.Column(
                              'category', sql.Enum(AccountCategory), default=AccountCategory.CASH, nullable=False)
                          )
-        income = sql.Table('Income', metadata,
-                        sql.Column('id', sql.Integer(), nullable=False, primary_key=True),
-                        sql.Column('name', sql.String(50), nullable=False))
 
         category = sql.Table('Category', metadata,
                             sql.Column(
@@ -139,20 +136,11 @@ class MockDB(TestCase):
         ]
         conn.execute(account.insert().values(default_accounts))
 
-        default_incomes = [
-            {'name': "獎金"},
-            {'name': "退款"},
-            {'name': "回饋"},
-            {'name': "其他"}
-        ]
-        conn.execute(income.insert().values(default_incomes))
-
         default_fixedIE = [
             {'IE': FixedIEType.INCOME.name, 'name': "獎學金", 'category': "獎金", 'account': "中華郵政", 'amount': 10000, 'location': "其它", 'day': 15, 'note': '', 'registerTime':'2023-05-01 10:00:25','flag': True},
             {'IE': FixedIEType.EXPENSE.name, 'name': "房租", 'category': "其它", 'account': "其它", 'amount': 6000, 'location': "其它", 'day': 20, 'note': 'sos', 'registerTime':datetime.today(), 'flag': False}
         ]
         conn.execute(fixedIE.insert().values(default_fixedIE))
-
 
         default_categories = [
             {'name': "薪資", 'IE': FixedIEType.INCOME.name},

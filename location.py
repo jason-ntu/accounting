@@ -74,12 +74,12 @@ class LocationPage(Accessor):
 
     @classmethod
     def read(cls):
-        query = sql.select(cls.table.c["name"])
+        query = sql.select(cls.table.c["name", "IE"])
         results = cls.conn.execute(query).fetchall()
         for row in results:
             dictRow = row._asdict()
-            print(dictRow['name'])
-
+            print(f"{dictRow['name']} {dictRow['IE']}")
+        
     @classmethod
     def update(cls):
         cls.hint_update_name()
