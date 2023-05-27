@@ -26,11 +26,11 @@ class DeleteRecordPage(RecordPage):
         cls.setUp_connection_and_table()
 
         query = sql.select(cls.table).where(cls.table.c.id == ID)
-        results = cls.conn.execute(query).fetchall()
+        results = cls.conn.execute(query).fetchone()
         if results is None:
             successful = False
         else:
-            dictRow = results[0]._asdict()
+            dictRow = results._asdict()
             originIE = dictRow['IE']
             originAccount = dictRow['account']
             originAmount = dictRow['amount']

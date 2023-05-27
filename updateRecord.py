@@ -1,9 +1,7 @@
 from enum import IntEnum, auto
 import sqlalchemy as sql
 from accessor import ExecutionStatus as es
-from sqlalchemy import and_
 from readRecord import ReadRecordPage, ReadRecordOption
-from fixedIE import FixedIEType
 from records import RecordPage
 
 class ItemOption(IntEnum):

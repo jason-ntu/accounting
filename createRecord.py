@@ -1,15 +1,13 @@
 from enum import IntEnum, auto
 from accessor import ExecutionStatus as es
-import sqlalchemy as sql
 import sys
-from fixedIE import FixedIEType
 from account import AccountCategory
 from records import RecordPage
-
+from IEDirection import IEDirection
 
 class CreateRecordOption(IntEnum):
-    INCOME = auto()
-    EXPENSE = auto()
+    INCOME = IEDirection.INCOME
+    EXPENSE = IEDirection.EXPENSE
     BACK = auto()
 
 class CreateRecordPage(RecordPage):
@@ -33,9 +31,9 @@ class CreateRecordPage(RecordPage):
     @classmethod
     def execute(cls, option):
         if option is CreateRecordOption.INCOME:
-            cls.IE = FixedIEType.INCOME.name
+            cls.IE = IEDirection.INCOME.name
         else :
-            cls.IE = FixedIEType.EXPENSE.name
+            cls.IE = IEDirection.EXPENSE.name
         cls.createRecord()
 
     @classmethod

@@ -15,7 +15,7 @@ class TestSetting(TestCase):
         SettingPage.show()
         output_lines = _stdout.getvalue().strip().split("\n")
         self.assertEqual(output_lines[0], "%d: 查看/修改總預算" % SettingOption.BUDGET)
-        self.assertEqual(output_lines[1], "%d: 查看/新增每月固定收支" % SettingOption.FIXEDIE)
+        self.assertEqual(output_lines[1], "%d: 查看/新增/修改/刪除每月固定收支" % SettingOption.FIXEDIE)
         self.assertEqual(output_lines[2], "%d: 查看/新增/修改/刪除類別" % SettingOption.CATEGORY)
         self.assertEqual(output_lines[3], "%d: 查看/新增/修改/刪除支付方式" % SettingOption.BALANCE)
         self.assertEqual(output_lines[4], "%d: 查看/新增/修改/刪除地點" % SettingOption.LOCATION)
