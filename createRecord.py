@@ -3,7 +3,7 @@ from accessor import ExecutionStatus as es
 import sys
 from account import AccountCategory
 from records import RecordPage
-from recordDirection import IEDirection
+from IEDirection import IEDirection
 
 class CreateRecordOption(IntEnum):
     INCOME = IEDirection.INCOME

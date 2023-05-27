@@ -14,7 +14,7 @@ class RecordOption(IntEnum):
     UPDATE = auto()
     DELETE = auto()
     BACK = auto()
-    
+
 class RecordPage(Accessor):
 
     table_name = "Record"

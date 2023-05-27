@@ -1,7 +1,7 @@
 from enum import IntEnum, auto
 import sqlalchemy as sql
 from accessor import Accessor, ExecutionStatus as es
-from recordDirection import IEDirection
+from IEDirection import IEDirection
 import const
 
 class IEOption(IntEnum):
@@ -26,7 +26,7 @@ class IEAttribute(Accessor):
     def hintGetOperation(cls):
         print(f"{Operation.CREATE}: 新增{cls.IE_name}{cls.attribute_name}")
         print(f"{Operation.READ}: 查看{cls.IE_name}{cls.attribute_name}")
-        print(f"{Operation.UPDATE}: 修改{cls.IE_name}{cls.attribute_name}")
+        print(f"{Operation.PUPDATE}: 修改{cls.IE_name}{cls.attribute_name}")
         print(f"{Operation.DELETE}: 刪除{cls.IE_name}{cls.attribute_name}")
         print(f"{Operation.BACK}: 回到上一頁")
 
