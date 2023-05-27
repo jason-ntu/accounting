@@ -1,4 +1,5 @@
 import io
+import unittest
 from unittest.mock import patch
 from fixedIE import FixedIEPage, FixedIEOption
 from IEDirection import IEDirection
@@ -83,108 +84,208 @@ class TestFixedIEPage(MockDB):
                          (const.ANSI_RED, const.ANSI_RESET))
         self.assertEqual(output_lines[2], "%s操作成功%s" %
                          (const.ANSI_GREEN, const.ANSI_RESET))
-        
-    """
-    @patch("sys.stdout", new_callable=io.StringIO)
-    @patch('builtins.input', side_effect=[ 3, 1, "獎學金", 0 ,2 , 0, 5, "一萬", 10000, 80, 25 , '', 2, "房租", 2, 5, 8000, 5, 'sos'])
-    @patch.object(FixedIEPage, 'hint_create_note')
+    
+    @patch.object(FixedIEPage, 'askNote', side_effect=["random", "筆記"])
+    @patch.object(FixedIEPage, 'askDay', side_effect=[1, 31])
     @patch.object(FixedIEPage, 'hint_create_day')
-    @patch.object(FixedIEPage, 'hint_create_account')
-    @patch.object(FixedIEPage, 'hint_create_category')
-    @patch.object(FixedIEPage, 'hint_create_amount')
+    @patch.object(FixedIEPage, 'askLocation', side_effect=["收入地點", "支出地點"])
+    @patch.object(FixedIEPage, 'askAmount', side_effect=[123.4, 10])
+    @patch.object(FixedIEPage, 'askAccount', side_effect=[{'name': "帳號A"}, {'name': "帳號B"}])
+    @patch.object(FixedIEPage, 'askCategory', side_effect=["收入類別", "支出類別"])
     @patch.object(FixedIEPage, 'hint_create_name')
-    @patch.object(FixedIEPage, 'hint_create_type')
-    def test_create(self, _hint_create_type, _hint_create_name, _hint_create_amount, _hint_create_category, _hint_create_account, _hint_create_day, _hint_create_note, _input, _stdout):
-        with self.mock_db_config:
-            FixedIEPage.setUp_connection_and_table()
-            FixedIEPage.create()
-            FixedIEPage.create()
-            FixedIEPage.tearDown_connection(es.NONE)
-        self.assertEqual(_hint_create_type.call_count, 2)
-        self.assertEqual(_hint_create_name.call_count, 2)
-        self.assertEqual(_hint_create_amount.call_count, 2)
-        self.assertEqual(_hint_create_category.call_count, 2)
-        self.assertEqual(_hint_create_account.call_count, 2)
-        self.assertEqual(_input.call_count, 19)
-        output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(output_lines[0], "請輸入 1 到 2 之間的數字:")
-        self.assertEqual(output_lines[1], "請輸入 1 到 3 之間的數字:")
-        self.assertEqual(output_lines[2], "請輸入 1 到 5 之間的數字:")
-        self.assertEqual(output_lines[3], "請輸入數字:")
-        self.assertEqual(output_lines[4], "請輸入 1 到 31 之間的數字:")
-
+    @patch.object(FixedIEPage, 'askIE', side_effect=[IEDirection.INCOME, IEDirection.EXPENSE])
     @patch("sys.stdout", new_callable=io.StringIO)
-    def test_read(self, _stdout):
-        with self.mock_db_config:
-            FixedIEPage.setUp_connection_and_table()
-            FixedIEPage.read()
-            FixedIEPage.tearDown_connection(es.NONE)
-        output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(output_lines[0], "INCOME 名稱\"獎學金\" 類別OTHER 帳戶OTHER 金額10000.0 每月15號 備註:")
-        self.assertEqual(output_lines[1], "EXPENSE 名稱\"房租\" 類別OTHER 帳戶OTHER 金額6000.0 每月20號 備註:sos")
+    @patch('builtins.input', side_effect=["固定收入", "固定支出"])
+    def test_create_and_read(self, _input, _stdout, _askIE, _hint_create_name, _askCategory, _askAccount, _askAmount, _askLocation, _hint_create_day, _askDay, _askNote):
+        outputs = [
+            "INCOME 名稱\"固定收入\" 類別收入類別 帳戶帳號A 金額123.4 地點收入地點 每月1號 備註:random",
+            "EXPENSE 名稱\"固定支出\" 類別支出類別 帳戶帳號B 金額10.0 地點支出地點 每月31號 備註:筆記"
+        ]
+        for i in range(2):
+            with self.subTest(i=i):
+                with self.mock_db_config:
+                    FixedIEPage.setUp_connection_and_table()
+                    FixedIEPage.create()
+                    FixedIEPage.read()
+                    FixedIEPage.tearDown_connection(es.NONE)
+                self.assertEqual(_askIE.call_count, i+1)
+                self.assertEqual(_hint_create_name.call_count, i+1)
+                self.assertEqual(_askCategory.call_count, i+1)
+                self.assertEqual(_askAccount.call_count, i+1)
+                self.assertEqual(_askAmount.call_count, i+1)
+                self.assertEqual(_askLocation.call_count, i+1)
+                self.assertEqual(_hint_create_day.call_count, i+1)
+                self.assertEqual(_askDay.call_count, i+1)
+                self.assertEqual(_askNote.call_count, i+1)
+                self.assertEqual(_stdout.getvalue().strip().split('\n')[-1], outputs[i])
+                _stdout.truncate(0)
+                _stdout.seek(0)
 
-    @patch("sys.stdout", new_callable=io.StringIO)
-    @patch('builtins.input', side_effect=["獎學金", 0, 3, "房租", 4, "unknown", "房租", 6])
+    @patch.object(FixedIEPage, 'hintDayErorMsg')
+    @patch('builtins.input', side_effect=[1, 0, 32, 31])
+    def test_askDay(self, _input, _hintDayErorMsg):
+        result = FixedIEPage.askDay()
+        self.assertEqual(_input.call_count, 1)
+        self.assertEqual(_hintDayErorMsg.call_count, 0)
+        self.assertEqual(result, 1)
+
+        result = FixedIEPage.askDay()
+        self.assertEqual(_input.call_count, 4)
+        self.assertEqual(_hintDayErorMsg.call_count, 2)
+        self.assertEqual(result, 31)
+    
+    @patch.object(FixedIEPage, 'update_note', return_value=True) # spies[5]
+    @patch.object(FixedIEPage, 'update_day', return_value=True) # spies[4]
+    @patch.object(FixedIEPage, 'update_location', return_value=True) # spies[3]
+    @patch.object(FixedIEPage, 'update_amount', return_value=True) # spies[2]
+    @patch.object(FixedIEPage, 'update_account', return_value=True) # spies[1]
+    @patch.object(FixedIEPage, 'update_category', return_value=True) # spies[0]
     @patch.object(FixedIEPage, 'hint_update_option')
     @patch.object(FixedIEPage, 'hint_select_update_name')
-    @patch.object(FixedIEPage, 'update_day')
-    @patch.object(FixedIEPage, 'update_amount')
-    @patch.object(FixedIEPage, 'read')
-    def test_update(self, _read, _update_amount, _update_day, _hint_select_update_name, _hint_update_option, _input, _stdout):
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch('builtins.input', side_effect=[
+        "unknow",
+        "獎學金", 0, 1,
+        "獎學金", "X", 2,
+        "獎學金", "T", 3,
+        "獎學金", "Yes", 4,
+        "獎學金", "", 5,
+        "獎學金", -1, 6,
+        "獎學金", 8, 7
+        ])
+    def test_update(self, _input, _stdout, _hint_select_update_name, _hint_update_option, *spies):
+        for i in range(8):
+            with self.subTest(i for i in range(8)):
+                with self.mock_db_config:
+                        FixedIEPage.setUp_connection_and_table()
+                        result = FixedIEPage.update()
+                        FixedIEPage.tearDown_connection(es.NONE)
+                self.assertEqual(_input.call_count, 3*i+1)
+                self.assertEqual(_hint_select_update_name.call_count, i+1)
+                self.assertEqual(_hint_update_option.call_count, i)
+                if i == 0:
+                    self.assertEqual(result, False)
+                    self.assertEqual(_stdout.getvalue(), "未找到名稱為 \"unknow\" 的固定收支\n")
+                else:
+                    if i in range(1, 7):
+                        self.assertEqual(spies[i-1].call_count, 1)
+                    self.assertEqual(result, True)
+                    self.assertEqual(_stdout.getvalue(), "請輸入 1 到 7 之間的數字:\n")
+                _stdout.truncate(0)
+                _stdout.seek(0)
+
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch.object(FixedIEPage, 'askCategory', return_value="新類別")
+    def test_update_catrgory(self, _askCategory, _stdout):
         with self.mock_db_config:
             FixedIEPage.setUp_connection_and_table()
-            FixedIEPage.update()
-            FixedIEPage.read()
-
-            FixedIEPage.update()
-            FixedIEPage.read()
-
-            FixedIEPage.update()
-            FixedIEPage.read()
-
-            result = FixedIEPage.update()
-
+            result = FixedIEPage.update_category("獎學金")
             FixedIEPage.tearDown_connection(es.NONE)
+        self.assertEqual(_askCategory.call_count, 1)
         self.assertEqual(result, True)
-        self.assertEqual(_read.call_count, 3)
-        self.assertEqual(_update_amount.call_count, 1)
-        self.assertEqual(_update_day.call_count, 1)
-        self.assertEqual(_hint_select_update_name.call_count, 4)
-        self.assertEqual(_hint_update_option.call_count, 3)
-        output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(output_lines[0], "請輸入 1 到 6 之間的數字:")
-        self.assertEqual(output_lines[1], "未找到名稱為 \"unknown\" 的固定收支")
+        self.assertEqual(_stdout.getvalue(), "名稱為 \"獎學金\" 的固定收支類別已成功更新為 新類別\n")
 
-    def test_update_catrgory(self):
-        pass
+        with self.mock_db_config:
+            FixedIEPage.setUp_connection_and_table()
+            result = FixedIEPage.update_category("unknow")
+            FixedIEPage.tearDown_connection(es.NONE)
+        self.assertEqual(_askCategory.call_count, 2)
+        self.assertEqual(result, False)
+        
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch.object(FixedIEPage, 'askAccount', return_value={'name': "新帳戶"})
+    def test_update_account(self, _askAccount, _stdout):
+        with self.mock_db_config:
+            FixedIEPage.setUp_connection_and_table()
+            result = FixedIEPage.update_account("獎學金")
+            FixedIEPage.tearDown_connection(es.NONE)
+        self.assertEqual(_askAccount.call_count, 1)
+        self.assertEqual(result, True)
+        self.assertEqual(_stdout.getvalue(), "名稱為 \"獎學金\" 的固定收支帳戶已成功更新為 新帳戶\n")
 
-    def test_update_account(self):
-        pass
+        with self.mock_db_config:
+            FixedIEPage.setUp_connection_and_table()
+            result = FixedIEPage.update_account("unknow")
+            FixedIEPage.tearDown_connection(es.NONE)
+        self.assertEqual(_askAccount.call_count, 2)
+        self.assertEqual(result, False)
+
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch.object(FixedIEPage, 'askAmount', return_value=1234.56)
+    def test_update_amount(self, _askAmount, _stdout):
+        with self.mock_db_config:
+            FixedIEPage.setUp_connection_and_table()
+            result = FixedIEPage.update_amount("獎學金")
+            FixedIEPage.tearDown_connection(es.NONE)
+        self.assertEqual(_askAmount.call_count, 1)
+        self.assertEqual(result, True)
+        self.assertEqual(_stdout.getvalue(), "名稱為 \"獎學金\" 的固定收支金額已成功更新為 1234.56\n")
+
+        with self.mock_db_config:
+            FixedIEPage.setUp_connection_and_table()
+            result = FixedIEPage.update_amount("unknow")
+            FixedIEPage.tearDown_connection(es.NONE)
+        self.assertEqual(_askAmount.call_count, 2)
+        self.assertEqual(result, False)
+
+    
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch.object(FixedIEPage, 'askLocation', return_value="新地點")
+    def test_update_location(self, _askLocation, _stdout):
+        with self.mock_db_config:
+            FixedIEPage.setUp_connection_and_table()
+            result = FixedIEPage.update_location("獎學金")
+            FixedIEPage.tearDown_connection(es.NONE)
+        self.assertEqual(_askLocation.call_count, 1)
+        self.assertEqual(result, True)
+        self.assertEqual(_stdout.getvalue(), "名稱為 \"獎學金\" 的固定收支地點已成功更新為 新地點\n")
+
+        with self.mock_db_config:
+            FixedIEPage.setUp_connection_and_table()
+            result = FixedIEPage.update_location("unknow")
+            FixedIEPage.tearDown_connection(es.NONE)
+        self.assertEqual(_askLocation.call_count, 2)
+        self.assertEqual(result, False)
 
 
     @patch("sys.stdout", new_callable=io.StringIO)
-    @patch('builtins.input', side_effect=[8000,"八千", 12000, -1000, 8000])
-    @patch.object(FixedIEPage, 'hint_update_format_amount')
-    @patch.object(FixedIEPage, 'hint_update_amount')
-    def test_update_amount(self, _hint_update_amount, _hint_update_format_amount, _input, _stdout):
+    @patch.object(FixedIEPage, 'askDay', return_value=15)
+    @patch.object(FixedIEPage, 'hint_update_day')
+    def test_update_day(self, _hint_update_day, _askDay, _stdout):
         with self.mock_db_config:
             FixedIEPage.setUp_connection_and_table()
-            FixedIEPage.update_amount("獎學金")
-            FixedIEPage.update_amount("獎學金")
-            FixedIEPage.update_amount("房租")
+            result = FixedIEPage.update_day("獎學金")
             FixedIEPage.tearDown_connection(es.NONE)
-        self.assertEqual(_hint_update_amount.call_count, 3)
-        self.assertEqual(_hint_update_format_amount.call_count, 2)
-        output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(output_lines[0], "名稱為 \"獎學金\" 的固定收支金額已成功更新為 8000.00")
-        self.assertEqual(output_lines[1], "名稱為 \"獎學金\" 的固定收支金額已成功更新為 12000.00")
-        self.assertEqual(output_lines[2], "名稱為 \"房租\" 的固定收支金額已成功更新為 8000.00")
-    """
-    def test_update_day(self):
-        pass
+        self.assertEqual(_hint_update_day.call_count, 1)
+        self.assertEqual(_askDay.call_count, 1)
+        self.assertEqual(result, True)
+        self.assertEqual(_stdout.getvalue(), "名稱為 \"獎學金\" 的固定收支時間已成功更新為每月 15 號\n")
 
-    def test_update_note(self):
-        pass
+        with self.mock_db_config:
+            FixedIEPage.setUp_connection_and_table()
+            result = FixedIEPage.update_day("unknow")
+            FixedIEPage.tearDown_connection(es.NONE)
+        self.assertEqual(_hint_update_day.call_count, 2)
+        self.assertEqual(_askDay.call_count, 2)
+        self.assertEqual(result, False)
+
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch.object(FixedIEPage, 'askNote', return_value="新備註")
+    def test_update_note(self, _askNote, _stdout):
+        with self.mock_db_config:
+            FixedIEPage.setUp_connection_and_table()
+            result = FixedIEPage.update_note("獎學金")
+            FixedIEPage.tearDown_connection(es.NONE)
+        self.assertEqual(_askNote.call_count, 1)
+        self.assertEqual(result, True)
+        self.assertEqual(_stdout.getvalue(), "名稱為 \"獎學金\" 的固定收支備註已成功更新為 新備註\n")
+
+        with self.mock_db_config:
+            FixedIEPage.setUp_connection_and_table()
+            result = FixedIEPage.update_note("unknow")
+            FixedIEPage.tearDown_connection(es.NONE)
+        self.assertEqual(_askNote.call_count, 2)
+        self.assertEqual(result, False)
 
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch('builtins.input', side_effect=["獎學金", "unknown", "房租"])
