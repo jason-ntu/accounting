@@ -39,7 +39,6 @@ class InvoicePage(Accessor):
         option = self.choose()
         if option is InvoiceOption.BACK:
             return
-        self.execute(option)
 
     #呈現選擇畫面
     def show(self):
