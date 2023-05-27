@@ -96,11 +96,9 @@ class IEAttribute(Accessor):
             return False
         query = sql.select(cls.table.c["name"]).where(sql.and_(cls.table.c.name == new_name, cls.table.c.IE == cls.IE.name))
         results = cls.conn.execute(query).fetchall()
-        # TODO: CACC Jason
         if len(results) > 0 and name != new_name:
             print(f"{const.ANSI_YELLOW}新名稱不得與既有{cls.attribute_name}的名稱重複{const.ANSI_RESET}")
             return False
-
         query = cls.table.update().values(name=new_name).where(sql.and_(cls.table.c.name == name, cls.table.c.IE == cls.IE.name))
         rowsAffected = cls.conn.execute(query).rowcount
         if rowsAffected == 0:

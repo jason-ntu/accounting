@@ -102,12 +102,17 @@ class TestLocationPage(MockDB):
 
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch('builtins.input', side_effect=[
-        # pairs of input for 5 cases
-        "選項B", "選項D",
-        "選項A", "",
-        "選項A", "選項C",
-        "選項A", "選項A",
-        "選項A", "選項D"])
+        # For logic testing in this function,
+        # CC, PC, and CACC are all covered.
+        #     C1: len(results) > 0
+        #     C2: name != new_name
+        #     P: C1 and C2
+        #                     C1   C2   P
+        "選項B", "選項D",     # F    T   F
+        "選項A", "",         # F    T   F
+        "選項A", "選項C",     # T    T   T
+        "選項A", "選項A",     # T    F   F
+        "選項A", "選項D"])    # F    T   F 
     @patch.object(IEAttribute, 'hint_update_new_name')
     @patch.object(IEAttribute, 'hint_update_name')
     def test_update(self, _hint_update_name, _hint_update_new_name, _input, _stdout):
