@@ -167,3 +167,7 @@ class TestLocationPage(MockDB):
         self.assertEqual(_show.call_count, 5)
         self.assertEqual(_choose.call_count, 5)
         self.assertEqual(_execute.call_count, 4)
+
+    def test_getList(self):
+        self.assertEqual(LocationPage.getList('INCOME'), ['公司', '學校', '家裡', '政府', '銀行', '其它'])
+        self.assertEqual(LocationPage.getList('EXPENSE'), ['餐廳', '飲料店', '超商', '超市', '夜市', '文具店', '線上商店', '百貨公司', '學校', '其它'])

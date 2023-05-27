@@ -162,3 +162,7 @@ class TestCategoryPage(MockDB):
         self.assertEqual(_show.call_count, 5)
         self.assertEqual(_choose.call_count, 5)
         self.assertEqual(_execute.call_count, 4)
+
+    def test_getList(self):
+        self.assertEqual(CategoryPage.getList('INCOME'), ['薪資', '獎金', '投資', '保險', '利息', '其它'])
+        self.assertEqual(CategoryPage.getList('EXPENSE'), ['食物', '飲料', '衣服', '住宿', '交通', '其它'])
