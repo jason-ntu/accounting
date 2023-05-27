@@ -5,3 +5,5 @@
 htmlcov
 coverage_html_report
 __pycache__/
+*.icloud
+
