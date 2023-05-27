@@ -228,19 +228,17 @@ class RecordPage(Accessor):
         return note
     
     @classmethod
-    def updateAccountAmount(cls, IE, account, amount):
+    def updateAccountAmount(cls, IE, account_name, amount):
         if (IE == "EXPENSE"):
             amount *= -1
-        cls.setUp_connection_and_table(["Account"])
-        query = sql.select(cls.tables[0].c['balance']).where(cls.tables[0].c.name == account)
-        resultProxy = cls.conn.execute(query)
-        successful = (resultProxy.rowcount == 1)
-        results = cls.conn.execute(query).fetchall()
-        dictRow = results[0]._asdict() 
-        originAmount = dictRow['balance']
+        # cls.setUp_connection_and_table(["Account"])
+        query_balance = sql.select(cls.tables[1].c['balance']).where(cls.tables[1].c.name == account_name)
+        account = cls.conn.execute(query_balance).fetchone()
+        dictAccount = account._asdict() 
+        originAmount = dictAccount['balance']
         newAmount = originAmount + amount
-        query = sql.update(cls.tables[0]).where(cls.tables[0].c.name == account).values(balance=newAmount)
-        resultProxy = cls.conn.execute(query)
+        update_balance = sql.update(cls.tables[1]).where(cls.tables[1].c.name == account_name).values(balance=newAmount)
+        resultProxy = cls.conn.execute(update_balance)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("更新帳戶餘額失敗")
