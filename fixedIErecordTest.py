@@ -87,11 +87,16 @@ class TestExportPage(MockDB):
 
     # TODO
     @patch('sys.stdout', new_callable=io.StringIO)
-    @patch.object(fixedIERecord, 'getEndTime')
-    @patch.object(fixedIERecord, 'readFixedIE')
     @patch.object(fixedIERecord, 'recordEndTime')
-    def test_start(self, _recordEndTime, _readFixedIE, _getEndTime  ,_stdout):
+    @patch.object(fixedIERecord, 'readFixedIE')
+    @patch.object(fixedIERecord, 'getEndTime')
+    def test_start_1(self, _getEndTime , _readFixedIE, _recordEndTime,_stdout):
         fixedIERecord.start()
-        self.assertEqual(_recordEndTime.call_count, 1)
-        self.assertEqual(_readFixedIE.call_count, 1)
+        _getEndTime.return_value = date(2022, 12, 31)
+        _readFixedIE.return_value = [('INCOME', '獎學金', '獎金', '中華郵政', 10000.0, '其它', 15, '', datetime(2023, 5, 1, 10, 0, 25), 1),
+                  ('EXPENSE', '房租', '其它', '其它', 6000.0, '其它', 20, 'sos', datetime(2023, 5, 18, 0, 0), 0)]
         self.assertEqual(_getEndTime.call_count, 1)
+        self.assertEqual(_readFixedIE.call_count, 1)
+        self.assertEqual(_recordEndTime.call_count, 1)
+
+
