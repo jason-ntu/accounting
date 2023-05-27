@@ -3,12 +3,12 @@ from accessor import ExecutionStatus as es
 import sys
 from fixedIE import FixedIEType
 from account import AccountCategory
-from records import RecordPage
+from records import RecordPage, RecordDirection
 
 
 class CreateRecordOption(IntEnum):
-    INCOME = auto()
-    EXPENSE = auto()
+    INCOME = RecordDirection.INCOME
+    EXPENSE = RecordDirection.EXPENSE
     BACK = auto()
 
 class CreateRecordPage(RecordPage):
