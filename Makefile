@@ -5,7 +5,7 @@ TEST_FILE_NAME := IEAttributeTest.py budgetTest.py fixedIETest.py \
 
 RUN_FILE_NAME := menu.py
 CACHE := .coverage htmlcov coverage_html_report
-TARGET := FixedIEIntegrationTest.FixedIEIntegrationTest
+TARGET := invoiceTest.TestInvoicePage
 
 .PHONY: all clean
 
