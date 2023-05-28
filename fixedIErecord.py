@@ -31,7 +31,7 @@ class fixedIERecord(Accessor):
                                               note = dictRow['note'])
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
-        cls.tearDown_connection(es.COMMIT)
+        cls.tearDown_connection(es.SILENT_COMMIT)
 
     @classmethod
     def getEndTime(cls):
@@ -63,9 +63,9 @@ class fixedIERecord(Accessor):
         rowsAffected = cls.conn.execute(query).rowcount
         successful = (rowsAffected == 1)
         if not successful:
-            cls.tearDown_connection(es.ROLLBACK)
+            cls.tearDown_connection(es.SILENT_ROLLBACK)
             return
-        cls.tearDown_connection(es.COMMIT)
+        cls.tearDown_connection(es.SILENT_COMMIT)
 
     @classmethod
     def start(cls):
@@ -111,7 +111,3 @@ class fixedIERecord(Accessor):
                         cls.newFixedIERocord(dictRow, record_date)
 
         cls.recordEndTime(datetime.today())
-
-if __name__ == "__main__":  # pragma: no cover
-    fixedIERecord = fixedIERecord
-    fixedIERecord.start()

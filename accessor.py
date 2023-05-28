@@ -6,7 +6,9 @@ import const
 class ExecutionStatus(IntEnum):
     NONE = auto()
     COMMIT = auto()
+    SILENT_COMMIT = auto()
     ROLLBACK = auto()
+    SILENT_ROLLBACK = auto()
 
 class Accessor:
 
@@ -34,9 +36,13 @@ class Accessor:
         if operation is ExecutionStatus.COMMIT:
             cls.conn.commit()
             print("%s操作成功%s" % (const.ANSI_GREEN, const.ANSI_RESET))
+        elif operation is ExecutionStatus.SILENT_COMMIT:
+            cls.conn.commit()
         elif operation is ExecutionStatus.ROLLBACK:
             cls.conn.rollback()
             print("%s操作失敗%s" % (const.ANSI_RED, const.ANSI_RESET))
+        elif operation is ExecutionStatus.SILENT_COMMIT:
+            cls.conn.rollback()
         else:
             pass
         cls.conn.close()
