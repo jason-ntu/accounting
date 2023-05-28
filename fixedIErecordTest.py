@@ -7,6 +7,7 @@ from accessor import Accessor
 import const
 from fixedIErecord import fixedIERecord
 from datetime import datetime, date
+from freezegun import freeze_time
 
 class TestExportPage(MockDB):
 
@@ -16,8 +17,9 @@ class TestExportPage(MockDB):
             results = fixedIERecord.readFixedIE()
             fixedIERecord.tearDown_connection(es.NONE)
 
-        fixedIE = [('INCOME', '獎學金', '獎金', '中華郵政', 10000.0, '其它', 15, '', datetime(2023, 5, 1, 10, 0, 25), 1),
-                  ('EXPENSE', '房租', '其它', '其它', 6000.0, '其它', 20, 'sos', datetime(2023, 5, 18, 0, 0), 0)]
+        fixedIE = [('INCOME', '薪水', '其他', '中華郵政', 48000.0, '其它', 4, '', datetime(2023, 5, 18, 0, 0), 0),
+                   ('INCOME', '獎學金', '獎金', '中華郵政', 10000.0, '其它', 18, '', datetime(2023, 5, 18, 0, 0), 0),
+                   ('EXPENSE', '房租', '其它', '其它', 6000.0, '其它', 31, 'sos', datetime(2023, 5, 18, 0, 0), 0)]
         self.assertEqual(fixedIE, results)
 
     def test_newFixedIERocord(self):
@@ -74,10 +76,7 @@ class TestExportPage(MockDB):
 
         with self.mock_db_config:
             fixedIERecord.setUp_connection_and_table(["FixedIE"])
-            query = sql.select(
-                        fixedIERecord.tables[0].c.name,
-                        fixedIERecord.tables[0].c.flag
-                    ).where(fixedIERecord.tables[0].c.name == "獎學金")
+            query = sql.select(fixedIERecord.tables[0].c["name", "flag"]).where(fixedIERecord.tables[0].c.name == "獎學金")
             results = fixedIERecord.conn.execute(query).fetchall()
             fixedIERecord.tearDown_connection(es.NONE)
 
@@ -85,13 +84,40 @@ class TestExportPage(MockDB):
         self.assertEqual(dictRow['name'],"獎學金")
         self.assertEqual(dictRow['flag'],0)
 
-    # TODO
+
+    @freeze_time("2023-05-18")
     @patch('sys.stdout', new_callable=io.StringIO)
-    @patch.object(fixedIERecord, 'getEndTime')
-    @patch.object(fixedIERecord, 'readFixedIE')
     @patch.object(fixedIERecord, 'recordEndTime')
-    def test_start(self, _recordEndTime, _readFixedIE, _getEndTime  ,_stdout):
-        fixedIERecord.start()
-        self.assertEqual(_recordEndTime.call_count, 1)
-        self.assertEqual(_readFixedIE.call_count, 1)
-        self.assertEqual(_getEndTime.call_count, 1)
+    @patch.object(fixedIERecord, 'readFixedIE')
+    @patch.object(fixedIERecord, 'getEndTime')
+    def test_start(self, _getEndTime , _readFixedIE, _recordEndTime, _stdout):
+        with self.mock_db_config:
+            fixedIERecord.setUp_connection_and_table(["FixedIE"])
+            query = sql.select(fixedIERecord.tables[0].c["name", "IE" , "category", "account", "amount", "location", "day", "note", "registerTime", "flag"])
+            _readFixedIE.return_value = fixedIERecord.conn.execute(query).fetchall()
+            fixedIERecord.tearDown_connection(es.NONE)
+
+            # cross year
+            _getEndTime.return_value = datetime(2022, 5, 18, 0, 0, 0)
+            fixedIERecord.start()
+
+            # cross month
+            _getEndTime.return_value = datetime(2023, 4, 18, 0, 0, 0)
+            fixedIERecord.start()
+
+            # cross day
+            _getEndTime.return_value = datetime(2023, 5, 1, 0, 0, 0)
+            fixedIERecord.start()
+
+            # same date
+            _getEndTime.return_value = datetime(2023, 5, 18, 0, 0, 0)
+            fixedIERecord.start()
+
+        self.assertEqual(_getEndTime.call_count, 4)
+        self.assertEqual(_readFixedIE.call_count, 4)
+        self.assertEqual(_recordEndTime.call_count, 4)
+        #self.assertEqual(_stdout.getvalue(), "自動記錄固定收支...\n" * 3)
+
+
+
+
