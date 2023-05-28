@@ -177,7 +177,7 @@ class TestAccountPage(MockDB):
             _stdout.truncate(0)
             _stdout.seek(0)
             RecordPage.setUp_connection_and_table([RecordPage.table_name, AccountPage.table_name])
-            RecordPage.updateAccountAmount('EXPENSE', '錢包', 100)
+            RecordPage.updateAccountAmount("INCOME", '錢包', 100)
             output_result = _stdout.getvalue().strip().split('\n')[0]
             _stdout.truncate(0)
             _stdout.seek(0)
@@ -187,42 +187,42 @@ class TestAccountPage(MockDB):
             _stdout.seek(0)
         
         expected_outputs = [
-            # "1: 新增支付方式",
-            # "2: 查看支付方式",
-            # "3: 修改支付方式",
-            # "4: 刪除支付方式",
-            # "5: 回到上一頁",
             "\"錢包\" 剩餘 10000.0 元，支付類型為 CASH",
-            # "\"中華郵政\" 剩餘 25000.0 元，支付類型為 DEBIT_CARD",
-            # "\"Line Pay\" 剩餘 3000.0 元，支付類型為 ELECTRONIC",
-            # "\"Line Pay\" 剩餘 100.0 元，支付類型為 ELECTRONIC"
-            # "1: 新增支付方式",
-            # "2: 查看支付方式",
-            # "3: 修改支付方式",
-            # "4: 刪除支付方式",
-            # "5: 回到上一頁"
             f"{const.ANSI_GREEN}操作成功{const.ANSI_RESET}",
-            # "1: 新增支付方式",
-            # "2: 查看支付方式",
-            # "3: 修改支付方式",
-            # "4: 刪除支付方式",
-            # "5: 回到上一頁",
-            "\"錢包\" 剩餘 9900.0 元，支付類型為 CASH",
-            # "\"中華郵政\" 剩餘 25000.0 元，支付類型為 DEBIT_CARD",
-            # "\"Line Pay\" 剩餘 3000.0 元，支付類型為 ELECTRONIC",
-            # "\"Line Pay\" 剩餘 100.0 元，支付類型為 ELECTRONIC"
-            # "1: 新增支付方式",
-            # "2: 查看支付方式",
-            # "3: 修改支付方式",
-            # "4: 刪除支付方式",
-            # "5: 回到上一頁"
+            "\"錢包\" 剩餘 10100.0 元，支付類型為 CASH",
         ]
-
         self.assertEqual(output_before, expected_outputs[0])
         self.assertEqual(output_result, expected_outputs[1])
         self.assertEqual(output_after, expected_outputs[2])
             
-
+    @patch.object(AccountPage, "show")
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch('builtins.input', side_effect=[2, 5, 2, 5])
+    def test_updateAccountAmount2(self, _input, _stdout, _show):
+        with self.mock_db_config:
+            AccountPage.start()
+            output_before = _stdout.getvalue().strip().split('\n')[0]
+            _stdout.truncate(0)
+            _stdout.seek(0)
+            RecordPage.setUp_connection_and_table([RecordPage.table_name, AccountPage.table_name])
+            RecordPage.updateAccountAmount("EXPENSE", '錢包', 500)
+            output_result = _stdout.getvalue().strip().split('\n')[0]
+            _stdout.truncate(0)
+            _stdout.seek(0)
+            AccountPage.start()
+            output_after = _stdout.getvalue().strip().split('\n')[0]
+            _stdout.truncate(0)
+            _stdout.seek(0)
+        
+        expected_outputs = [
+            "\"錢包\" 剩餘 10100.0 元，支付類型為 CASH",
+            f"{const.ANSI_GREEN}操作成功{const.ANSI_RESET}",
+            "\"錢包\" 剩餘 9600.0 元，支付類型為 CASH",
+        ]
+        self.assertEqual(output_before, expected_outputs[0])
+        self.assertEqual(output_result, expected_outputs[1])
+        self.assertEqual(output_after, expected_outputs[2])
+            
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_hints(self, _stdout):
         hints = [(RecordPage.hintGetCategory, "請輸入紀錄類型:\n"),
