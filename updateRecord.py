@@ -151,7 +151,7 @@ class UpdateRecordPage(RecordPage):
     def updateIE(cls, ID):
         newIE = cls.askIE()
         cls.setUp_connection_and_table()
-        query = sql.update(cls.table).where(cls.table.c.id == ID).values(IE=cls.IEList[newIE-1])
+        query = sql.update(cls.table).where(cls.table.c.id == ID).values(IE=newIE.name)
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:

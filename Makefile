@@ -1,4 +1,4 @@
-TEST_FILE_NAME := budgetTest.py   fixedIETest.py \
+TEST_FILE_NAME := fixedIETest.py budgetTest.py   fixedIETest.py \
 				 accountTest.py readRecordTest.py reportTest.py settingTest.py recordsTest.py \
 				 menuTest.py exportTest.py fixedIErecordTest.py
 # invoiceTest.py createRecordTest.py updateRecordTest.py deleteRecordTest.py categoryTest.py locationTest.py
