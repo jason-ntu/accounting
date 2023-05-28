@@ -6,6 +6,7 @@ TEST_FILE_NAME := IEAttributeTest.py budgetTest.py fixedIETest.py \
 
 RUN_FILE_NAME := menu.py
 CACHE := .coverage htmlcov coverage_html_report
+TARGET := FixedIEIntegrationTest.FixedIEIntegrationTest.test_same_day_as_register
 
 .PHONY: all clean
 
@@ -31,6 +32,9 @@ database:
 
 record:
 	@python3 records.py
+
+single-test:
+	@python3 -m unittest $(TARGET)
 
 clean:
 	@$(RM) -r $(CACHE)
