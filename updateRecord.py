@@ -3,6 +3,7 @@ import sqlalchemy as sql
 from accessor import ExecutionStatus as es
 from readRecord import ReadRecordPage, ReadRecordOption
 from records import RecordPage
+from account import AccountPage
 
 class ItemOption(IntEnum):
     IE = auto()
@@ -115,23 +116,22 @@ class UpdateRecordPage(RecordPage):
     @classmethod
     def updateAmount(cls, ID):
         newAmount = cls.askAmount()
-        cls.setUp_connection_and_table()
+        cls.setUp_connection_and_table([cls.table_name, AccountPage.table_name])
 
-        query = sql.select(cls.table).where(cls.table.c.id == ID)
+        query = sql.select(cls.tables[0]).where(cls.tables[0].c.id == ID)
         results = cls.conn.execute(query).fetchall()
         dictRow = results[0]._asdict() 
         originIE = dictRow['IE']
         originAccount = dictRow['account']
         originAmount = dictRow['amount']    
             
-        query = sql.update(cls.table).where(cls.table.c.id == ID).values(amount=newAmount)
+        query = sql.update(cls.tables[0]).where(cls.tables[0].c.id == ID).values(amount=newAmount)
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
             cls.tearDown_connection(es.ROLLBACK)
             return
-        cls.tearDown_connection(es.COMMIT)
         cls.updateAccountAmount(originIE, originAccount, newAmount-originAmount)
 
     @classmethod
