@@ -1,4 +1,3 @@
-from unittest import skip
 import io
 from unittest.mock import patch
 import sqlalchemy as sql
@@ -23,7 +22,6 @@ class TestExportPage(MockDB):
                    ('EXPENSE', '房租', '其它', '其它', 6000.0, '其它', 31, 'sos', datetime(2023, 5, 18, 0, 0), 0)]
         self.assertEqual(fixedIE, results)
 
-    @skip("")
     def test_newFixedIERocord(self):
         fixedIE = {'IE': 'EXPENSE', 'name': 'YOUTUBE premium', 'category': '其它', 'account': 'Line Pay', 'amount': 50.0, 'location': '其它', 'day': 6, 'note': 'youtube premium', 'registerTime': datetime(2023, 5, 3, 0, 0), 'flag': 0}
         with self.mock_db_config:
@@ -53,8 +51,8 @@ class TestExportPage(MockDB):
             fixedIERecord.tearDown_connection(es.NONE)
         self.assertEqual(end_time.strftime("%Y-%m-%d %H:%M:%S"), "2023-05-04 00:13:45")
     
-    @skip("")
-    def test_recordEndTime(self):
+    @patch('sys.stdout', new_callable=io.StringIO)
+    def test_recordEndTime(self, _stdout):
         with self.mock_db_config:
             fixedIERecord.setUp_connection_and_table(["EndTime"])
             end_time = datetime.today().replace(microsecond=0)
@@ -70,7 +68,6 @@ class TestExportPage(MockDB):
         dictRow = result._asdict()
         self.assertEqual(dictRow['time'], end_time)
 
-    @skip("")
     def test_updateFlag(self):
         with self.mock_db_config:
             fixedIERecord.setUp_connection_and_table(["FixedIE"])
