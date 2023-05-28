@@ -19,14 +19,14 @@ class Operation(IntEnum):
 # this class is intended to be a base class for CategoryPage and LocationPage
 class IEAttribute(Accessor):
 
-    attribute_name = ""
-    IE_name = ""
+    attribute_name = "屬性"
+    IE_name = "收支"
 
     @classmethod
     def hintGetOperation(cls):
         print(f"{Operation.CREATE}: 新增{cls.IE_name}{cls.attribute_name}")
         print(f"{Operation.READ}: 查看{cls.IE_name}{cls.attribute_name}")
-        print(f"{Operation.PUPDATE}: 修改{cls.IE_name}{cls.attribute_name}")
+        print(f"{Operation.UPDATE}: 修改{cls.IE_name}{cls.attribute_name}")
         print(f"{Operation.DELETE}: 刪除{cls.IE_name}{cls.attribute_name}")
         print(f"{Operation.BACK}: 回到上一頁")
 
@@ -79,7 +79,7 @@ class IEAttribute(Accessor):
 
     @classmethod
     def read(cls):
-        query = sql.select(cls.table.c["name", "IE"]).where(cls.table.c.IE == cls.IE.name)
+        query = sql.select(cls.table.c["name"]).where(cls.table.c.IE == cls.IE.name)
         results = cls.conn.execute(query).fetchall()
         for row in results:
             dictRow = row._asdict()
@@ -96,11 +96,9 @@ class IEAttribute(Accessor):
             return False
         query = sql.select(cls.table.c["name"]).where(sql.and_(cls.table.c.name == new_name, cls.table.c.IE == cls.IE.name))
         results = cls.conn.execute(query).fetchall()
-        # TODO: CACC Jason
         if len(results) > 0 and name != new_name:
             print(f"{const.ANSI_YELLOW}新名稱不得與既有{cls.attribute_name}的名稱重複{const.ANSI_RESET}")
             return False
-
         query = cls.table.update().values(name=new_name).where(sql.and_(cls.table.c.name == name, cls.table.c.IE == cls.IE.name))
         rowsAffected = cls.conn.execute(query).rowcount
         if rowsAffected == 0:
