@@ -87,21 +87,17 @@ class TestUpdateRecord(MockDB):
         self.assertEqual(output_lines[1], "此紀錄ID不存在")
         self.assertEqual(output_lines[2], "%s操作失敗%s" % (const.ANSI_RED, const.ANSI_RESET))
     
-    # @patch("sys.stdout", new_callable=io.StringIO)
-    # @patch.object(UpdateRecordPage, 'askAmount', return_value=[100])
-    # def test_updateAmount(self, _askAmount, _stdout):
-    #     with self.mock_db_config:
-    #         UpdateRecordPage.setUp_connection_and_table()
-    #         UpdateRecordPage.updateAmount(1)
-    #         UpdateRecordPage.updateAmount(20)
-    #         UpdateRecordPage.tearDown_connection(es.NONE)
-    #     self.assertEqual(_askAmount.call_count, 2)
-    #     output_lines = _stdout.getvalue().strip().split('\n')
-    #     self.assertEqual(len(output_lines), 3)
-    #     self.assertEqual(output_lines[0], "%s操作成功%s" % (const.ANSI_GREEN, const.ANSI_RESET))
-    #     self.assertEqual(output_lines[1], "此紀錄ID不存在")
-    #     self.assertEqual(output_lines[2], "%s操作失敗%s" % (const.ANSI_RED, const.ANSI_RESET))
-    
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch.object(UpdateRecordPage, 'updateAccountAmount')
+    @patch.object(UpdateRecordPage, 'askAmount', return_value=100)
+    def test_updateAmount(self, _askAmount, _updateAccountAmount, _stdout):
+        with self.mock_db_config:
+            UpdateRecordPage.updateAmount(1)
+            UpdateRecordPage.tearDown_connection(es.NONE)
+        self.assertEqual(_askAmount.call_count, 1)
+        self.assertEqual(_updateAccountAmount.call_count, 1)
+        output_lines = _stdout.getvalue().strip().split('\n')
+
     @patch("sys.stdout", new_callable=io.StringIO)
     @patch.object(UpdateRecordPage, 'askLocation', return_value=["便利商店"])
     def test_updateLocation(self, _askLocation, _stdout):

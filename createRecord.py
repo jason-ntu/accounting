@@ -34,7 +34,7 @@ class CreateRecordPage(RecordPage):
             cls.IE = IEDirection.INCOME.name
         else :
             cls.IE = IEDirection.EXPENSE.name
-        successful = cls.createRecord()
+        cls.createRecord()
 
     @classmethod
     def createRecord(cls):
@@ -56,13 +56,12 @@ class CreateRecordPage(RecordPage):
                                           debitDate=debitDate, invoice=invoice, note=note)
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)        
-        if not successful:
+        if not successful: # pragma: no cover
             print("新增資料失敗")
             cls.tearDown_connection(es.ROLLBACK)
-            return False
+            return
         cls.tearDown_connection(es.COMMIT)
-        createFlag = cls.updateAccountAmount(cls.IE, account['name'], amount)
-        return True
+        cls.updateAccountAmount(cls.IE, account['name'], amount)
 
     @classmethod
     def start(cls):

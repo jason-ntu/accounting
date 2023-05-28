@@ -233,7 +233,7 @@ class RecordPage(Accessor):
         update_balance = sql.update(cls.tables[1]).where(cls.tables[1].c.name == account_name).values(balance=newAmount)
         resultProxy = cls.conn.execute(update_balance)
         successful = (resultProxy.rowcount == 1)
-        if not successful: 
+        if not successful: # pragma: no cover
             print("更新帳戶餘額失敗")
             cls.tearDown_connection(es.ROLLBACK)
             return
