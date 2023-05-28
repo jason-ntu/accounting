@@ -5,6 +5,7 @@ from account import AccountPage
 from location import LocationPage
 from datetime import datetime
 from accessor import ExecutionStatus as es
+from IEDirection import IEDirection
 import sqlalchemy as sql
 import re
 
@@ -18,7 +19,6 @@ class RecordOption(IntEnum):
 class RecordPage(Accessor):
 
     table_name = "Record"
-    IEList = ["INCOME", "EXPENSE"]
     categoryList = []
     accountList = []
     locationList = []
@@ -87,14 +87,8 @@ class RecordPage(Accessor):
         cls.hintGetIE()
         while True:
             try:
-                IE = int(input())
-
-                # TODO: CACC Elia
-                if IE <= len(cls.IEList) and IE > 0:
-                    break
-
-                else: 
-                    raise ValueError()
+                IE = IEDirection(int(input()))
+                break
             except ValueError:
                 cls.hintGetIE()
         return IE
@@ -228,19 +222,16 @@ class RecordPage(Accessor):
         return note
     
     @classmethod
-    def updateAccountAmount(cls, IE, account, amount):
+    def updateAccountAmount(cls, IE, account_name, amount):
         if (IE == "EXPENSE"):
             amount *= -1
-        cls.setUp_connection_and_table(["Account"])
-        query = sql.select(cls.tables[0].c['balance']).where(cls.tables[0].c.name == account)
-        resultProxy = cls.conn.execute(query)
-        successful = (resultProxy.rowcount == 1)
-        results = cls.conn.execute(query).fetchall()
-        dictRow = results[0]._asdict() 
-        originAmount = dictRow['balance']
+        query_balance = sql.select(cls.tables[1].c['balance']).where(cls.tables[1].c.name == account_name)
+        account = cls.conn.execute(query_balance).fetchone()
+        dictAccount = account._asdict() 
+        originAmount = dictAccount['balance']
         newAmount = originAmount + amount
-        query = sql.update(cls.tables[0]).where(cls.tables[0].c.name == account).values(balance=newAmount)
-        resultProxy = cls.conn.execute(query)
+        update_balance = sql.update(cls.tables[1]).where(cls.tables[1].c.name == account_name).values(balance=newAmount)
+        resultProxy = cls.conn.execute(update_balance)
         successful = (resultProxy.rowcount == 1)
         if not successful:
             print("更新帳戶餘額失敗")

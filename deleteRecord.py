@@ -2,6 +2,7 @@ import sqlalchemy as sql
 from accessor import ExecutionStatus as es
 from readRecord import ReadRecordPage, ReadRecordOption
 from records import RecordPage
+from account import AccountPage
 
 class DeleteRecordPage(RecordPage):
 
@@ -23,9 +24,9 @@ class DeleteRecordPage(RecordPage):
     @classmethod
     def deleteByID(cls):
         ID = cls.checkIDInteger()
-        cls.setUp_connection_and_table()
+        cls.setUp_connection_and_table([cls.table_name, AccountPage.table_name])
 
-        query = sql.select(cls.table).where(cls.table.c.id == ID)
+        query = sql.select(cls.tables[0]).where(cls.tables[0].c.id == ID)
         results = cls.conn.execute(query).fetchone()
         if results is None:
             successful = False
@@ -35,14 +36,13 @@ class DeleteRecordPage(RecordPage):
             originAccount = dictRow['account']
             originAmount = dictRow['amount']
 
-            query = sql.delete(cls.table).where(cls.table.c.id == ID)
+            query = sql.delete(cls.tables[0]).where(cls.tables[0].c.id == ID)
             resultProxy = cls.conn.execute(query)
             successful = (resultProxy.rowcount == 1)
         if not successful:
             print("此紀錄ID不存在")
             cls.tearDown_connection(es.ROLLBACK)
             return
-        cls.tearDown_connection(es.COMMIT)
         cls.updateAccountAmount(originIE, originAccount, -originAmount)
 
     @classmethod

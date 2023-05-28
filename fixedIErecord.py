@@ -69,9 +69,10 @@ class fixedIERecord(Accessor):
 
     @classmethod
     def start(cls):
-        last_end_time = cls.getEndTime()
-        now_time = datetime.today()
-
+        last_end_time = cls.getEndTime().date()
+        now_time = datetime.today().date()
+        #print("last time: ", last_end_time)
+        #print("now time: ", now_time)
         results = cls.readFixedIE()
         print("自動記錄固定收支...")
 
@@ -80,37 +81,33 @@ class fixedIERecord(Accessor):
         for row in results:
             dictRow = row._asdict()
 
+            # 從上次登入時間開始 run
             for m in range(month_difference, -1, -1):
-                # TODO: CACC sylvia
+                # 最新的月份，更新flag(表示還沒record)
                 if m == 0 and month_difference > 0:
                     cls.updateFlag(dictRow['name'], False)
                     now_flag = False
-                # TODO: CACC yyyenn
+                # ex: 2023-05-27 設定一個每月 3 號的固定收支，若當月有登入不可以record
                 elif dictRow['day'] < dictRow['registerTime'].day and now_time.month == dictRow['registerTime'].month and now_time.year == dictRow['registerTime'].year:
                     cls.updateFlag(dictRow['name'], True)
                     now_flag = True
                 else:
                     now_flag = dictRow['flag']
 
-                # TODO: CACC yyyenn
-                if now_time.day >= dictRow['day'] and m == 0 and now_flag == False:
-                    try:
-                        record_date = date(now_time.year, now_time.month, int(dictRow['day']))
-                    except ValueError:
-                        record_date = None
-                    if record_date:
+                try:
+                    record_date = date(now_time.year, now_time.month-m, int(dictRow['day']))
+                except ValueError:
+                    record_date = date(1970, 1, 1)
+
+                # 欲記錄的日期包含在 "上次更新時間" 跟 "當次登入時間" 之間
+                if record_date >= last_end_time and record_date<=now_time:
+                    # 當月需判斷有沒有記錄過
+                    if now_time.day >= dictRow['day'] and m == 0 and now_flag == False:
                         cls.newFixedIERocord(dictRow, record_date)
-                    cls.updateFlag(dictRow['name'], True)
-                    now_flag = True
-                # TODO: CACC sylvia
-                elif m == 1 and now_flag == True:
-                    continue
-                elif m > 0:
-                    try:
-                        record_date = date(now_time.year, now_time.month - m, int(dictRow['day']))
-                    except ValueError:
-                        record_date = None
-                    if record_date:
+                        cls.updateFlag(dictRow['name'], True)
+                        now_flag = True
+                    # 其他月份全部record
+                    elif m > 0 :
                         cls.newFixedIERocord(dictRow, record_date)
 
         cls.recordEndTime(datetime.today())

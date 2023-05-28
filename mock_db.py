@@ -128,8 +128,9 @@ class MockDB(TestCase):
         conn.execute(account.insert().values(default_accounts))
 
         default_fixedIE = [
-            {'IE': IEDirection.INCOME.name, 'name': "獎學金", 'category': "獎金", 'account': "中華郵政", 'amount': 10000, 'location': "其它", 'day': 15, 'note': '', 'registerTime':'2023-05-01 10:00:25','flag': True},
-            {'IE': IEDirection.EXPENSE.name, 'name': "房租", 'category': "其它", 'account': "其它", 'amount': 6000, 'location': "其它", 'day': 20, 'note': 'sos', 'registerTime':datetime.today(), 'flag': False}
+            {'IE': IEDirection.INCOME.name, 'name': "薪水", 'category': "其他", 'account': "中華郵政", 'amount': 48000, 'location': "其它", 'day': 4, 'note': '', 'registerTime':datetime.today(),'flag': False},
+            {'IE': IEDirection.INCOME.name, 'name': "獎學金", 'category': "獎金", 'account': "中華郵政", 'amount': 10000, 'location': "其它", 'day': 18, 'note': '', 'registerTime':datetime.today(),'flag': False},
+            {'IE': IEDirection.EXPENSE.name, 'name': "房租", 'category': "其它", 'account': "其它", 'amount': 6000, 'location': "其它", 'day': 31, 'note': 'sos', 'registerTime':datetime.today(), 'flag': False}
         ]
         conn.execute(fixedIE.insert().values(default_fixedIE))
 
