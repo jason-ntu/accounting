@@ -1,5 +1,4 @@
 import io
-import unittest
 from unittest.mock import patch
 from fixedIE import FixedIEPage, FixedIEOption
 from IEDirection import IEDirection
