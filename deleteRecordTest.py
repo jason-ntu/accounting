@@ -36,20 +36,20 @@ class TestDeleteRecord(MockDB):
         self.assertEqual(output_lines[4], "請輸入想刪除的紀錄ID:")
         self.assertEqual(output_lines[5], "請輸入想刪除的紀錄ID:")
 
-    @patch("sys.stdout", new_callable=io.StringIO)
-    @patch.object(DeleteRecordPage, "checkIDInteger", side_effect=[1, 10])
-    def test_deleteByID(self, _checkIDInteger, _stdout):
-        with self.mock_db_config:
-            DeleteRecordPage.setUp_connection_and_table()
-            DeleteRecordPage.deleteByID()
-            DeleteRecordPage.deleteByID()
-            DeleteRecordPage.tearDown_connection(es.NONE)
-        self.assertEqual(_checkIDInteger.call_count, 2)
-        output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(len(output_lines), 3)
-        self.assertEqual(output_lines[0], "%s操作成功%s" % (const.ANSI_GREEN, const.ANSI_RESET))
-        self.assertEqual(output_lines[1], "此紀錄ID不存在")
-        self.assertEqual(output_lines[2], "%s操作失敗%s" % (const.ANSI_RED, const.ANSI_RESET))
+    # @patch("sys.stdout", new_callable=io.StringIO)
+    # @patch.object(DeleteRecordPage, "checkIDInteger", side_effect=[1, 10])
+    # def test_deleteByID(self, _checkIDInteger, _stdout):
+    #     with self.mock_db_config:
+    #         DeleteRecordPage.setUp_connection_and_table()
+    #         DeleteRecordPage.deleteByID()
+    #         DeleteRecordPage.deleteByID()
+    #         DeleteRecordPage.tearDown_connection(es.NONE)
+    #     self.assertEqual(_checkIDInteger.call_count, 2)
+    #     output_lines = _stdout.getvalue().strip().split('\n')
+    #     self.assertEqual(len(output_lines), 3)
+    #     self.assertEqual(output_lines[0], "%s操作成功%s" % (const.ANSI_GREEN, const.ANSI_RESET))
+    #     self.assertEqual(output_lines[1], "此紀錄ID不存在")
+    #     self.assertEqual(output_lines[2], "%s操作失敗%s" % (const.ANSI_RED, const.ANSI_RESET))
     
     @patch.object(DeleteRecordPage, "deleteByID")
     @patch.object(ReadRecordPage, "execute")

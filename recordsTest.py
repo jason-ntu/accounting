@@ -12,6 +12,7 @@ from deleteRecord import DeleteRecordPage
 from category import CategoryPage
 from account import AccountPage
 from location import LocationPage
+import sqlalchemy as sql
 
 class TestAccountPage(MockDB):
 
@@ -243,3 +244,13 @@ class TestAccountPage(MockDB):
             self.assertMultiLineEqual(_stdout.getvalue(), hint[1])
             _stdout.truncate(0)
             _stdout.seek(0)
+
+    # @patch("sys.stdout", new_callable=io.StringIO)
+    # def test_updateAccountAmount(self, _stdout):
+    #     with self.mock_db_config:
+    #         RecordPage.setUp_connection_and_table(["Record"])
+    #         RecordPage.updateAccountAmount("EXPENSE", "現金", 100)
+    #         query = sql.select(RecordPage.tables[0].c['amount']).where(RecordPage.tables[0].c.account == "現金")
+    #         result = RecordPage.conn.execute(query).fetchone()
+    #         RecordPage.tearDown_connection(es.NONE)
+        
