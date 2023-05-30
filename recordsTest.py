@@ -12,6 +12,7 @@ from deleteRecord import DeleteRecordPage
 from category import CategoryPage
 from account import AccountPage
 from location import LocationPage
+import sqlalchemy as sql
 
 class TestAccountPage(MockDB):
 
@@ -160,6 +161,68 @@ class TestAccountPage(MockDB):
         self.assertEqual(_hintGetNote.call_count, 2)
         self.assertEqual(_input.call_count, 2)
 
+    @patch.object(AccountPage, "show")
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch('builtins.input', side_effect=[
+        # read and then back
+        2, 5,
+        # call updateAccountAmount...
+        # read and then back
+        2, 5
+        ])
+    def test_updateAccountAmount(self, _input, _stdout, _show):
+        with self.mock_db_config:
+            AccountPage.start()
+            output_before = _stdout.getvalue().strip().split('\n')[0]
+            _stdout.truncate(0)
+            _stdout.seek(0)
+            RecordPage.setUp_connection_and_table([RecordPage.table_name, AccountPage.table_name])
+            RecordPage.updateAccountAmount("INCOME", '錢包', 100)
+            output_result = _stdout.getvalue().strip().split('\n')[0]
+            _stdout.truncate(0)
+            _stdout.seek(0)
+            AccountPage.start()
+            output_after = _stdout.getvalue().strip().split('\n')[0]
+            _stdout.truncate(0)
+            _stdout.seek(0)
+        
+        expected_outputs = [
+            "\"錢包\" 剩餘 10000.0 元，支付類型為 CASH",
+            f"{const.ANSI_GREEN}操作成功{const.ANSI_RESET}",
+            "\"錢包\" 剩餘 10100.0 元，支付類型為 CASH",
+        ]
+        self.assertEqual(output_before, expected_outputs[0])
+        self.assertEqual(output_result, expected_outputs[1])
+        self.assertEqual(output_after, expected_outputs[2])
+            
+    @patch.object(AccountPage, "show")
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch('builtins.input', side_effect=[2, 5, 2, 5])
+    def test_updateAccountAmount2(self, _input, _stdout, _show):
+        with self.mock_db_config:
+            AccountPage.start()
+            output_before = _stdout.getvalue().strip().split('\n')[0]
+            _stdout.truncate(0)
+            _stdout.seek(0)
+            RecordPage.setUp_connection_and_table([RecordPage.table_name, AccountPage.table_name])
+            RecordPage.updateAccountAmount("EXPENSE", '錢包', 500)
+            output_result = _stdout.getvalue().strip().split('\n')[0]
+            _stdout.truncate(0)
+            _stdout.seek(0)
+            AccountPage.start()
+            output_after = _stdout.getvalue().strip().split('\n')[0]
+            _stdout.truncate(0)
+            _stdout.seek(0)
+        
+        expected_outputs = [
+            "\"錢包\" 剩餘 10100.0 元，支付類型為 CASH",
+            f"{const.ANSI_GREEN}操作成功{const.ANSI_RESET}",
+            "\"錢包\" 剩餘 9600.0 元，支付類型為 CASH",
+        ]
+        self.assertEqual(output_before, expected_outputs[0])
+        self.assertEqual(output_result, expected_outputs[1])
+        self.assertEqual(output_after, expected_outputs[2])
+            
     @patch("sys.stdout", new_callable=io.StringIO)
     def test_hints(self, _stdout):
         hints = [(RecordPage.hintGetCategory, "請輸入紀錄類型:\n"),
@@ -181,3 +244,5 @@ class TestAccountPage(MockDB):
             self.assertMultiLineEqual(_stdout.getvalue(), hint[1])
             _stdout.truncate(0)
             _stdout.seek(0)
+
+    

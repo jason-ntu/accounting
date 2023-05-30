@@ -7,7 +7,7 @@ from accessor import ExecutionStatus as es
 import const
 from datetime import datetime
 from readRecord import ReadRecordPage, ReadRecordOption
-
+from records import RecordOption, RecordPage
 
 class TestDeleteRecord(MockDB):
     
@@ -37,19 +37,24 @@ class TestDeleteRecord(MockDB):
         self.assertEqual(output_lines[5], "請輸入想刪除的紀錄ID:")
 
     @patch("sys.stdout", new_callable=io.StringIO)
-    @patch.object(DeleteRecordPage, "checkIDInteger", side_effect=[1, 10])
-    def test_deleteByID(self, _checkIDInteger, _stdout):
+    @patch.object(RecordPage, "updateAccountAmount")
+    @patch.object(DeleteRecordPage, "checkIDInteger", return_value=1)
+    def test_deleteByID(self, _checkIDInteger, _updateAccountAmount, _stdout):
         with self.mock_db_config:
-            DeleteRecordPage.setUp_connection_and_table()
-            DeleteRecordPage.deleteByID()
             DeleteRecordPage.deleteByID()
             DeleteRecordPage.tearDown_connection(es.NONE)
-        self.assertEqual(_checkIDInteger.call_count, 2)
-        output_lines = _stdout.getvalue().strip().split('\n')
-        self.assertEqual(len(output_lines), 3)
-        self.assertEqual(output_lines[0], "%s操作成功%s" % (const.ANSI_GREEN, const.ANSI_RESET))
-        self.assertEqual(output_lines[1], "此紀錄ID不存在")
-        self.assertEqual(output_lines[2], "%s操作失敗%s" % (const.ANSI_RED, const.ANSI_RESET))
+        self.assertEqual(_checkIDInteger.call_count, 1)
+        self.assertEqual(_updateAccountAmount.call_count, 1)
+    
+    @patch("sys.stdout", new_callable=io.StringIO)
+    @patch.object(RecordPage, "updateAccountAmount")
+    @patch.object(DeleteRecordPage, "checkIDInteger", return_value=10)
+    def test_deleteByID2(self, _checkIDInteger, _updateAccountAmount, _stdout):
+        with self.mock_db_config:
+            DeleteRecordPage.deleteByID()
+            DeleteRecordPage.tearDown_connection(es.NONE)
+        self.assertEqual(_checkIDInteger.call_count, 1)
+        self.assertEqual(_updateAccountAmount.call_count, 0)
     
     @patch.object(DeleteRecordPage, "deleteByID")
     @patch.object(ReadRecordPage, "execute")

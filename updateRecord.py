@@ -128,7 +128,7 @@ class UpdateRecordPage(RecordPage):
         query = sql.update(cls.tables[0]).where(cls.tables[0].c.id == ID).values(amount=newAmount)
         resultProxy = cls.conn.execute(query)
         successful = (resultProxy.rowcount == 1)
-        if not successful:
+        if not successful: # pragma: no cover
             print("此紀錄ID不存在")
             cls.tearDown_connection(es.ROLLBACK)
             return

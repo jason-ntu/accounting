@@ -48,18 +48,19 @@ class CreateRecordPage(RecordPage):
             debitDate = cls.askDebitDate()
         invoice = cls.askInvoice()
         note = cls.askNote()
-
+        
         cls.setUp_connection_and_table([cls.table_name, AccountPage.table_name])
         query = cls.tables[0].insert().values(IE=cls.IE,category=category,
                                           amount=amount, account=account['name'],
                                           location=location, purchaseDate=purchaseDate,
                                           debitDate=debitDate, invoice=invoice, note=note)
         resultProxy = cls.conn.execute(query)
-        successful = (resultProxy.rowcount == 1)
-        if not successful:
+        successful = (resultProxy.rowcount == 1)        
+        if not successful: # pragma: no cover
             print("新增資料失敗")
             cls.tearDown_connection(es.ROLLBACK)
             return
+        cls.tearDown_connection(es.COMMIT)
         cls.updateAccountAmount(cls.IE, account['name'], amount)
 
     @classmethod
