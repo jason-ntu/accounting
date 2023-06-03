@@ -1,7 +1,6 @@
 TEST_FILE_NAME := IEAttributeTest.py budgetTest.py fixedIETest.py accountTest.py  reportTest.py\
 				  settingTest.py menuTest.py exportTest.py fixedIErecordTest.py  \
-				 createRecordTest.py readRecordTest.py recordsTest.py updateRecordTest.py deleteRecordTest.py 
-# invoiceTest.py
+				 createRecordTest.py readRecordTest.py recordsTest.py updateRecordTest.py deleteRecordTest.py invoiceTest.py
 
 
 RUN_FILE_NAME := menu.py
