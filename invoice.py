@@ -21,9 +21,9 @@ class InvoiceText():
     TITLE = '========== 記帳簿［自動對獎］ =========='
     SUBTITLE = '［首頁］'
     QUESTION = '請選擇功能：'
-    HINT = '輸入錯誤，請重新輸入！\n'
-    NODATA = '本期兌獎資訊抓取失敗！\n'
-    NOPAIR = '本期未中獎！\n'
+    HINT = '輸入錯誤，請重新輸入！'
+    NODATA = '本期兌獎資訊抓取失敗！'
+    NOPAIR = '本期未中獎！'
 
 class InvoicePage(Accessor):
     table_name = "Record"
@@ -36,7 +36,7 @@ class InvoicePage(Accessor):
         if self.dicLatest:
             self.goPair()
         else:
-            print(InvoiceText.NODATA)
+            print(InvoiceText.NODATA + "\n")
 
         self.show()
         option = self.choose()
@@ -56,7 +56,7 @@ class InvoicePage(Accessor):
                     option = InvoiceOption(int(input(InvoiceText.QUESTION)))
                     break
                 except ValueError:
-                    print(InvoiceText.HINT)
+                    print(InvoiceText.HINT + "\n")
             return option
 
     # 上網抓發票資訊
@@ -112,7 +112,9 @@ class InvoicePage(Accessor):
     
             browser.close()        
         except:
-            print(InvoiceText.NODATA)
+            if browser:
+                browser.close()
+            print(InvoiceText.NODATA + "\n")
 
     # 取得符合期別之紀錄
     def queryRecord(self, dateS, dateE):
@@ -152,9 +154,9 @@ class InvoicePage(Accessor):
                 print(tabulate(df2, headers = headerC, tablefmt = 'pretty', showindex = False, stralign = 'left'))
                 print("\n")
             else:
-                print(InvoiceText.NOPAIR)
+                print(InvoiceText.NOPAIR + "\n")
         else:
-            print(InvoiceText.NOPAIR)
+            print(InvoiceText.NOPAIR + "\n")
 
     # 兌獎邏輯
     def checkNumbers(self, myInvoice):
