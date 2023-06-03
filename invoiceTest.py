@@ -10,8 +10,6 @@ from datetime import date
 from unittest.mock import Mock
 
 class TestInvoicePage(MockDB):
-# [(1, 'INCOME', '薪資', '錢包', 11.0, '餐廳', datetime.date(2023, 1, 30), datetime.date(2023, 1, 30), '12322152', '2434324'), (2, 'EXPENSE', '食物', '儲蓄卡', 23.0, '餐廳', datetime.date(2023, 2, 22), datetime.date(2023, 2, 22), '66882140', '323')]
-# self.dicLatest = {'period': '112年01-02月中獎號碼單', 'award1': '06634385', 'award2': '66882140', 'award3': ['25722152', '93412693', '16957025']}
     records = []
     dicLatest = {}
 
