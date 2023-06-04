@@ -7,9 +7,14 @@ Install dependencies:
 make install
 ```
 
+Initialize a mysql database for dev:
+```
+make database
+```
+
 Start the program:
 ```
-make run
+make menu
 ```
 
 Run test:
@@ -20,9 +25,4 @@ make test
 Show coverage:
 ```
 make coverage
-```
-
-Initialize a mysql database for dev:
-```
-make database
 ```

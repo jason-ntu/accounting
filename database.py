@@ -189,5 +189,5 @@ def reinitialize(config):
     initialize(config)
 
 if __name__ == "__main__":
-    # initialize(cfg.dev)
-    reinitialize(cfg.dev)
+    initialize(cfg.dev)
+    # reinitialize(cfg.dev)

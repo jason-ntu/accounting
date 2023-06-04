@@ -44,7 +44,8 @@ class TestCreateRecord(MockDB):
     @patch.object(RecordPage, "askAmount", return_value = 100)
     @patch.object(RecordPage, "askAccount", return_value = {'name': '信用卡', 'category': 'CREDIT_CARD'})
     @patch.object(RecordPage, "askCategory", return_value = "類別")
-    def test_createRecord(self, _askCategory, _askAccount, _askAmount, _askLocation, _askPurchaseDate, _askDebitDate, _askInvoice, _askNote, _updateAccountAmount):
+    @patch("sys.stdout", new_callable=io.StringIO)
+    def test_createRecord(self, _stdout, _askCategory, _askAccount, _askAmount, _askLocation, _askPurchaseDate, _askDebitDate, _askInvoice, _askNote, _updateAccountAmount):
         with self.mock_db_config:
             CreateRecordPage.IE = 'EXPENSE'
             CreateRecordPage.createRecord()
@@ -68,7 +69,8 @@ class TestCreateRecord(MockDB):
     @patch.object(RecordPage, "askAmount", return_value = 100)
     @patch.object(RecordPage, "askAccount", return_value = {'name': '現金', 'category': 'CASH'})
     @patch.object(RecordPage, "askCategory", return_value = "類別")
-    def test_createRecord2(self, _askCategory, _askAccount, _askAmount, _askLocation, _askPurchaseDate, _askDebitDate, _askInvoice, _askNote, _updateAccountAmount):
+    @patch("sys.stdout", new_callable=io.StringIO)
+    def test_createRecord2(self, _stdout, _askCategory, _askAccount, _askAmount, _askLocation, _askPurchaseDate, _askDebitDate, _askInvoice, _askNote, _updateAccountAmount):
         with self.mock_db_config:
             CreateRecordPage.IE = 'EXPENSE'
             CreateRecordPage.createRecord()
@@ -82,7 +84,6 @@ class TestCreateRecord(MockDB):
         self.assertEqual(_askInvoice.call_count, 1)
         self.assertEqual(_askNote.call_count, 1)
         self.assertEqual(_updateAccountAmount.call_count, 1)
-
 
     @patch.object(CreateRecordPage, "execute")
     @patch.object(CreateRecordPage, "choose",
