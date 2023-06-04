@@ -288,6 +288,3 @@ class FixedIEPage(RecordPage):
             if option is FixedIEOption.BACK:
                 return
             cls.execute(option)
-
-if __name__ == "__main__":  # pragma: no cover
-    FixedIEPage.start()

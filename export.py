@@ -101,7 +101,3 @@ class ExportPage(Accessor):
             if option is ExportOption.BACK:
                 return
             cls.execute(option)
-
-if __name__ == '__main__': # pragma: no cover
-    ExportPage = ExportPage()
-    ExportPage.start()

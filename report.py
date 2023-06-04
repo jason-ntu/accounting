@@ -157,7 +157,3 @@ class ReportPage(Accessor):
             if option is ReportOption.BACK:
                 return
             cls.execute(option)
-
-if __name__ == '__main__': # pragma: no cover
-    settingsPage = ReportPage()
-    settingsPage.start()

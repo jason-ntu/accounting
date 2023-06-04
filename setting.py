@@ -57,7 +57,3 @@ class SettingPage():
             if option is SettingOption.BACK:
                 return
             cls.execute(option)
-
-
-if __name__ == "__main__":  # pragma: no cover
-    SettingPage.start()

@@ -1,40 +1,33 @@
-TEST_FILE_NAME := IEAttributeTest.py budgetTest.py fixedIETest.py accountTest.py  reportTest.py\
-				  settingTest.py menuTest.py exportTest.py fixedIErecordTest.py  \
-				 createRecordTest.py readRecordTest.py recordsTest.py updateRecordTest.py deleteRecordTest.py 
-# invoiceTest.py
 
-
-RUN_FILE_NAME := menu.py
+UNIT_TEST := accountTest.py budgetTest.py createRecordTest.py deleteRecordTest.py exportTest.py \
+				fixedIETest.py IEAttributeTest.py menuTest.py readRecordTest.py \
+				recordsTest.py reportTest.py settingTest.py updateRecordTest.py invoiceTest.py
+E2E_TEST := FixedIEE2ETest.py
+ALL_TEST := $(UNIT_TEST) $(E2E_TEST)
+MENU := menu.py
 CACHE := .coverage htmlcov coverage_html_report
-TARGET := invoiceTest.TestInvoicePage
 
 .PHONY: all clean
 
-run:
-	@python3 $(RUN_FILE_NAME)
+meun:
+	@python3 $(MENU)
 
 test:
-	@python3 -m unittest $(TEST_FILE_NAME)
+	@python3 -m unittest $(UNIT_TEST)
+
+e2e-test:
+	@python3 -m unittest $(E2E_TEST)
 
 coverage:
-	@coverage run -m unittest $(TEST_FILE_NAME)
+	@coverage run -m unittest $(ALL_TEST)
 	@coverage report -m
 	@coverage html
 
 install:
 	@pip3 install -r requirements.txt
 
-requirements:
-	@pip3 freeze > requirements.txt
-
 database:
 	@python3 database.py
-
-record:
-	@python3 records.py
-
-single-test:
-	@python3 -m unittest $(TARGET)
 
 clean:
 	@$(RM) -r $(CACHE)

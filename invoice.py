@@ -186,8 +186,3 @@ class InvoicePage(Accessor):
                 break
         
         return ret
-
-
-if __name__ == '__main__': # pragma: no cover
-    invoicePage = InvoicePage()
-    invoicePage.start()

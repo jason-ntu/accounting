@@ -148,6 +148,3 @@ class ReadRecordPage(RecordPage):
             if option is ReadRecordOption.BACK:
                 return
             cls.execute(option)
-
-if __name__ == '__main__':  # pragma: no cover
-    ReadRecordPage.start()
