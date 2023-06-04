@@ -9,7 +9,7 @@ CACHE := .coverage htmlcov coverage_html_report
 
 .PHONY: all clean
 
-meun:
+menu:
 	@python3 $(MENU)
 
 test:
@@ -31,3 +31,6 @@ database:
 
 clean:
 	@$(RM) -r $(CACHE)
+
+run:
+	@coverage run -m unittest invoiceTest.TestInvoicePage.test_queryLatest

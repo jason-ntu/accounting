@@ -2,7 +2,7 @@ import calendar
 import sqlalchemy as sql
 import pandas as pd
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromiumService
+from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
@@ -12,6 +12,7 @@ from accessor import Accessor, ExecutionStatus as es
 from sqlalchemy import and_
 from enum import IntEnum, auto
 from tabulate import tabulate
+from selenium.webdriver.chrome.options import Options
 
 class InvoiceOption(IntEnum):
     BACK = auto()
@@ -61,14 +62,20 @@ class InvoicePage(Accessor):
     # 上網抓發票資訊
     def queryLatest(self):
         aryAward3 = []
+        browser = None
 
         try:            
-            options = webdriver.ChromeOptions()
+            options = Options()
             options.add_argument('--headless')
-            options.add_argument('--windows-size=1920,1080')
-            options.add_argument('--disable-gpu')
-            options.add_argument('--start-maximized')
-            browser = webdriver.Chrome(service=ChromiumService(ChromeDriverManager().install()), options=options)
+            options.add_argument('--disable-dev-shm-usage')
+            options.add_argument('--no-sandbox')
+            # print("stop0")
+            browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+            
+            # print("stop1")
+            # print("self.dicLatest:", self.dicLatest)
+            # print("browser: ", browser)
+
             url = 'https://invoice.etax.nat.gov.tw/'
             browser.get(url)
     
@@ -110,9 +117,9 @@ class InvoicePage(Accessor):
         
         except:
             print(InvoiceText.NODATA)
-
+        
         finally:
-            if browser:
+            if browser is not None:
                 browser.quit()
 
     # 取得符合期別之紀錄

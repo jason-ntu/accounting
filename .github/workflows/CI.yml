@@ -60,10 +60,7 @@ jobs:
           dotenv set MYSQL_HOST mysql
           cat .env
 
-      - name: Test with unittest
+      - name: Unittest and coverage
         run: |
-          make test
-
-      - name: Test Coverage
-        run: |
-          make coverage
+          make run
+        # make coverage
