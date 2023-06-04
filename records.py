@@ -284,6 +284,3 @@ class RecordPage(Accessor):
         print("1 收入 2 支出")
         print("請選擇新的收入/支出:")
     
-
-if __name__ == '__main__': # pragma: no cover
-    RecordPage.start()

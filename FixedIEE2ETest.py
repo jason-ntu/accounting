@@ -1,11 +1,10 @@
 from unittest.mock import patch
 from mock_db import MockDB
 from freezegun import freeze_time
-from fixedIE import FixedIEPage
 from menu import MenuPage
 
 
-class FixedIEIntegrationTest(MockDB):
+class FixedIEE2ETest(MockDB):
     
     @freeze_time("2023-05-27")
     @patch('builtins.input', side_effect=[

@@ -1,6 +1,5 @@
 import io
 from unittest.mock import patch
-import sqlalchemy as sql
 from export import ExportPage, ExportOption
 from mock_db import MockDB
 from accessor import ExecutionStatus as es

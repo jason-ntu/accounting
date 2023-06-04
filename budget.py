@@ -74,7 +74,3 @@ class BudgetPage(Accessor):
             if option is BudgetOption.BACK:
                 return
             cls.execute(option)
-
-
-if __name__ == "__main__":  # pragma: no cover
-    BudgetPage.start()

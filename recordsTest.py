@@ -1,9 +1,7 @@
 import io
-from unittest import TestCase
 from unittest.mock import patch
 from records import RecordPage, RecordOption
 from mock_db import MockDB
-from accessor import ExecutionStatus as es
 import const
 from createRecord import CreateRecordPage
 from readRecord import ReadRecordPage
@@ -12,7 +10,6 @@ from deleteRecord import DeleteRecordPage
 from category import CategoryPage
 from account import AccountPage
 from location import LocationPage
-import sqlalchemy as sql
 
 class TestAccountPage(MockDB):
 

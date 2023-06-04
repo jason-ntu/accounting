@@ -3,8 +3,6 @@ from unittest.mock import patch
 import sqlalchemy as sql
 from mock_db import MockDB
 from accessor import ExecutionStatus as es
-from accessor import Accessor
-import const
 from fixedIErecord import fixedIERecord
 from datetime import datetime, date
 from freezegun import freeze_time

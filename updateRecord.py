@@ -249,6 +249,3 @@ class UpdateRecordPage(RecordPage):
                 return
             readRecordPage.execute(option)
             cls.updateByID()
-
-if __name__ == '__main__':  # pragma: no cover
-    UpdateRecordPage.start()

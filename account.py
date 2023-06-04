@@ -205,6 +205,3 @@ class AccountPage(Accessor):
             dictRow = row._asdict()
             accountList.append(dictRow)
         return accountList
-
-if __name__ == "__main__":  # pragma: no cover
-    AccountPage.start()

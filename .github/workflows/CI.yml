@@ -55,15 +55,17 @@ jobs:
           pip3 install coverage
           if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
 
+      - name: Install chrome
+        run: |
+          apt-get install -y wget
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          apt-get install -y glib2.0 ./google-chrome-stable_current_amd64.deb
+
       - name: "Update env file"
         run: |
           dotenv set MYSQL_HOST mysql
           cat .env
 
-      - name: Test with unittest
-        run: |
-          make test
-
-      - name: Test Coverage
+      - name: Unittest and coverage
         run: |
           make coverage

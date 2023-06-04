@@ -4,10 +4,8 @@ from unittest.mock import patch
 from deleteRecord import DeleteRecordPage
 from mock_db import MockDB
 from accessor import ExecutionStatus as es
-import const
-from datetime import datetime
 from readRecord import ReadRecordPage, ReadRecordOption
-from records import RecordOption, RecordPage
+from records import RecordPage
 
 class TestDeleteRecord(MockDB):
     

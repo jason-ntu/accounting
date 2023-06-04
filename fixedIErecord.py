@@ -1,10 +1,6 @@
-from enum import IntEnum, auto
 import sqlalchemy as sql
-import mysqlConfig as cfg
-import const
 from accessor import Accessor, ExecutionStatus as es
 from datetime import datetime, date
-from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
 
 class fixedIERecord(Accessor):
@@ -62,7 +58,7 @@ class fixedIERecord(Accessor):
         query = cls.tables[0].update().where(cls.tables[0].c.name == name).values(flag=flag)
         rowsAffected = cls.conn.execute(query).rowcount
         successful = (rowsAffected == 1)
-        if not successful:
+        if not successful: # pragma: no cover
             cls.tearDown_connection(es.SILENT_ROLLBACK)
             return
         cls.tearDown_connection(es.SILENT_COMMIT)

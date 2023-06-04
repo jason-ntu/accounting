@@ -1,11 +1,10 @@
 import io
-from unittest import TestCase
 from unittest.mock import patch
 from updateRecord import UpdateRecordPage, ItemOption
 from mock_db import MockDB
 from accessor import ExecutionStatus as es
 import const
-from records import RecordOption, RecordPage
+from records import RecordPage
 from readRecord import ReadRecordPage, ReadRecordOption
 from IEDirection import IEDirection
 

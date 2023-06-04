@@ -55,6 +55,3 @@ class DeleteRecordPage(RecordPage):
                 return
             readRecordPage.execute(option)
             cls.deleteByID()
-
-if __name__ == '__main__':  # pragma: no cover
-    DeleteRecordPage.start()

@@ -1,11 +1,8 @@
 import io
-from unittest import TestCase
 from unittest.mock import patch
 from readRecord import ReadRecordPage, ReadRecordOption
 from mock_db import MockDB
 from accessor import ExecutionStatus as es
-import const
-from datetime import datetime
 from freezegun import freeze_time
 
 class TestReadRecord(MockDB):

@@ -1,6 +1,5 @@
 from enum import IntEnum, auto
 from accessor import ExecutionStatus as es
-import sys
 from account import AccountPage, AccountCategory
 from records import RecordPage
 from IEDirection import IEDirection
@@ -71,6 +70,3 @@ class CreateRecordPage(RecordPage):
             if option is CreateRecordOption.BACK:
                 return
             cls.execute(option)
-
-if __name__ == '__main__':  # pragma: no cover
-    CreateRecordPage.start()
