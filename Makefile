@@ -1,10 +1,12 @@
 TEST_FILE_NAME := IEAttributeTest.py budgetTest.py fixedIETest.py accountTest.py  reportTest.py\
 				  settingTest.py menuTest.py exportTest.py fixedIErecordTest.py  \
 				 createRecordTest.py readRecordTest.py recordsTest.py updateRecordTest.py deleteRecordTest.py 
-# invoiceTest.py categoryTest.py  
+# invoiceTest.py
+
 
 RUN_FILE_NAME := menu.py
 CACHE := .coverage htmlcov coverage_html_report
+TARGET := invoiceTest.TestInvoicePage
 
 .PHONY: all clean
 
@@ -30,6 +32,9 @@ database:
 
 record:
 	@python3 records.py
+
+single-test:
+	@python3 -m unittest $(TARGET)
 
 clean:
 	@$(RM) -r $(CACHE)

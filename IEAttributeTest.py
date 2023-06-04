@@ -1,5 +1,4 @@
 import io
-import unittest
 from unittest.mock import patch
 from IEAttribute import IEAttribute, Operation, IEOption
 from mock_db import MockDB

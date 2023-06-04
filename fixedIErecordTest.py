@@ -50,8 +50,9 @@ class TestExportPage(MockDB):
             end_time = fixedIERecord.getEndTime()
             fixedIERecord.tearDown_connection(es.NONE)
         self.assertEqual(end_time.strftime("%Y-%m-%d %H:%M:%S"), "2023-05-04 00:13:45")
-
-    def test_recordEndTime(self):
+    
+    @patch('sys.stdout', new_callable=io.StringIO)
+    def test_recordEndTime(self, _stdout):
         with self.mock_db_config:
             fixedIERecord.setUp_connection_and_table(["EndTime"])
             end_time = datetime.today().replace(microsecond=0)
@@ -84,7 +85,6 @@ class TestExportPage(MockDB):
         self.assertEqual(dictRow['name'],"獎學金")
         self.assertEqual(dictRow['flag'],0)
 
-
     @freeze_time("2023-05-18")
     @patch('sys.stdout', new_callable=io.StringIO)
     @patch.object(fixedIERecord, 'recordEndTime')
@@ -97,19 +97,30 @@ class TestExportPage(MockDB):
             _readFixedIE.return_value = fixedIERecord.conn.execute(query).fetchall()
             fixedIERecord.tearDown_connection(es.NONE)
 
+            # For logic testing in this function,
+            # CC, PC, and CACC are all covered.
+            #     C1: dictRow['day'] < dictRow['registerTime'].day
+            #     C2: now_time.month == dictRow['registerTime'].month
+            #     C3: now_time.year == dictRow['registerTime'].year
+            #     P: C1 and C2 and C3
+
             # cross year
+            # C1: F, C2: T, C3: F, P: F
             _getEndTime.return_value = datetime(2022, 5, 18, 0, 0, 0)
             fixedIERecord.start()
 
             # cross month
+            # C1: F, C2: F, C3: T, P: F
             _getEndTime.return_value = datetime(2023, 4, 18, 0, 0, 0)
             fixedIERecord.start()
 
             # cross day
+            # C1: T, C2: T, C3: T, P: T
             _getEndTime.return_value = datetime(2023, 5, 1, 0, 0, 0)
             fixedIERecord.start()
 
             # same date
+            # C1: F, C2: T, C3: T, P: F
             _getEndTime.return_value = datetime(2023, 5, 18, 0, 0, 0)
             fixedIERecord.start()
 
