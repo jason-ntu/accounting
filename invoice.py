@@ -64,63 +64,64 @@ class InvoicePage(Accessor):
         aryAward3 = []
         browser = None
 
-        try:            
-            options = Options()
-            options.add_argument('--headless')
-            options.add_argument('--disable-dev-shm-usage')
-            options.add_argument('--no-sandbox')
-            # print("stop0")
-            browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-            
-            # print("stop1")
-            # print("self.dicLatest:", self.dicLatest)
-            # print("browser: ", browser)
-
-            url = 'https://invoice.etax.nat.gov.tw/'
-            browser.get(url)
-    
-            #月份
-            xpathPeriod = "//li[1]/a[@class='etw-on']"
-            WebDriverWait(browser, 60).until(expected_conditions.presence_of_element_located((By.XPATH, xpathPeriod)))
-            strPeriod = browser.find_element("xpath", xpathPeriod)
-            self.dicLatest["period"] = strPeriod.text
-    
-            #特別獎
-            xpathAward1 = "//div[@class='etw-web']/table[@class='etw-table-bgbox etw-tbig']/tbody/tr[1]/td[2]/p[@class='etw-tbiggest']/span[@class='font-weight-bold etw-color-red']"
-            WebDriverWait(browser, 60).until(expected_conditions.presence_of_element_located((By.XPATH, xpathAward1)))
-            strNumber1 = browser.find_element("xpath", xpathAward1)
-            self.dicLatest["award1"] = strNumber1.text
-    
-            #特獎
-            xpathAward2 = "//div[@class='etw-web']/table[@class='etw-table-bgbox etw-tbig']/tbody/tr[2]/td[2]/p[@class='etw-tbiggest']/span[@class='font-weight-bold etw-color-red']"
-            WebDriverWait(browser, 60).until(expected_conditions.presence_of_element_located((By.XPATH, xpathAward2)))
-            strNumber2 = browser.find_element("xpath", xpathAward2)
-            self.dicLatest["award2"] = strNumber2.text
-    
-            #頭獎
-            xpathAward3_1 = "/html/body/div[@class='etw-page']/div[@class='etw-wrapper']/div[@id='etw-container']/div[@class='container-xl']/div[@class='container-fluid etw-bgbox mb-4']/div[@class='etw-web']/table[@class='etw-table-bgbox etw-tbig']/tbody/tr[3]/td[2]/p[@class='etw-tbiggest mb-md-4'][1]"
-            WebDriverWait(browser, 60).until(expected_conditions.presence_of_element_located((By.XPATH, xpathAward3_1)))
-            strNumber3_1 = browser.find_element("xpath", xpathAward3_1)
-            aryAward3.append(strNumber3_1.text.strip())
-    
-            xpathAward3_2 = "/html/body/div[@class='etw-page']/div[@class='etw-wrapper']/div[@id='etw-container']/div[@class='container-xl']/div[@class='container-fluid etw-bgbox mb-4']/div[@class='etw-web']/table[@class='etw-table-bgbox etw-tbig']/tbody/tr[3]/td[2]/p[@class='etw-tbiggest mb-md-4'][2]"
-            WebDriverWait(browser, 60).until(expected_conditions.presence_of_element_located((By.XPATH, xpathAward3_2)))
-            strNumber3_2 = browser.find_element("xpath", xpathAward3_2)
-            aryAward3.append(strNumber3_2.text.strip())
-    
-            xpathAward3_3 = "/html/body/div[@class='etw-page']/div[@class='etw-wrapper']/div[@id='etw-container']/div[@class='container-xl']/div[@class='container-fluid etw-bgbox mb-4']/div[@class='etw-web']/table[@class='etw-table-bgbox etw-tbig']/tbody/tr[3]/td[2]/p[@class='etw-tbiggest mb-md-4'][3]"
-            WebDriverWait(browser, 60).until(expected_conditions.presence_of_element_located((By.XPATH, xpathAward3_3)))
-            strNumber3_3 = browser.find_element("xpath", xpathAward3_3)
-            aryAward3.append(strNumber3_3.text.strip())
-
-            self.dicLatest["award3"] = aryAward3
+        # try:            
+        options = Options()
+        options.add_argument('--headless')
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--no-sandbox')
+        # print("stop0")
+        browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
         
-        except:
-            print(InvoiceText.NODATA)
+        # print("stop1")
+        # print("self.dicLatest:", self.dicLatest)
+        # print("browser: ", browser)
+
+        url = 'https://invoice.etax.nat.gov.tw/'
+        browser.get(url)
+
+        #月份
+        xpathPeriod = "//li[1]/a[@class='etw-on']"
+        WebDriverWait(browser, 60).until(expected_conditions.presence_of_element_located((By.XPATH, xpathPeriod)))
+        strPeriod = browser.find_element("xpath", xpathPeriod)
+        self.dicLatest["period"] = strPeriod.text
+
+        #特別獎
+        xpathAward1 = "//div[@class='etw-web']/table[@class='etw-table-bgbox etw-tbig']/tbody/tr[1]/td[2]/p[@class='etw-tbiggest']/span[@class='font-weight-bold etw-color-red']"
+        WebDriverWait(browser, 60).until(expected_conditions.presence_of_element_located((By.XPATH, xpathAward1)))
+        strNumber1 = browser.find_element("xpath", xpathAward1)
+        self.dicLatest["award1"] = strNumber1.text
+
+        #特獎
+        xpathAward2 = "//div[@class='etw-web']/table[@class='etw-table-bgbox etw-tbig']/tbody/tr[2]/td[2]/p[@class='etw-tbiggest']/span[@class='font-weight-bold etw-color-red']"
+        WebDriverWait(browser, 60).until(expected_conditions.presence_of_element_located((By.XPATH, xpathAward2)))
+        strNumber2 = browser.find_element("xpath", xpathAward2)
+        self.dicLatest["award2"] = strNumber2.text
+
+        #頭獎
+        xpathAward3_1 = "/html/body/div[@class='etw-page']/div[@class='etw-wrapper']/div[@id='etw-container']/div[@class='container-xl']/div[@class='container-fluid etw-bgbox mb-4']/div[@class='etw-web']/table[@class='etw-table-bgbox etw-tbig']/tbody/tr[3]/td[2]/p[@class='etw-tbiggest mb-md-4'][1]"
+        WebDriverWait(browser, 60).until(expected_conditions.presence_of_element_located((By.XPATH, xpathAward3_1)))
+        strNumber3_1 = browser.find_element("xpath", xpathAward3_1)
+        aryAward3.append(strNumber3_1.text.strip())
+
+        xpathAward3_2 = "/html/body/div[@class='etw-page']/div[@class='etw-wrapper']/div[@id='etw-container']/div[@class='container-xl']/div[@class='container-fluid etw-bgbox mb-4']/div[@class='etw-web']/table[@class='etw-table-bgbox etw-tbig']/tbody/tr[3]/td[2]/p[@class='etw-tbiggest mb-md-4'][2]"
+        WebDriverWait(browser, 60).until(expected_conditions.presence_of_element_located((By.XPATH, xpathAward3_2)))
+        strNumber3_2 = browser.find_element("xpath", xpathAward3_2)
+        aryAward3.append(strNumber3_2.text.strip())
+
+        xpathAward3_3 = "/html/body/div[@class='etw-page']/div[@class='etw-wrapper']/div[@id='etw-container']/div[@class='container-xl']/div[@class='container-fluid etw-bgbox mb-4']/div[@class='etw-web']/table[@class='etw-table-bgbox etw-tbig']/tbody/tr[3]/td[2]/p[@class='etw-tbiggest mb-md-4'][3]"
+        WebDriverWait(browser, 60).until(expected_conditions.presence_of_element_located((By.XPATH, xpathAward3_3)))
+        strNumber3_3 = browser.find_element("xpath", xpathAward3_3)
+        aryAward3.append(strNumber3_3.text.strip())
+
+        self.dicLatest["award3"] = aryAward3
+        browser.quit()
         
-        finally:
-            if browser is not None:
-                browser.quit()
+        # except:
+        #     print(InvoiceText.NODATA)
+        
+        # finally:
+        #     if browser is not None:
+                # browser.quit()
 
     # 取得符合期別之紀錄
     def queryRecord(self, dateS, dateE):
