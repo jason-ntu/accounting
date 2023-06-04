@@ -1,8 +1,6 @@
 import io
-from unittest import TestCase
 from unittest.mock import patch
 from report import ReportPage, ReportOption, ReportByOption
-from datetime import datetime
 from mock_db import MockDB
 from accessor import ExecutionStatus as es
 import const

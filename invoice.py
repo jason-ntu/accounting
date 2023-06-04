@@ -113,7 +113,7 @@ class InvoicePage(Accessor):
 
         finally:
             if browser:
-                browser.close()
+                browser.quit()
 
     # 取得符合期別之紀錄
     def queryRecord(self, dateS, dateE):

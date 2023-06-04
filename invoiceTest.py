@@ -1,14 +1,9 @@
 import io
-from unittest import TestCase
 from unittest.mock import patch
 from invoice import InvoicePage, InvoiceOption, InvoiceText
 from mock_db import MockDB
-from datetime import datetime
-from freezegun import freeze_time
 from accessor import ExecutionStatus as es
 from datetime import date
-from unittest.mock import Mock
-from selenium import webdriver
 
 class TestInvoicePage(MockDB):
     records = []

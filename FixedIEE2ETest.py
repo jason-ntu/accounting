@@ -1,7 +1,6 @@
 from unittest.mock import patch
 from mock_db import MockDB
 from freezegun import freeze_time
-from fixedIE import FixedIEPage
 from menu import MenuPage
 
 

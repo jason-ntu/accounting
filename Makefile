@@ -31,3 +31,6 @@ database:
 
 clean:
 	@$(RM) -r $(CACHE)
+
+run:
+	@python3 -m unittest invoiceTest.TestInvoicePage
