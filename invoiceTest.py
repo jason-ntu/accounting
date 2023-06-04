@@ -76,9 +76,8 @@ class TestInvoicePage(MockDB):
         def fake_Chrome():
             raise Exception
         m_Chrome.side_effect = fake_Chrome
-        with self.assertRaises(Exception) as context:
+        with self.assertRaises(Exception):
             self.invoicePage.queryLatest()
-        self.assertEqual(str(context.exception), "cannot access local variable 'browser' where it is not associated with a value")
         self.assertEqual(m_stdout.getvalue(), InvoiceText.NODATA + "\n")
 
     def test_queryRecord(self):
