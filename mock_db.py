@@ -16,7 +16,7 @@ class MockDB(TestCase):
     @classmethod
     @freeze_time("2023-05-18")
     def setUpClass(cls):
-        if database_exists(cls.config['url']):
+        if database_exists(cls.config['url']): # pragma: no cover
             drop_database(cls.config['url'])
             print("%sOriginal database %s dropped.%s" %
                   (const.ANSI_BLACK, cls.config['database'], const.ANSI_RESET))

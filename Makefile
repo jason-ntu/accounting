@@ -1,7 +1,7 @@
 
 UNIT_TEST := accountTest.py budgetTest.py createRecordTest.py deleteRecordTest.py exportTest.py \
-				fixedIETest.py IEAttributeTest.py menuTest.py readRecordTest.py \
-				recordsTest.py reportTest.py settingTest.py updateRecordTest.py invoiceTest.py
+				fixedIETest.py fixedIErecordTest.py IEAttributeTest.py invoiceTest.py menuTest.py \
+				readRecordTest.py recordsTest.py reportTest.py settingTest.py updateRecordTest.py
 E2E_TEST := FixedIEE2ETest.py
 ALL_TEST := $(UNIT_TEST) $(E2E_TEST)
 MENU := menu.py

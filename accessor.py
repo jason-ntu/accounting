@@ -41,7 +41,7 @@ class Accessor:
         elif operation is ExecutionStatus.ROLLBACK:
             cls.conn.rollback()
             print("%s操作失敗%s" % (const.ANSI_RED, const.ANSI_RESET))
-        elif operation is ExecutionStatus.SILENT_COMMIT:
+        elif operation is ExecutionStatus.SILENT_ROLLBACK:
             cls.conn.rollback()
         else:
             pass

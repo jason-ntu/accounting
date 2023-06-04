@@ -39,9 +39,8 @@ class InvoicePage(Accessor):
             print(InvoiceText.NODATA + "\n")
 
         self.show()
-        option = self.choose()
-        if option is InvoiceOption.BACK:
-            return
+        self.choose()
+        return
 
     #呈現選擇畫面
     def show(self):
@@ -70,7 +69,6 @@ class InvoicePage(Accessor):
             options.add_argument('--disable-gpu')
             options.add_argument('--start-maximized')
             browser = webdriver.Chrome(service=ChromiumService(ChromeDriverManager().install()), options=options)
-    
             url = 'https://invoice.etax.nat.gov.tw/'
             browser.get(url)
     
@@ -109,12 +107,13 @@ class InvoicePage(Accessor):
             aryAward3.append(strNumber3_3.text.strip())
 
             self.dicLatest["award3"] = aryAward3
-    
-            browser.close()        
+        
         except:
+            print(InvoiceText.NODATA)
+
+        finally:
             if browser:
                 browser.close()
-            print(InvoiceText.NODATA + "\n")
 
     # 取得符合期別之紀錄
     def queryRecord(self, dateS, dateE):

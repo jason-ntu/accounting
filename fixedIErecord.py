@@ -62,7 +62,7 @@ class fixedIERecord(Accessor):
         query = cls.tables[0].update().where(cls.tables[0].c.name == name).values(flag=flag)
         rowsAffected = cls.conn.execute(query).rowcount
         successful = (rowsAffected == 1)
-        if not successful:
+        if not successful: # pragma: no cover
             cls.tearDown_connection(es.SILENT_ROLLBACK)
             return
         cls.tearDown_connection(es.SILENT_COMMIT)

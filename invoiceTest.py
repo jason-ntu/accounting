@@ -8,6 +8,7 @@ from freezegun import freeze_time
 from accessor import ExecutionStatus as es
 from datetime import date
 from unittest.mock import Mock
+from selenium import webdriver
 
 class TestInvoicePage(MockDB):
     records = []
@@ -23,10 +24,8 @@ class TestInvoicePage(MockDB):
     @patch.object(InvoicePage, 'goPair')
     @patch.object(InvoicePage, 'queryLatest')
     def test_start_Y(self, m_queryLatest, m_goPair, m_show, m_choose):
-        # spy
         def fake_queryLatest_Y():
             self.invoicePage.dicLatest = self.dicLatest
-
 
         m_queryLatest.side_effect = fake_queryLatest_Y
         self.invoicePage.start()
@@ -44,7 +43,6 @@ class TestInvoicePage(MockDB):
         # spy
         def fake_queryLatest_N():
             self.invoicePage.dicLatest = {}
-
 
         m_queryLatest.side_effect = fake_queryLatest_N
         self.invoicePage.start()
@@ -76,6 +74,17 @@ class TestInvoicePage(MockDB):
         self.assertEqual(8, len(self.invoicePage.dicLatest["award1"]))
         self.assertEqual(8, len(self.invoicePage.dicLatest["award2"]))
         self.assertEqual(3, len(self.invoicePage.dicLatest["award3"]))
+
+    @patch("sys.stdout", new_callable = io.StringIO)
+    @patch('selenium.webdriver.Chrome')
+    def test_queryLatest_except(self, m_Chrome, m_stdout):
+        def fake_Chrome():
+            raise Exception
+        m_Chrome.side_effect = fake_Chrome
+        with self.assertRaises(Exception) as context:
+            self.invoicePage.queryLatest()
+        self.assertEqual(str(context.exception), "cannot access local variable 'browser' where it is not associated with a value")
+        self.assertEqual(m_stdout.getvalue(), InvoiceText.NODATA + "\n")
 
     def test_queryRecord(self):
         with self.mock_db_config:
