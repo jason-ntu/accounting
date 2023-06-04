@@ -70,14 +70,14 @@ class TestInvoicePage(MockDB):
         self.assertEqual(8, len(self.invoicePage.dicLatest["award2"]))
         self.assertEqual(3, len(self.invoicePage.dicLatest["award3"]))
 
-    # @patch("sys.stdout", new_callable = io.StringIO)
-    # @patch('selenium.webdriver.Chrome')
-    # def test_queryLatest_except(self, m_Chrome, m_stdout):
-    #     def fake_Chrome(*args, **keywargs):
-    #         raise ValueError
-    #     m_Chrome.side_effect = fake_Chrome
-    #     self.invoicePage.queryLatest()
-    #     self.assertEqual(m_stdout.getvalue(), InvoiceText.NODATA + '\n')
+    @patch("sys.stdout", new_callable = io.StringIO)
+    @patch('selenium.webdriver.Chrome')
+    def test_queryLatest_except(self, m_Chrome, m_stdout):
+        def fake_Chrome(*args, **keywargs):
+            raise ValueError
+        m_Chrome.side_effect = fake_Chrome
+        self.invoicePage.queryLatest()
+        self.assertEqual(m_stdout.getvalue(), InvoiceText.NODATA + '\n')
 
     def test_queryRecord(self):
         with self.mock_db_config:

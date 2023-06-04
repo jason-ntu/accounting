@@ -31,6 +31,3 @@ database:
 
 clean:
 	@$(RM) -r $(CACHE)
-
-run:
-	@coverage run -m unittest invoiceTest.TestInvoicePage.test_queryLatest
