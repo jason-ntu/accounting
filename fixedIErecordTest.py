@@ -102,25 +102,33 @@ class TestExportPage(MockDB):
             #     C3: now_time.year == dictRow['registerTime'].year
             #     P: C1 and C2 and C3
 
-            # cross year
+            # case1 - cross year
             # C1: F, C2: T, C3: F, P: F
             _getEndTime.return_value = datetime(2022, 5, 18, 0, 0, 0)
             fixedIERecord.start()
 
-            # cross month
+            # case2 - cross month
             # C1: F, C2: F, C3: T, P: F
             _getEndTime.return_value = datetime(2023, 4, 18, 0, 0, 0)
             fixedIERecord.start()
 
-            # cross day
+            # case3 - cross day
             # C1: T, C2: T, C3: T, P: T
             _getEndTime.return_value = datetime(2023, 5, 1, 0, 0, 0)
             fixedIERecord.start()
 
-            # same date
+            # case4 - same date
             # C1: F, C2: T, C3: T, P: F
             _getEndTime.return_value = datetime(2023, 5, 18, 0, 0, 0)
             fixedIERecord.start()
+            
+            # CC of C1: (case1, case3)
+            # CC of C2: (case1, case2)
+            # CC of C3: (case1, case2)
+            # PC: (case1, case3)
+            # C1-majored CACC: (case1, case3)
+            # C2-majored CACC: (case2, case3)
+            # C3-majored CACC: (case1, case3)
 
         self.assertEqual(_getEndTime.call_count, 4)
         self.assertEqual(_readFixedIE.call_count, 4)
