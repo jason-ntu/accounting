@@ -59,7 +59,6 @@ class CreateRecordPage(RecordPage):
             print("新增資料失敗")
             cls.tearDown_connection(es.ROLLBACK)
             return
-        cls.tearDown_connection(es.COMMIT)
         cls.updateAccountAmount(cls.IE, account['name'], amount)
 
     @classmethod
